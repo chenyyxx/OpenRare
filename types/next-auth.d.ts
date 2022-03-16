@@ -10,4 +10,5 @@ declare module "next-auth" {
       email: string
     }
   }
+  
 }
