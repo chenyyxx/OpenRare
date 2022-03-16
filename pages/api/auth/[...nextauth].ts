@@ -25,6 +25,7 @@ export default NextAuth({
     //   from: 'NextAuth.js <no-reply@example.com>'
     // }),
   adapter: PrismaAdapter(prisma),
+  secret: process.env.SECRET,
   // callbacks: {
   //   session({ session, token, user }) {
   //     return session // The return type will match the one returned in `useSession()`
