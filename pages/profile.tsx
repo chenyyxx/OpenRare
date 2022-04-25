@@ -3,9 +3,15 @@ import {
   Box,
   useColorModeValue,
   VStack,
+  HStack,
   Flex,
-  Wrap, WrapItem,
+  InputGroup,
+  Input,
+  InputRightElement,
+  IconButton,
 } from '@chakra-ui/react';
+import { SearchIcon } from '@chakra-ui/icons';
+
 import Nav from "../components/nav";
 import Post from '../components/post';
 import LeftSideBar from '../components/left_side_bar';
@@ -30,16 +36,29 @@ export default function Profile({
                 <Box pt="24px" pl="24px" pr="24px" >
                     <LargeProfile/>
                 </Box>
-                <Wrap pt="24px" pl="24px" pr="24px">
-                    <WrapItem><Button colorScheme='teal' variant='solid' rounded={20}>Home</Button></WrapItem>
-                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>My Sections</Button></WrapItem>
-                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>My Posts</Button></WrapItem>
-                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Starred Posts</Button></WrapItem>
-                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button></WrapItem>
-                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Comments</Button></WrapItem>
-                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
-                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem>
-                </Wrap>
+                <HStack justify="space-between" pt="24px" pl="24px" pr="24px">
+                  <HStack>
+                    <Button colorScheme='teal' variant='solid' rounded={20}>Rank by: Time</Button>
+                    <Button colorScheme='teal' variant='outline' rounded={20}>Filter by: User</Button>
+                  </HStack>
+                  <InputGroup w={"30%"} size='md' >
+                        <Input 
+                          pr='4.5rem'
+                          focusBorderColor='teal.400' 
+                          placeholder='Search Her' 
+                          rounded={20}
+                          borderColor='teal.400'
+                        />
+                        <InputRightElement width='4.5rem'>
+                            <IconButton
+                                variant='link'
+                                aria-label='search'
+                                colorScheme="teal"
+                                icon={<SearchIcon />}
+                            />
+                        </InputRightElement>
+                    </InputGroup>
+                </HStack>
                 <VStack p="24px" minH="full" spacing={"24px"}>
                     {posts.map((post) => (
                         <Post post={post} key={post.id}/>
