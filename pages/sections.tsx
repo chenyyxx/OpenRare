@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Box,
   useColorModeValue,
-  Wrap, WrapItem, Flex
+  Wrap, WrapItem, Flex, VStack, Center
 } from '@chakra-ui/react';
 import Nav from "../components/nav";
 import Section from '../components/section';
@@ -18,21 +18,19 @@ export default function Sections() {
                 <Box minH="full" p={"24px"} >
                     <LeftSideBar/>
                 </Box>
-                <Box>
-                    <Wrap 
-                        p="24px"
-                        minH="full"
-                        spacing="24px"
-                    >
-                        {test_sections.map((section) => (
-                            <WrapItem key={section.id}>
-                                <Section section={section} key={section.id} />
-                            </WrapItem>
-                            )
-                        )}
-                    </Wrap>
-                </Box>
-                
+                <Wrap 
+                    p="24px"
+                    minH="full"
+                    spacing="24px"
+                    justify='space-between'
+                >
+                    {test_sections.map((section) => (
+                        <WrapItem key={section.id}>
+                            <Section section={section} key={section.id} />
+                        </WrapItem>
+                        )
+                    )}
+                </Wrap>
             </Flex>
         </Box>
     );

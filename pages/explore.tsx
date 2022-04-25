@@ -9,6 +9,7 @@ import {
 import Nav from "../components/nav";
 import Post from '../components/post';
 import LeftSideBar from '../components/left_side_bar';
+import { Button } from '@chakra-ui/react';
 
 
 
@@ -25,6 +26,11 @@ export default function Explore({
                 <LeftSideBar/>
             </Box>
             <Box>
+                <Wrap pt="24px" pl="24px" pr="24px">
+                    <WrapItem><Button colorScheme='teal' variant='solid' rounded={20}>New</Button></WrapItem>
+                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Top</Button></WrapItem>
+                    <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Hot</Button></WrapItem>
+                </Wrap>
                 <VStack p="24px" minH="full" spacing={"24px"}>
                     {posts.map((post) => (
                         <Post post={post} key={post.id}/>

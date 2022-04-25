@@ -30,7 +30,7 @@ function Post({post}: {post: Post}) {
   return (
     <Center>
       <Box
-        maxW={'1000px'}
+        
         w={'full'}
         bg={useColorModeValue('white', 'gray.900')}
         boxShadow={'2xl'}

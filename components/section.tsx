@@ -39,6 +39,7 @@ import {
               section.picture
             }
             objectFit={'cover'}
+            alt="section_picture"
           />
           {/* <Flex justify={'center'} mt={-12}>
             <Avatar

@@ -31,11 +31,13 @@ interface LinkItemProps {
   link: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Home', icon: FiHome, link: '/home' },
-  { name: 'Explore', icon: FiCompass, link: '/explore' },
-  { name: 'Sections', icon: FiTrendingUp, link: '/sections' },
-  { name: 'Profile', icon: FiTrendingUp, link: '/profile' },
-  { name: 'Settings', icon: FiSettings, link: '/settings' },
+  { name: 'All Posts', icon: FiHome, link: '#' },
+  { name: 'My Sections', icon: FiCompass, link: '#' },
+  { name: 'Favorite', icon: FiTrendingUp, link: '#' },
+  { name: 'Upvoted', icon: FiTrendingUp, link: '#' },
+  { name: 'Comments', icon: FiSettings, link: '#' },
+  { name: 'Messages', icon: FiSettings, link: '#' },
+  { name: 'Notifications', icon: FiSettings, link: '#' },
 ];
 
 // export default function LeftSideBar() {
@@ -51,7 +53,7 @@ const LinkItems: Array<LinkItemProps> = [
 // }
 
 
-export default function LeftSideBar() {
+export default function ProfileRightPanel() {
   return (
     <Box
         bg={useColorModeValue('white', 'gray.900')}
@@ -62,7 +64,7 @@ export default function LeftSideBar() {
         h="max"
         py={4}
         pos="sticky"
-        top={"88px"}
+        top={"424px"}
     >
         {LinkItems.map((link) => (
             <NavItem key={link.name} link={link.link} icon={link.icon}>
