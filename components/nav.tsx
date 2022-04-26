@@ -87,7 +87,7 @@ export default function Nav() {
                             size={'sm'}
                             mr={4}
                             leftIcon={<AddIcon />}>
-                            Create New Post
+                            Create Post
                         </Button>
                         <IconButton
                             variant='link'

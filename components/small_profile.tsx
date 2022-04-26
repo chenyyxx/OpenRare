@@ -9,74 +9,59 @@ import {
     Stack,
     Button,
     useColorModeValue,
+    Divider,
+    StackDivider,
+    Link
   } from '@chakra-ui/react';
   
-  export default function LargeProfile() {
+  export default function SmallProfile() {
     return (
-      <Center py={6}>
+      <Center>
         <Box
-          maxW={'270px'}
           w={'full'}
           bg={useColorModeValue('white', 'gray.800')}
-          boxShadow={'2xl'}
           rounded={'md'}
-          overflow={'hidden'}>
+          overflow={'hidden'}
+          border="1px"
+          borderColor={useColorModeValue('gray.200', 'gray.700')}>
           <Image
-            h={'120px'}
+            h={'180px'}
             w={'full'}
             src={
-              'https://images.unsplash.com/photo-1612865547334-09cb8cb455da?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
+              'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ'
             }
             objectFit={'cover'}
             alt="small_profile"
           />
-          <Flex justify={'center'} mt={-12}>
-            <Avatar
-              size={'xl'}
-              src={
-                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ'
-              }
-              css={{
-                border: '2px solid white',
-              }}
-            />
-          </Flex>
   
           <Box p={6}>
             <Stack spacing={0} align={'center'} mb={5}>
               <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
                 John Doe
               </Heading>
-              <Text color={'gray.500'}>Frontend Developer</Text>
             </Stack>
+            
+            <Divider borderColor='gray.200' mb={5}/>
   
             <Stack direction={'row'} justify={'center'} spacing={6}>
-              <Stack spacing={0} align={'center'}>
-                <Text fontWeight={600}>23k</Text>
+              <Stack direction={'row'} spacing={4} align={'center'}>
+                <Text fontWeight={600}>4</Text>
+                <Divider orientation='vertical' borderColor='gray.200' />
                 <Text fontSize={'sm'} color={'gray.500'}>
-                  Followers
+                  Followed Sections
                 </Text>
               </Stack>
-              <Stack spacing={0} align={'center'}>
-                <Text fontWeight={600}>23k</Text>
-                <Text fontSize={'sm'} color={'gray.500'}>
-                  Followers
-                </Text>
-              </Stack>
+              <Button
+                mt={8}
+                rounded={'md'}
+                colorScheme={'teal'}
+                as={Link}
+                href={"/profile"}
+                style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}
+              >
+                Profile
+              </Button>
             </Stack>
-  
-            <Button
-              w={'full'}
-              mt={8}
-              bg={useColorModeValue('#151f21', 'gray.900')}
-              color={'white'}
-              rounded={'md'}
-              _hover={{
-                transform: 'translateY(-2px)',
-                boxShadow: 'lg',
-              }}>
-              Follow
-            </Button>
           </Box>
         </Box>
       </Center>

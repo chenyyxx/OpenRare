@@ -57,7 +57,7 @@ export default function LeftSideBar() {
         bg={useColorModeValue('white', 'gray.900')}
         borderRight="1px"
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-        w={{ base: 'none', md: 60 }}
+        w={{ base: 'none', md: '240px' }}
         rounded={'md'}
         h="max"
         py={4}

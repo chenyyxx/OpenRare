@@ -9,19 +9,25 @@ import {
   Input,
   InputRightElement,
   IconButton,
+  Heading,
+  Text,
+  Stack,
+  StackDivider,
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
-
+import SmallProfile from '../components/small_profile';
 import Nav from "../components/nav";
 import Post from '../components/post';
 import LeftSideBar from '../components/left_side_bar';
 import { Button } from '@chakra-ui/react';
 import LargeProfile from '../components/large_profile';
 import ProfileRightPanel from '../components/right_panel';
+import test_sections from '../test_sections.json'
+import SmallSection from '../components/small_section';
 
-export default function Profile({
+export default function Home({
   posts,
 }: {
   posts: Post[]
@@ -35,9 +41,6 @@ export default function Profile({
                 {/* <ProfileRightPanel/> */}
             </VStack>
             <Box>
-                <Box pt="24px" pl="24px" pr="24px" >
-                    <LargeProfile/>
-                </Box>
                 <Wrap justify="center" pt="24px" pl="24px" pr="24px">
                   {/* <HStack> */}
                   <WrapItem><Button colorScheme='teal' variant='solid' rounded={20}>My Posts</Button></WrapItem>
@@ -79,6 +82,40 @@ export default function Profile({
                 </VStack>
               
             </Box>
+            <VStack minH="full" p={"24px"} spacing={"24px"}>
+                {/* <LeftSideBar/> */}
+                <Stack divider={<StackDivider borderColor='gray.200' />}
+                  bg={useColorModeValue('white', 'gray.900')}
+                  borderRight="1px"
+                  borderRightColor={useColorModeValue('gray.200', 'gray.700')}
+                  w={{ base: 'none', md: '320px' }}
+                  rounded={'md'}
+                  h="max"
+                  p={6}
+                  spacing={"24px"}
+                >
+                  <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>My Profile</Heading>
+                  <SmallProfile/>
+                </Stack>
+                <Stack divider={<StackDivider borderColor='gray.200' />}
+                  bg={useColorModeValue('white', 'gray.900')}
+                  borderRight="1px"
+                  borderRightColor={useColorModeValue('gray.200', 'gray.700')}
+                  w={{ base: 'none', md: '320px' }}
+                  rounded={'md'}
+                  h="max"
+                  p={6}
+                  spacing={"24px"}
+                >
+                  <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>My Sections</Heading>
+                  <VStack minH="full" spacing={"12px"}>
+                    {test_sections.map((section) => (
+                        <SmallSection section={section} key={section.id} />
+                        )
+                    )}
+                  </VStack>
+                </Stack>
+            </VStack>
         </Flex>
     </Box>
   );
