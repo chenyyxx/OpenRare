@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useRef } from "react";
 import {
     Heading,
     Avatar,
@@ -13,6 +14,29 @@ import {
   } from '@chakra-ui/react';
   
   export default function LargeProfile() {
+    const parentRef   = useRef(null);
+    const [leftColWidth, setLeftColWidth] = useState(0)
+    
+    // This function calculates width of the leftCol
+    const getLeftColWidth = () => {
+        let geClientWidth = (el: HTMLElement) => {
+            return el.clientWidth;
+        }
+        if(parentRef.current){
+            const newWidth = geClientWidth(parentRef.current);
+            setLeftColWidth(newWidth);
+        }
+    }
+    // Get 'width' after the initial render
+    useEffect(() => {
+        getLeftColWidth();
+    }, []);
+
+    // Update 'width' when the window resizes
+    useEffect(() => {
+        window.addEventListener("resize", getLeftColWidth);
+    }, []);
+
     return (
         <Center >
             <Box
@@ -33,8 +57,9 @@ import {
                     alt="profile_image"
                 />
                 <HStack>
-                    <Box  w={"40%"}>
-                        <Flex justify={'center'} mt={-32}>
+                    <Box  w={"40%"} ref={parentRef}>
+                        <Flex pos="absolute" top="140px" left={(leftColWidth/2 - 102).toString() + "px"} >
+                        {/* <Flex justify={'center'} mt={-32}> */}
                             <Avatar
                                 size={'6xl'}
                                 src={
@@ -46,7 +71,7 @@ import {
                             />
                         </Flex>
 
-                        <Box p={6}>
+                        <Box pt={24} px={6} pb={6}>
                             
 
                             <Stack direction={'row'} justify={'center'} spacing={6}>
@@ -74,20 +99,20 @@ import {
                                 colorScheme='teal' variant='solid'
                                 rounded={'md'}
                                 pos="absolute"
-                                top="24px"
-                                right="24px"
+                                top="264px"
+                                right="64px"
                             >
                                 Edit Profile
                             </Button>
                         </Box>
                     </Box>
                     <Box w= {"60%"}>
-                        <Stack spacing={4} align={'start'} h="240px" pr="64px" py="36px">
+                        <Stack spacing={4} align={'start'} h="full" pr="64px" py="36px">
                             <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
                                 John Doe
                             </Heading>
                             <Text >
-                                et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto
+                                rem eveniet architecto quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto quia et suscipit suscipit recusandae consequuntur expedita et cum reprehenderit molestiae ut ut quas totam nostrum rerum est autem sunt rem eveniet architecto
                             </Text>
                         </Stack>
                     </Box>

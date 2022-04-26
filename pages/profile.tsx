@@ -9,6 +9,8 @@ import {
   Input,
   InputRightElement,
   IconButton,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 
@@ -30,18 +32,28 @@ export default function Profile({
       <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
             <VStack minH="full" p={"24px"} spacing={"24px"}>
                 <LeftSideBar/>
-                <ProfileRightPanel/>
+                {/* <ProfileRightPanel/> */}
             </VStack>
             <Box>
                 <Box pt="24px" pl="24px" pr="24px" >
                     <LargeProfile/>
                 </Box>
-                <HStack justify="space-between" pt="24px" pl="24px" pr="24px">
-                  <HStack>
-                    <Button colorScheme='teal' variant='solid' rounded={20}>Rank by: Time</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Filter by: User</Button>
-                  </HStack>
-                  <InputGroup w={"30%"} size='md' >
+                <Wrap justify="center" pt="24px" pl="24px" pr="24px">
+                  {/* <HStack> */}
+                  <WrapItem><Button colorScheme='teal' variant='solid' rounded={20}>My Posts</Button></WrapItem>
+                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button></WrapItem>
+                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button></WrapItem>
+                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Comments</Button></WrapItem>
+                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
+                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem>
+                    {/* <Button colorScheme='teal' variant='solid' rounded={20}>My Posts</Button>
+                    <Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button>
+                    <Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button>
+                    <Button colorScheme='teal' variant='outline' rounded={20}>Comments</Button>
+                    <Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button>
+                    <Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button> */}
+                  {/* </HStack> */}
+                  {/* <InputGroup w={"30%"} size='md' >
                         <Input 
                           pr='4.5rem'
                           focusBorderColor='teal.400' 
@@ -57,8 +69,8 @@ export default function Profile({
                                 icon={<SearchIcon />}
                             />
                         </InputRightElement>
-                    </InputGroup>
-                </HStack>
+                    </InputGroup> */}
+                </Wrap>
                 <VStack p="24px" minH="full" spacing={"24px"}>
                     {posts.map((post) => (
                         <Post post={post} key={post.id}/>
