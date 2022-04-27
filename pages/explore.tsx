@@ -10,7 +10,7 @@ import Nav from "../components/nav";
 import Post from '../components/post';
 import LeftSideBar from '../components/left_side_bar';
 import { Button } from '@chakra-ui/react';
-
+import { GetServerSideProps } from 'next'
 
 
 export default function Explore({
@@ -44,9 +44,9 @@ export default function Explore({
   );
 }
 
-export async function getStaticProps() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch data from external API
-  const res = await fetch(`https://jsonplaceholder.typicode.com/posts`, {mode: "cors"})
+  const res = await fetch(`http://localhost:3000/api/get_all_posts`)
   const posts = await res.json()
 
   // Pass data to the page via props

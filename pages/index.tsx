@@ -12,10 +12,8 @@ import Post from '../components/post';
 
 
 export default function SidebarWithHeader({
-  children,
   posts,
 }: {
-  children: ReactNode,
   posts: Post[]
 }) {
   return (

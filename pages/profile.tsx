@@ -20,11 +20,13 @@ import LeftSideBar from '../components/left_side_bar';
 import { Button } from '@chakra-ui/react';
 import LargeProfile from '../components/large_profile';
 import ProfileRightPanel from '../components/right_panel';
+import { getSession } from "next-auth/react"
+import { GetServerSideProps } from 'next'
 
 export default function Profile({
-  posts,
+  user,
 }: {
-  posts: Post[]
+  user: User
 }) {
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -46,33 +48,9 @@ export default function Profile({
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Comments</Button></WrapItem>
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem>
-                    {/* <Button colorScheme='teal' variant='solid' rounded={20}>My Posts</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Comments</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button> */}
-                  {/* </HStack> */}
-                  {/* <InputGroup w={"30%"} size='md' >
-                        <Input 
-                          pr='4.5rem'
-                          focusBorderColor='teal.400' 
-                          placeholder='Search Her' 
-                          rounded={20}
-                          borderColor='teal.400'
-                        />
-                        <InputRightElement width='4.5rem'>
-                            <IconButton
-                                variant='link'
-                                aria-label='search'
-                                colorScheme="teal"
-                                icon={<SearchIcon />}
-                            />
-                        </InputRightElement>
-                    </InputGroup> */}
                 </Wrap>
                 <VStack p="24px" minH="full" spacing={"24px"}>
-                    {posts.map((post) => (
+                    {user.posts.map((post) => (
                         <Post post={post} key={post.id}/>
                         )
                     )}
@@ -84,11 +62,13 @@ export default function Profile({
   );
 }
 
-export async function getStaticProps() {
-  // Fetch data from external API
-  const res = await fetch(`https://jsonplaceholder.typicode.com/posts`, {mode: "cors"})
-  const posts = await res.json()
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // Fetch data from external API
+  const session = await getSession(context)
+  const email = session.user.email //use SWR to handle
+  const res = await fetch(`http://localhost:3000/api/get_full_user?email=${email}`)
+  const user = await res.json()
   // Pass data to the page via props
-  return { props: { posts } }
+  return { props: { user } }
 }

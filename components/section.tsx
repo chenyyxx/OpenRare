@@ -11,6 +11,7 @@ import {
     useColorModeValue,
     HStack,
     StackDivider,
+    Link,
   } from '@chakra-ui/react';
   
   interface Section {
@@ -22,7 +23,7 @@ import {
     picture: string
   }
 
-  export default function Section({section}: {section: Section}) {
+  export default function Section(props) {
     return (
       <Center>
         <Box
@@ -36,7 +37,7 @@ import {
             h={'90px'}
             w={'270px'}
             src={
-              section.picture
+              props.section.picture
             }
             objectFit={'cover'}
             alt="section_picture"
@@ -57,7 +58,7 @@ import {
           <Box p={3}>
             <Stack spacing={0} align={'center'} mb={1}>
               <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-                {section.name}
+                {props.section.name}
               </Heading>
               {/* <Text color={'gray.500'}>Frontend Developer</Text> */}
             </Stack>
@@ -67,13 +68,13 @@ import {
                 <Text fontSize={'sm'} color={'gray.500'}>
                   Posts
                 </Text>
-                <Text fontWeight={600}>{section.posts}</Text>
+                <Text fontWeight={600}>{props.section.posts.length}</Text>
               </HStack>
               <HStack spacing={2} align={'center'} >
                 <Text fontSize={'sm'} color={'gray.500'}>
                   Followers
                 </Text>
-                <Text fontWeight={600}>{section.followers}</Text>
+                <Text fontWeight={600}>{props.section.users.length}</Text>
               </HStack>
             </Stack>
             <HStack justify={'center'}>
@@ -88,6 +89,9 @@ import {
                             transform: 'translateY(-2px)',
                             boxShadow: 'lg',
                         }}
+                        as={Link}
+                        href={"/sections/" + props.section.id.toString()}
+                        style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}
                     >
                         Enter
                     </Button>

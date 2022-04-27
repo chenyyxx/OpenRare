@@ -36,12 +36,13 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   comments      Comment[]
   posts         Post[]
+  sections      Section[]
   sessions      Session[]
   votes         Vote[]
 }
@@ -55,11 +56,16 @@ model VerificationToken {
 }
 
 model Section {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  name      String   @unique
-  posts     Post[]
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  name            String   @unique
+  posts           Post[]
+  definition      String
+  description     String
+  picture         String
+  users           User[]
 }
+
 
 model Post {
   id        Int       @id @default(autoincrement())

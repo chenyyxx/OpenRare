@@ -8,6 +8,7 @@ import {
     Flex,
     Text,
     Stack,
+    Link,
     Button,
     useColorModeValue,
     HStack,
@@ -22,7 +23,8 @@ import {
     picture: string
   }
 
-  export default function LargeSection({section}: {section: Section}) {
+  export default function LargeSection(props) {
+    // console.log()
     return (
       <Center>
         <Box
@@ -35,16 +37,16 @@ import {
             h={'240px'}
             w={'full'}
             src={
-              section.picture
+              props.section.picture
             }
             objectFit={'cover'}
-            alt="section_picture"
+            alt=".section_picture"
           />
   
           <Stack px={48} py={6} spacing={4}>
             <Stack spacing={0} align={'center'} mb={1}>
               <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-                {section.name}
+                {props.section.name}
               </Heading>
               {/* <Text color={'gray.500'}>Frontend Developer</Text> */}
             </Stack>
@@ -54,13 +56,13 @@ import {
                 <Text fontSize={'sm'} color={'gray.500'}>
                   Posts
                 </Text>
-                <Text fontWeight={600}>{section.posts}</Text>
+                <Text fontWeight={600}>{props.section.posts.length}</Text>
               </HStack>
               <HStack spacing={2} align={'center'} >
                 <Text fontSize={'sm'} color={'gray.500'}>
                   Followers
                 </Text>
-                <Text fontWeight={600}>{section.followers}</Text>
+                <Text fontWeight={600}>{props.section.users.length}</Text>
               </HStack>
             </Stack>
             <Divider/>
@@ -97,6 +99,9 @@ import {
                         color={'white'}
                         rounded={'md'}
                         colorScheme={'teal'}
+                        as={Link}
+                        href={"https://www." +props.section.definition}
+                        style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}
                     >
                         View Definition
                     </Button>

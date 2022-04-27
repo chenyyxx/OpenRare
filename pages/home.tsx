@@ -26,11 +26,11 @@ import LargeProfile from '../components/large_profile';
 import ProfileRightPanel from '../components/right_panel';
 import test_sections from '../test_sections.json'
 import SmallSection from '../components/small_section';
+import { GetServerSideProps } from 'next'
+import { getSession } from "next-auth/react"
 
 export default function Home({
-  posts,
-}: {
-  posts: Post[]
+  user, user_sections_posts_flat
 }) {
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -49,33 +49,9 @@ export default function Home({
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Comments</Button></WrapItem>
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem>
-                    {/* <Button colorScheme='teal' variant='solid' rounded={20}>My Posts</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Comments</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button>
-                    <Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button> */}
-                  {/* </HStack> */}
-                  {/* <InputGroup w={"30%"} size='md' >
-                        <Input 
-                          pr='4.5rem'
-                          focusBorderColor='teal.400' 
-                          placeholder='Search Her' 
-                          rounded={20}
-                          borderColor='teal.400'
-                        />
-                        <InputRightElement width='4.5rem'>
-                            <IconButton
-                                variant='link'
-                                aria-label='search'
-                                colorScheme="teal"
-                                icon={<SearchIcon />}
-                            />
-                        </InputRightElement>
-                    </InputGroup> */}
                 </Wrap>
                 <VStack p="24px" minH="full" spacing={"24px"}>
-                    {posts.map((post) => (
+                    {user_sections_posts_flat.map((post) => (
                         <Post post={post} key={post.id}/>
                         )
                     )}
@@ -95,7 +71,7 @@ export default function Home({
                   spacing={"24px"}
                 >
                   <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>My Profile</Heading>
-                  <SmallProfile/>
+                  <SmallProfile user={user}/>
                 </Stack>
                 <Stack divider={<StackDivider borderColor='gray.200' />}
                   bg={useColorModeValue('white', 'gray.900')}
@@ -109,7 +85,7 @@ export default function Home({
                 >
                   <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>My Sections</Heading>
                   <VStack minH="full" spacing={"12px"}>
-                    {test_sections.map((section) => (
+                    {user.sections.map((section) => (
                         <SmallSection section={section} key={section.id} />
                         )
                     )}
@@ -121,11 +97,23 @@ export default function Home({
   );
 }
 
-export async function getStaticProps() {
-  // Fetch data from external API
-  const res = await fetch(`https://jsonplaceholder.typicode.com/posts`, {mode: "cors"})
-  const posts = await res.json()
 
+// May be consider using client side rendering here instead of ssr
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // Fetch data from external API
+  const session = await getSession(context)
+  const email = session.user.email //use SWR to handle
+  const res_full_user = await fetch(`http://localhost:3000/api/get_full_user?email=${email}`)
+  const res_user_sections_posts = await fetch(`http://localhost:3000/api/get_user_sections_posts?email=${email}`)
+  const user = await res_full_user.json()
+  const user_sections_posts = await res_user_sections_posts.json()
+  console.log(user_sections_posts.sections)
+  const user_sections_posts_flat = []
+  for(let i = 0; i < user_sections_posts.sections.length; i++){
+    for(let j = 0; j < user_sections_posts.sections[i].posts.length; j++){
+      user_sections_posts_flat.push(user_sections_posts.sections[i].posts[j])
+    }
+  }
   // Pass data to the page via props
-  return { props: { posts } }
+  return { props: { user,  user_sections_posts_flat} }
 }

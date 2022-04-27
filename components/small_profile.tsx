@@ -14,7 +14,7 @@ import {
     Link
   } from '@chakra-ui/react';
   
-  export default function SmallProfile() {
+  export default function SmallProfile(props) {
     return (
       <Center>
         <Box
@@ -27,9 +27,7 @@ import {
           <Image
             h={'180px'}
             w={'full'}
-            src={
-              'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ'
-            }
+            src={props.user.image}
             objectFit={'cover'}
             alt="small_profile"
           />
@@ -37,7 +35,7 @@ import {
           <Box p={6}>
             <Stack spacing={0} align={'center'} mb={5}>
               <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-                John Doe
+                {props.user.name}
               </Heading>
             </Stack>
             
@@ -45,7 +43,7 @@ import {
   
             <Stack direction={'row'} justify={'center'} spacing={6}>
               <Stack direction={'row'} spacing={4} align={'center'}>
-                <Text fontWeight={600}>4</Text>
+                <Text fontWeight={600}>{props.user.sections.length}</Text>
                 <Divider orientation='vertical' borderColor='gray.200' />
                 <Text fontSize={'sm'} color={'gray.500'}>
                   Followed Sections

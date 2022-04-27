@@ -82,7 +82,7 @@ function Post({post}: {post: Post}) {
                   {post.title}
                 </Heading>
                 <Text color={'gray.500'}>
-                  {post.body}
+                  {post.content}
                 </Text>
               </Stack>
               <Flex justify='right'>
