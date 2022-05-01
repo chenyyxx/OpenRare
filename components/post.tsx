@@ -81,9 +81,12 @@ function Post({post}: {post: Post}) {
                   fontFamily={'body'}>
                   {post.title}
                 </Heading>
-                <Text color={'gray.500'}>
+                {/* <Text color={'gray.500'}> */}
+                <div>
                   {post.content}
-                </Text>
+                </div>
+                  
+                {/* </Text> */}
               </Stack>
               <Flex justify='right'>
                 <Button variant='ghost' leftIcon={<BiCommentDetail/>}>5.8k comments</Button>
