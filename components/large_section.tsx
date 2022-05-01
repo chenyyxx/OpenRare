@@ -1,4 +1,6 @@
 import { Divider } from '@chakra-ui/react';
+import useRef from 'react';
+import { useRouter } from 'next/router';
 import {
     Heading,
     Spacer,
@@ -13,7 +15,7 @@ import {
     useColorModeValue,
     HStack,
   } from '@chakra-ui/react';
-  
+
   interface Section {
     id: number,
     name: string,
@@ -25,6 +27,9 @@ import {
 
   export default function LargeSection(props) {
     // console.log()
+    // const section = props.section.title
+    const sectionTitle = props.section.title
+    const sectionId = props.section.id
     return (
       <Center>
         <Box
@@ -77,6 +82,9 @@ import {
                         color={'white'}
                         rounded={'md'}
                         colorScheme={'teal'}
+                        as={Link}
+                        href={`/sections/${sectionId}/new`}
+                        style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}
                     >
                         Create Post
                     </Button>
@@ -89,7 +97,7 @@ import {
                         rounded={'md'}
                         colorScheme={'teal'}
                     >
-                        View Posts
+                        Follow Section
                     </Button>
                 </Box>
                 <Box>

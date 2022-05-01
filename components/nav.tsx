@@ -21,7 +21,8 @@ import {
     Input,
     InputGroup,
     InputRightElement,
-    IconButton
+    IconButton,
+    Flex
 } from '@chakra-ui/react';
 import { AddIcon, SearchIcon, TriangleDownIcon } from '@chakra-ui/icons';
 import { IoNotificationsOutline } from "react-icons/io5";
@@ -35,6 +36,8 @@ import {
     FiBell,
     FiChevronDown,
 } from 'react-icons/fi';
+
+import EditPost from "./edit_post";
 
 const Links = ['Dashboard', 'Projects', 'Team'];
 
@@ -56,7 +59,8 @@ export default function Nav() {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { data: session } = useSession();
     return (
-        <Box bg={useColorModeValue('white', 'gray.900')} px={4} pos="fixed" w="full" zIndex={200}>
+        <Box bg='white' px={4} pos="fixed" w="100%" zIndex={200}>
+                    
             <Grid h={16} templateColumns='repeat(3, 1fr)' gap={6}>
                 <GridItem display='flex' alignItems='center' justifyContent='start'>
                     <HStack spacing={8} alignItems={'center'}>
@@ -81,14 +85,6 @@ export default function Nav() {
                 </GridItem >
                 <GridItem display='flex' alignItems='center' justifyContent='end'>
                     <HStack  spacing={7}>
-                        <Button
-                            variant={'solid'}
-                            colorScheme={'teal'}
-                            size={'sm'}
-                            mr={4}
-                            leftIcon={<AddIcon />}>
-                            Create Post
-                        </Button>
                         <IconButton
                             variant='link'
                             aria-label='notification button'

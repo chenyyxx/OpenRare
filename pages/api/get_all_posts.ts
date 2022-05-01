@@ -1,8 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-
-const prisma = new PrismaClient()
+import prisma from "../../db";
 
 const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
     const posts = await prisma.post.findMany({

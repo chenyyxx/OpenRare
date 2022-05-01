@@ -107,7 +107,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const res_user_sections_posts = await fetch(`http://localhost:3000/api/get_user_sections_posts?email=${email}`)
   const user = await res_full_user.json()
   const user_sections_posts = await res_user_sections_posts.json()
-  console.log(user_sections_posts.sections)
+  // console.log(user_sections_posts.sections)
   const user_sections_posts_flat = []
   for(let i = 0; i < user_sections_posts.sections.length; i++){
     for(let j = 0; j < user_sections_posts.sections[i].posts.length; j++){
