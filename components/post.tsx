@@ -16,7 +16,7 @@ import {
 
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import {BiCommentDetail, BiShare ,BiBookmark} from "react-icons/bi";
-
+import RichTextEditor from './RichText'
 
 interface Post {
   id: number,
@@ -28,7 +28,8 @@ interface Post {
 
 function Post({post}: {post: Post}) {
   return (
-    <Center>
+    
+    // <Center>
       <Box
         
         w={'full'}
@@ -38,7 +39,7 @@ function Post({post}: {post: Post}) {
         p={6}
         overflow={'hidden'}>
         {
-          <HStack spacing='24px' divider={<StackDivider borderColor='gray.200' />}>
+          <HStack spacing='24px' justify={'space-around'} divider={<StackDivider borderColor='gray.200' />}>
             <VStack spacing={4} align={'center'}>
               <Stack mt={6} direction={'row'} spacing={4} align={'center'}>
                 <Avatar
@@ -82,9 +83,18 @@ function Post({post}: {post: Post}) {
                   {post.title}
                 </Heading>
                 {/* <Text color={'gray.500'}> */}
-                <div>
-                  {post.content}
-                </div>
+                <RichTextEditor
+                  readOnly
+                  value={post.content}
+                  onChange={()=>{}} 
+                  styles={{root: { border: 'none'}}}
+                  sx={()=> ({
+                    '& .ql-editor': {
+                      padding: '0px 0px'
+                    },
+                  })}
+
+                />
                   
                 {/* </Text> */}
               </Stack>
@@ -98,7 +108,6 @@ function Post({post}: {post: Post}) {
           </HStack>
         }
       </Box>
-    </Center>
   );
 }
 
