@@ -20,11 +20,16 @@ const get_post = async (req: NextApiRequest, res: NextApiResponse) => {
             comments: {
                 include: {
                     user: true,
-                    children: {
+                    subComments: {
                         include: {
                             user: true,
+                            parent: {
+                                include: {
+                                    user: true,
+                                }
+                            }
                         }
-                    },
+                    }
                 }
             },
             votes: true,

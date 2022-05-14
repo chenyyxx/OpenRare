@@ -24,12 +24,49 @@ import {
     ModalBody,
     ModalCloseButton,
     useDisclosure,
+    Textarea
   } from '@chakra-ui/react'
+import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 export default function Comment(props){
-    const numChildren = props.comment.children.length
-    const children = props.comment.children.slice(0, 5)
+    // console.log(props)
+    const numSubComments = props.comment.subComments.length
+    // need to get all comments recursively dfs
+    const subComments = props.comment.subComments.slice(0, 5)
     const { isOpen, onOpen, onClose } = useDisclosure()
+    const [showEditor, setShowEditor] = useState(false)
+    const [content, setContent] = useState('')
+    const { data: session, status } = useSession()
+    const handleContentChange = (e) => {
+        const inputValue = e.target.value
+        setContent(inputValue)
+    }
+    const handleNewSubComment = async (e) => {
+        e.preventDefault();
+        setShowEditor(false)
+        // submit form here
+        // checck if content = ""
+        const newSubComment = {
+            commentId: props.comment.id,
+            content: content,
+            user: session?.user
+        }
+        if(content==""){
+            alert("comment content cannot be empty")
+        } else {
+            await fetch("/api/create_subcomment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newSubComment),
+            })
+            setContent("")
+        }
+        
+    }
+
     return (
         <Box
             w={'full'}
@@ -65,28 +102,48 @@ export default function Comment(props){
                     })}
                 />
                 <Flex justify='right'>
-                    <Button variant='ghost' leftIcon={<BiCommentDetail/>}>5.8k comments</Button>
-                    <Button variant='ghost' leftIcon={<BiLike/>}>Share</Button>
-                    <Button variant='ghost' leftIcon={<BiBookmark/>}>Save</Button>
+                    <Button size="sm" variant='ghost' leftIcon={<BiCommentDetail/>} onClick={()=>{setShowEditor(true)}}>5.8k comments</Button>
+                    <Button size="sm" variant='ghost' leftIcon={<BiLike/>}>Share</Button>
+                    <Button size="sm" variant='ghost' leftIcon={<BiBookmark/>}>Save</Button>
                 </Flex>
                 {
-                    children.map((child) => (
-                        <SubComments comment={child} key={child.id}/>
+                    showEditor ?
+                        <Box mt="12px">
+                            <Textarea
+                                
+                                rounded={6}
+                                isRequired
+                                value={content}
+                                onChange={handleContentChange}
+                                placeholder={"Reply to @" + [props.comment.user.name]}
+                                size='sm'
+                            />
+                            <HStack pt='12px' justify="right" w="full">
+                                <Button size='sm'  onClick={()=>setShowEditor(false)}>Cancel</Button>
+                                <Button  size='sm' colorScheme="teal" onClick={e=>handleNewSubComment(e)} >Comment</Button>
+                            </HStack>
+                        </Box>  
+                    :
+                    <></>
+                }
+                {
+                    subComments.map((child) => (
+                        <SubComments subComment={child} key={child.id}/>
                     ))
                 }
                 {
-                    numChildren > 5 ?
+                    numSubComments > 5 ?
                     <Center>
-                        <Button size='xs' variant='ghost' onClick={onOpen}>{`Expand all ${numChildren} comments...`}</Button>
+                        <Button size='xs' variant='ghost' onClick={onOpen}>{`Expand all ${numSubComments} comments...`}</Button>
                         <Modal isOpen={isOpen} onClose={onClose}>
                         <ModalOverlay />
                         <ModalContent>
-                            <ModalHeader>{`All ${numChildren} comments`}</ModalHeader>
+                            <ModalHeader>{`All ${numSubComments} comments`}</ModalHeader>
                             <ModalCloseButton />
                             <ModalBody as={Stack}>
                             {
-                                props.comment.children.map((child) => (
-                                    <SubComments comment={child} key={child.id}/>
+                                props.comment.subComments.map((child) => (
+                                    <SubComments subComment={child} key={child.id}/>
                                 ))
                             } 
                             </ModalBody>

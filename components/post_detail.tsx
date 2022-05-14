@@ -22,15 +22,32 @@ import {
     FormErrorMessage,
     FormHelperText,
   } from '@chakra-ui/react'
+  import { useSession } from 'next-auth/react';
 
-
- export default function PostDetail(props){
+export default function PostDetail(props){
     const [showEditor, setShowEditor] = useState(false)
-    const handleNewComment = (e) => {
+    const [content, setContent] = useState('');
+    const { data: session, status } = useSession()
+    const handleNewComment = async (e) => {
         e.preventDefault();
         setShowEditor(false)
-        alert("comment submmited")
-        console.log("comment submmited")
+        const newComment = {
+            postId: props.post.id,
+            content: content,
+            user: session?.user
+        }
+        if(content==""){
+            alert("comment content cannot be empty")
+        } else {
+            await fetch("/api/create_comment", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(newComment),
+            })
+            setContent("")
+        }
     }
     return (
         <Box
@@ -69,23 +86,37 @@ import {
                     })}
                 />
                 <Flex justify='right'>
-                    <Button variant='ghost' onClick={()=>{setShowEditor(true)}} leftIcon={<BiCommentDetail/>}>5.8k comments</Button>
-                    <Button variant='ghost' leftIcon={<BiShare/>}>Share</Button>
-                    <Button variant='ghost' leftIcon={<BiBookmark/>}>Save</Button>
+                    <Button size="sm" variant='ghost' onClick={()=>{setShowEditor(true)}} leftIcon={<BiCommentDetail/>}>5.8k comments</Button>
+                    <Button size="sm" variant='ghost' leftIcon={<BiShare/>}>Share</Button>
+                    <Button size="sm" variant='ghost' leftIcon={<BiBookmark/>}>Save</Button>
                 </Flex>
                 {
                     showEditor ?
-                    <form onSubmit={handleNewComment}>
-                        <FormControl  >
-                            <FormLabel htmlFor='replt-to'>{"Reply to @" + props.post.user.name}</FormLabel>
-                            <Input isRequired id='enter-comment' placeholder='Enter your comment' />
-                            <HStack pt='12px' justify="right" w="full">
-                                <Button  onClick={()=>setShowEditor(false)}>Cancel</Button>
-                                <Button  type='submit' >Comment</Button>
-                            </HStack>
+                    <Box mt="12px">
+                        <RichTextEditor 
+                            controls={[
+                                ['bold', 'italic', 'underline', 'link'],
+                                ['unorderedList', 'h1', 'h2', 'h3'],
+                                ['sup', 'sub'],
+                                ['alignLeft', 'alignCenter', 'alignRight'],
+                            ]}
+                            styles={{
+                                root: { 
+                                    borderColor: '#E2E8F0',
+                                    borderRadius: '0.375rem',
+                                    minHeight: '200px',
+                                },
+                                toolbar: { borderColor: '#E2E8F0' },
+                            }}
+                            value={content} 
+                            onChange={setContent} 
+                        />
+                        <HStack pt='12px' justify="right" w="full">
+                            <Button size='sm'  onClick={()=>setShowEditor(false)}>Cancel</Button>
+                            <Button  size='sm' colorScheme="teal" onClick={e=>handleNewComment(e)} >Comment</Button>
+                        </HStack>
                             
-                        </FormControl>
-                    </form>
+                    </Box>  
                     :
                     <></>
                 }

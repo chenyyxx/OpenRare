@@ -7,26 +7,29 @@ import prisma from "../../db";
 
 const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
     
-    const comment = req.body;
-    console.log(comment)
+    const subComment = req.body;
+    console.log(subComment)
     const session = await getSession({ req });
     
     if (!session) {
         return res.status(500).json({ error: "You have to be logged in." });
     }
     try {
-        const newComment = await prisma.comment.create({
+        const newSubComment = await prisma.subComment.create({
             data: {   
                 user: {
-                    connect: {email: comment.user.email}
+                    connect: {email: subComment.user.email}
                 },
-                content: comment.content,
-                post: {
-                    connect: { id : comment.postId}
+                content: subComment.content,
+                parent: {
+                    connect: { id : subComment.parentId}
+                },
+                comment: {
+                    connect: {id: subComment.commentId}
                 }
             },
         })
-        res.status(200).json(newComment)
+        res.status(200).json(newSubComment)
     } catch (e) {
         return res.status(500).json({ error: e });
     }

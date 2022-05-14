@@ -41,6 +41,7 @@ model User {
   image         String?
   accounts      Account[]
   comments      Comment[]
+  subComments   SubComment[]
   posts         Post[]
   sections      Section[]
   sessions      Session[]
@@ -82,32 +83,53 @@ model Post {
 }
 
 model Comment {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  userId    String
-  postId    Int?
-  parentId  Int?
-  content   String
-  parent    Comment?  @relation("ParentChildren", fields: [parentId], references: [id])
-  post      Post?     @relation(fields: [postId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
-  children  Comment[] @relation("ParentChildren")
-  votes     Vote[]
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  userId      String
+  postId      Int?
+  content     String
+  post        Post?     @relation(fields: [postId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+  votes       Vote[]
+  subComments SubComment[]
 }
 
+model SubComment {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  userId      String
+  content     String
+  commentId   Int
+  comment     Comment   @relation(fields: [commentId], references: [id])
+  parentId    Int?
+  parent      SubComment?  @relation("ParentChildren", fields: [parentId], references: [id])
+  children    SubComment[] @relation("ParentChildren")
+  user        User      @relation(fields: [userId], references: [id])
+  votes       Vote[]
+}
+
+
 model Vote {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  voteType  VoteType
-  userId    String
-  postId    Int?
-  commentId Int?
-  comment   Comment? @relation(fields: [commentId], references: [id])
-  post      Post?    @relation(fields: [postId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  id            Int      @id @default(autoincrement())
+  createdAt     DateTime @default(now())
+  voteType      VoteType
+  userId        String
+  postId        Int?
+  commentId     Int?
+  comment       Comment? @relation(fields: [commentId], references: [id])
+  subCommentId  Int?
+  subComment    SubComment? @relation(fields: [subCommentId], references: [id])
+  post          Post?    @relation(fields: [postId], references: [id])
+  user          User     @relation(fields: [userId], references: [id])
 }
 
 enum VoteType {
   UPVOTE
   DOWNVOTE
 }
+
+// enum CommentType {
+//   COMMENTCOMMENT
+//   COMMENT
+//   COMMENTSUBCOMMENT
+// }

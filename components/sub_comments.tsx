@@ -25,10 +25,13 @@ import { useSession } from 'next-auth/react';
 // 1. reply to comment
 // 2. reply to other sub comments: need to add xxx reply to @ xxx in the use box
 export default function SubComments(props){
+    // console.log(props)
+    const parent = props.subComment.parent?.user.name
+    // console.log(parent)
     const { data: session, status } = useSession()
     const [showEditor, setShowEditor] = useState(false)
     const [content, setContent] = useState('')
-    const createdAt = new Date(props.comment.createdAt)
+    const createdAt = new Date(props.subComment.createdAt)
     const date = createdAt.getDate()
     const year = createdAt.getFullYear()
     const hour = createdAt.getHours()
@@ -37,20 +40,22 @@ export default function SubComments(props){
         const inputValue = e.target.value
         setContent(inputValue)
     }
-    const handleNewComment = async (e) => {
+    const handleReplySubComment = async (e) => {
         e.preventDefault();
         setShowEditor(false)
         // submit form here
         // checck if content = ""
         const newSubComment = {
-            parentId: props.comment.parentId,
+            commentId: props.subComment.commentId,
             content: content,
-            user: session?.user
+            user: session?.user,
+            parentId: props.subComment.id
         }
+        console.log(newSubComment)
         if(content==""){
             alert("comment content cannot be empty")
         } else {
-            await fetch("/api/create_comment", {
+            await fetch("/api/reply_subcomment", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -78,20 +83,30 @@ export default function SubComments(props){
         >
             <HStack align='top'>
                 <Avatar
-                    src={props.comment.user.image}
+                    src={props.subComment.user.image}
                     size='xs'
                 />
                  
                 <Stack w='full' spacing={0}>
                     <HStack>
                         
-                        <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-                            <Text fontWeight={600}>{props.comment.user.name}</Text>
+                        <Stack direction={'row'} spacing={1} fontSize={'sm'} align="center">
+                            <Text fontWeight={600}>{props.subComment.user.name}</Text>
+                            {
+                                parent ?
+                                
+                                <Stack direction={'row'} spacing={1} fontSize={'sm'} align="center">
+                                    <Text fontSize={'xs'} fontWeight={300}>{"replying to:"}</Text>
+                                    <Text fontWeight={600}>{"@" + parent}</Text>
+                                </Stack> :
+                                <></>
+                            }
+                            
                         </Stack>
                     </HStack>
                     <RichTextEditor
                         readOnly
-                        value={props.comment.content}
+                        value={props.subComment.content}
                         onChange={()=>{}} 
                         styles={{root: { border: 'none'}}}
                         sx={()=> ({
@@ -113,29 +128,25 @@ export default function SubComments(props){
             </HStack>
             
             {
-                    showEditor ?
-                    <form onSubmit={e=>handleNewComment(e)}>
-                        <Box mt="12px">
-                            <Textarea
-                                
-                                rounded={6}
-                                isRequired
-                                value={content}
-                                onChange={handleContentChange}
-                                placeholder={"Reply to @" + [props.comment.user.name]}
-                                size='sm'
-                            />
-                            <HStack pt='12px' justify="right" w="full">
-                                <Button size='sm'  onClick={()=>setShowEditor(false)}>Cancel</Button>
-                                <Button type="submit" size='sm' colorScheme="teal" >Comment</Button>
-                            </HStack>
-                        </Box>
-                    </form>
-                    
+                showEditor ?
+                    <Box mt="12px">
+                        <Textarea
                             
-                    :
-                    <></>
-                }
+                            rounded={6}
+                            isRequired
+                            value={content}
+                            onChange={handleContentChange}
+                            placeholder={"Reply to @" + [props.subComment.user.name]}
+                            size='sm'
+                        />
+                        <HStack pt='12px' justify="right" w="full">
+                            <Button size='sm'  onClick={()=>setShowEditor(false)}>Cancel</Button>
+                            <Button  size='sm' colorScheme="teal" onClick={e=>handleReplySubComment(e)} >Comment</Button>
+                        </HStack>
+                    </Box>  
+                :
+                <></>
+            }
         </Box>
     );
  }
