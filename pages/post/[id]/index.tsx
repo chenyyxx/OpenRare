@@ -33,20 +33,27 @@ export default function SectionDetail({post,}: {post: Post}) {
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <Nav/>
       <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
-            <VStack minH="full" p={"24px"} spacing={"24px"}>
+            <VStack 
+                h="max"
+                p={"24px"} 
+                spacing={"24px"}        
+                pos="sticky"
+                top={"64px"}
+              >
                 <LeftSideBar/>
+                <SmallProfile user={post.user}/>
                 {/* <ProfileRightPanel/> */}
             </VStack>
-            <VStack w="full" pt="24px" pl="24px" pr="24px" >
+            <VStack w="full" p="24px" >
                 <PostDetail post={post}/>
                 {/* <Comment comment={post.comments[0]}/> */}
                 {post.comments.map((comment) => (
                         <Comment comment={comment} key={comment.id}/>
                 ))}
             </VStack>
-            <VStack  minH="full" p={"24px"} spacing={"24px"}>
+            {/* <VStack  minH="full" p={"24px"} spacing={"24px"}>
                 <SmallProfile user={post.user}/>
-            </VStack>
+            </VStack> */}
         </Flex>
     </Box>
   );

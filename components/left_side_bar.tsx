@@ -57,12 +57,12 @@ export default function LeftSideBar() {
         bg={useColorModeValue('white', 'gray.900')}
         borderRight="1px"
         borderRightColor={useColorModeValue('gray.200', 'gray.700')}
-        w={{ base: 'none', md: '240px' }}
+        w={{ base: 'none', md: '253.82px' }}
         rounded={'md'}
         h="max"
         py={4}
-        pos="sticky"
-        top={"88px"}
+        // pos="sticky"
+        // top={"88px"}
     >
         {LinkItems.map((link) => (
             <NavItem key={link.name} link={link.link} icon={link.icon}>

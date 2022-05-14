@@ -11,10 +11,27 @@ import {
     VStack,
     Button,
     Flex,
+    Input,
   } from '@chakra-ui/react';
 import RichTextEditor from './RichText'
+import {BiCommentDetail, BiShare ,BiBookmark} from "react-icons/bi";
+import { useState } from 'react';
+import {
+    FormControl,
+    FormLabel,
+    FormErrorMessage,
+    FormHelperText,
+  } from '@chakra-ui/react'
+
 
  export default function PostDetail(props){
+    const [showEditor, setShowEditor] = useState(false)
+    const handleNewComment = (e) => {
+        e.preventDefault();
+        setShowEditor(false)
+        alert("comment submmited")
+        console.log("comment submmited")
+    }
     return (
         <Box
             w={'full'}
@@ -51,6 +68,27 @@ import RichTextEditor from './RichText'
                         },
                     })}
                 />
+                <Flex justify='right'>
+                    <Button variant='ghost' onClick={()=>{setShowEditor(true)}} leftIcon={<BiCommentDetail/>}>5.8k comments</Button>
+                    <Button variant='ghost' leftIcon={<BiShare/>}>Share</Button>
+                    <Button variant='ghost' leftIcon={<BiBookmark/>}>Save</Button>
+                </Flex>
+                {
+                    showEditor ?
+                    <form onSubmit={handleNewComment}>
+                        <FormControl  >
+                            <FormLabel htmlFor='replt-to'>{"Reply to @" + props.post.user.name}</FormLabel>
+                            <Input isRequired id='enter-comment' placeholder='Enter your comment' />
+                            <HStack pt='12px' justify="right" w="full">
+                                <Button  onClick={()=>setShowEditor(false)}>Cancel</Button>
+                                <Button  type='submit' >Comment</Button>
+                            </HStack>
+                            
+                        </FormControl>
+                    </form>
+                    :
+                    <></>
+                }
             </Stack>
         </Box>
     );

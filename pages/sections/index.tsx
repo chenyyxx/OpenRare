@@ -24,7 +24,12 @@ export default function SectionHome({sections}: {sections: Section[]}) {
         <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
             <Nav/>
             <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
-                <Box minH="full" p={"24px"} >
+                <Box 
+                    h="max"
+                    p={"24px"}      
+                    pos="sticky"
+                    top={"64px"}                
+                >
                     <LeftSideBar/>
                 </Box>
                 <Wrap 
