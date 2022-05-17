@@ -7,6 +7,10 @@ const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
         include: {
             user: true,
             section: true,
+            votes: true,
+            _count: {
+                select: {comments:true}
+            }
         }
     })
     res.status(200).json(posts)

@@ -8,7 +8,6 @@ import prisma from "../../db";
 const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
     
     const comment = req.body;
-    console.log(comment)
     const session = await getSession({ req });
     
     if (!session) {

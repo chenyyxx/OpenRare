@@ -39,10 +39,15 @@ function Post({post}: {post: Post}) {
   const date = createdAt.getDate()
   const year = createdAt.getFullYear()
   const month = createdAt.getMonth()
-
+  const upvotes = post.votes.filter((vote)=>vote.voteType === "UPVOTE").length
+  const downvotes = post.votes.filter((vote)=>vote.voteType === "DOWNVOTE").length
+  // console.log(upvotes)
+  
   const textRef = useRef();
   const [textOpen, setTextOpen] = useState(false);
   const [overflowActive, setOverflowActive] = useState(false);
+  const postContent = post.content.replace(/<[^>]+>/g, '') 
+
   function isOverflowActive(event) {
     return event.offsetHeight < event.scrollHeight || event.offsetWidth < event.scrollWidth;
   }
@@ -56,29 +61,23 @@ function Post({post}: {post: Post}) {
   }, [isOverflowActive]);
   // const parser = new DOMParser()
   // this parse the html content into text to display only abstract of content in post
-  const postContent = post.content.replace(/<[^>]+>/g, '') 
+  
   // console.log(postContent)
-  const handleNewComment = async (e) => {
+  const handleVote = async (e, voteType) => {
     e.preventDefault();
-    setShowEditor(false)
-    const newComment = {
+    const newVote = {
+        voteType: voteType,
         postId: post.id,
-        content: content,
         user: session?.user
     }
-    if(content==""){
-        alert("comment content cannot be empty")
-    } else {
-        await fetch("/api/create_comment", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newComment),
-        })
-        setContent("")
-    }
-}
+    const res = await fetch("/api/vote", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newVote),
+    })
+  }
   return (
     
     // <Center>
@@ -154,22 +153,22 @@ function Post({post}: {post: Post}) {
             
             // action row
             <HStack justify={"space-between"}>
-              <HStack spacing='24px' divider={<StackDivider borderColor='gray.200' />}>
-                <HStack>
+              <HStack  divider={<StackDivider borderColor='gray.200' />}>
+                <HStack variant='ghost' as={Button} onClick={e=>handleVote(e, "UPVOTE")}>
                   <TriangleUpIcon color='teal.500' />
                   <Text fontSize={'sm'} color={'gray.500'}>
-                    688
+                    {upvotes}
                   </Text>
                 </HStack>
-                <HStack>
+                <HStack variant='ghost' as={Button} onClick={e=>handleVote(e, "DOWNVOTE")}>
                   <TriangleDownIcon color='red.500' />
                   <Text fontSize={'sm'} color={'gray.500'}>
-                      23
-                    </Text>
+                    {downvotes}
+                  </Text>
                 </HStack>
               </HStack>
               <HStack spacing={0}>
-                <Button size='sm' variant='ghost' onClick={()=>{setShowEditor(true)}} leftIcon={<BiCommentDetail/>}>5.8k comments</Button>
+                <Button size='sm' variant='ghost' onClick={()=>{setShowEditor(true)}} leftIcon={<BiCommentDetail/>}>{`${post._count.comments} comments`}</Button>
                 <Button size='sm' variant='ghost' leftIcon={<BiShare/>}>Share</Button>
                 <Button size='sm' variant='ghost' leftIcon={<BiBookmark/>}>Save</Button>
               </HStack>

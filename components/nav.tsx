@@ -64,7 +64,7 @@ export default function Nav() {
             <Grid h={16} templateColumns='repeat(3, 1fr)' gap={6}>
                 <GridItem display='flex' alignItems='center' justifyContent='start'>
                     <HStack spacing={8} alignItems={'center'}>
-                        <Box>Logo</Box>
+                        <Box>OpenRare</Box>
                     </HStack>
                 </GridItem >
                 <GridItem display='flex' alignItems='center' justifyContent='center'>
