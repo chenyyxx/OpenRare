@@ -19,8 +19,9 @@ import {
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import {BiCommentDetail, BiShare ,BiBookmark} from "react-icons/bi";
 import RichTextEditor from './RichText'
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { text } from 'stream/consumers';
 
 interface Post {
   id: number,
@@ -38,6 +39,21 @@ function Post({post}: {post: Post}) {
   const date = createdAt.getDate()
   const year = createdAt.getFullYear()
   const month = createdAt.getMonth()
+
+  const textRef = useRef();
+  const [textOpen, setTextOpen] = useState(false);
+  const [overflowActive, setOverflowActive] = useState(false);
+  function isOverflowActive(event) {
+    return event.offsetHeight < event.scrollHeight || event.offsetWidth < event.scrollWidth;
+  }
+  useEffect(() => {
+    if (isOverflowActive(textRef.current)) {
+        setOverflowActive(true);
+        return;
+    }
+
+    setOverflowActive(false);
+  }, [isOverflowActive]);
   // const parser = new DOMParser()
   // this parse the html content into text to display only abstract of content in post
   const postContent = post.content.replace(/<[^>]+>/g, '') 
@@ -106,23 +122,35 @@ function Post({post}: {post: Post}) {
             </HStack>
             
             // body
-            <Box as={'a'} href={`/post/${post.id}`}>
-              <Text fontSize={'sm'} noOfLines={3}>
-                {postContent}
-              </Text>
-              {/* <RichTextEditor
-                readOnly
-                value={post.content}
-                onChange={()=>{}} 
-                styles={{root: { border: 'none'}}}
-                sx={()=> ({
-                  '& .ql-editor': {
-                    padding: '0px 0px'
-                  },
-                })}
-
-              /> */}
+            <Box as={'a'} href={`post/${post.id}`}>
+              
+              {
+                textOpen ?
+                <RichTextEditor
+                  readOnly
+                  ref={textRef}
+                  value={post.content}
+                  onChange={()=>{}} 
+                  styles={{root: { border: 'none'}}}
+                  sx={()=> ({
+                    '& .ql-editor': {
+                      padding: '0px 0px'
+                    },
+                  })}
+                /> :
+                <Text fontSize={'sm'} noOfLines={3} ref={textRef}>
+                  {postContent}
+                </Text>
+                
+              }
+              
+              
             </Box>
+            {!textOpen && !overflowActive ? null : (
+              <Flex w='full' justify='end'>
+                <Text fontSize={'sm'} as={Link} onClick={e=>setTextOpen(!textOpen)}>{textOpen ? 'show less' : '... show more'}</Text>
+              </Flex>
+            )}
             
             // action row
             <HStack justify={"space-between"}>

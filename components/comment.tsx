@@ -38,6 +38,11 @@ export default function Comment(props){
     const [showEditor, setShowEditor] = useState(false)
     const [content, setContent] = useState('')
     const { data: session, status } = useSession()
+    const createdAt = new Date(props.comment.createdAt)
+    const date = createdAt.getDate()
+    const year = createdAt.getFullYear()
+    const month = createdAt.getMonth()
+
     const handleContentChange = (e) => {
         const inputValue = e.target.value
         setContent(inputValue)
@@ -86,7 +91,7 @@ export default function Comment(props){
                     />
                     <Stack direction={'column'} spacing={0} fontSize={'sm'}>
                         <Text fontWeight={600}>{props.comment.user.name}</Text>
-                        <Text color={'gray.500'}>{`Created At: ${props.comment.createdAt}`}</Text> 
+                        <Text color={'gray.500'}>{`Created At: ${month}-${date}-${year}`}</Text> 
                     </Stack>
                 </HStack>
                 <RichTextEditor

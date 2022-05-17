@@ -28,6 +28,10 @@ export default function PostDetail(props){
     const [showEditor, setShowEditor] = useState(false)
     const [content, setContent] = useState('');
     const { data: session, status } = useSession()
+    const createdAt = new Date(props.post.updatedAt)
+    const date = createdAt.getDate()
+    const year = createdAt.getFullYear()
+    const month = createdAt.getMonth()
     const handleNewComment = async (e) => {
         e.preventDefault();
         setShowEditor(false)
@@ -65,7 +69,7 @@ export default function PostDetail(props){
                     />
                     <Stack direction={'column'} spacing={0} fontSize={'sm'}>
                         <Text fontWeight={600}>{props.post.user.name}</Text>
-                        <Text color={'gray.500'}>{`Last Updated: ${props.post.updatedAt}`}</Text> 
+                        <Text color={'gray.500'}>{`Last Updated: ${month}-${date}-${year}`}</Text> 
                     </Stack>
                 </HStack>
                 <Heading
