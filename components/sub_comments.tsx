@@ -25,7 +25,7 @@ import { useSession } from 'next-auth/react';
 // 1. reply to comment
 // 2. reply to other sub comments: need to add xxx reply to @ xxx in the use box
 export default function SubComments(props){
-    // console.log(props)
+    console.log(props)
     const parent = props.subComment.parent?.user.name
     // console.log(parent)
     const { data: session, status } = useSession()
@@ -34,7 +34,6 @@ export default function SubComments(props){
     const createdAt = new Date(props.subComment.createdAt)
     const date = createdAt.getDate()
     const year = createdAt.getFullYear()
-    const hour = createdAt.getHours()
     const month = createdAt.getMonth()
     const handleContentChange = (e) => {
         const inputValue = e.target.value
@@ -79,7 +78,7 @@ export default function SubComments(props){
             borderBottomWidth='1px'
             // borderLeftStyle="solid"
             borderLeftWidth="4px"
-            borderLeftColor="purple.300"
+            borderLeftColor={props.labelColor}
         >
             <HStack align='top'>
                 <Avatar
@@ -116,7 +115,7 @@ export default function SubComments(props){
                         })}
                     />
                     <Flex align='center' justify='space-between'>
-                        <Text  fontSize='xs' color={'gray.500'}>{`${year}-${month}-${date}`}</Text> 
+                        <Text  fontSize='xs' color={'gray.500'}>{`${month}-${date}-${year}`}</Text> 
                         <HStack>
                             <IconButton aria-label='reply' variant='ghost' size='sm' onClick={()=>{setShowEditor(true)}} icon={<BiCommentDetail/>}/>
                             <IconButton aria-label='like' variant='ghost' size='sm' icon={<BiLike/>}/>

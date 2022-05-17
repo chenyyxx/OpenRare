@@ -12,7 +12,11 @@ const get_all_sections = async (req: NextApiRequest, res: NextApiResponse) => {
         },
         include: {
             users: true,
-            posts: true,
+            posts: {
+                include: {
+                    user: true
+                }
+            },
         }
     })
     res.status(200).json(sections)

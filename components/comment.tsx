@@ -78,7 +78,6 @@ export default function Comment(props){
             borderColor="teal.400"
             // borderLeftStyle="solid"
             borderLeftWidth="6px"
-            // borderLeftColor="coral"
         >
             <Stack>
                 <HStack>
@@ -128,7 +127,9 @@ export default function Comment(props){
                 }
                 {
                     subComments.map((child) => (
-                        <SubComments subComment={child} key={child.id}/>
+                        child.parent ?
+                        <SubComments subComment={child} labelColor={"cyan.300"} key={child.id}/> :
+                        <SubComments subComment={child} labelColor={"purple.300"} key={child.id}/>
                     ))
                 }
                 {
@@ -143,7 +144,12 @@ export default function Comment(props){
                             <ModalBody as={Stack}>
                             {
                                 props.comment.subComments.map((child) => (
-                                    <SubComments subComment={child} key={child.id}/>
+                                    
+                                    child.parent ?
+                                    <SubComments subComment={child} labelColor="cyan.300" key={child.id}/> :
+                                    <SubComments subComment={child} labelColor="purple.300" key={child.id}/>
+                                    
+                                    // <SubComments subComment={child} color={} key={child.id}/>
                                 ))
                             } 
                             </ModalBody>

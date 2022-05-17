@@ -120,6 +120,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       user_sections_posts_flat.push(user_sections_posts.sections[i].posts[j])
     }
   }
+  console.log(user_sections_posts_flat)
   // Pass data to the page via props
   return { props: { user,  user_sections_posts_flat} }
 }

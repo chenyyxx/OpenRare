@@ -11,7 +11,13 @@ const get_full_user = async (req: NextApiRequest, res: NextApiResponse) => {
         where : { email : email},
         include: {
             posts: true,
-            sections: true,
+            sections: {
+                include: {
+                    _count: {
+                        select: {posts: true, users: true}
+                    }
+                }
+            },
             votes: true,
             comments: true,
         }

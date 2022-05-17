@@ -12,7 +12,12 @@ const get_full_user = async (req: NextApiRequest, res: NextApiResponse) => {
         select: {
             sections: {
                 select: {
-                    posts: true
+                    posts: {
+                        include: {
+                            user: true,
+                            section: true,
+                        }
+                    }
                 }
             }
         }

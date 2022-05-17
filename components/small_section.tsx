@@ -54,10 +54,10 @@ export default function SmallSection({section}: {section: Section}) {
                         <Stack direction={'row'} justify={'center'} spacing={6}>
                             <Stack direction={'row'} spacing={4} align={'center'}>
                                 <BiMessageAltDetail/>
-                                <Text fontWeight={600}>{section.posts}</Text>
+                                <Text fontWeight={600}>{section._count.posts}</Text>
                                 <Divider orientation='vertical' borderColor='gray.200' />
                                 <BiUser/>
-                                <Text fontWeight={600}>{section.followers}</Text>
+                                <Text fontWeight={600}>{section._count.users}</Text>
                             </Stack>
                             <Button
                                 mt={8}
