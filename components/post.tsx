@@ -106,8 +106,6 @@ function Post({post}: {post: FullPost}) {
 }
 
   return (
-    
-    // <Center>
       <Box
         w={'full'}
         bg={useColorModeValue('white', 'gray.900')}
@@ -117,7 +115,6 @@ function Post({post}: {post: FullPost}) {
         overflow={'hidden'}>
         {
           <Stack>
-            // title row
             <Heading
               as={'a'} href={`/post/${post.id}`}
               color={useColorModeValue('gray.700', 'white')}
@@ -125,7 +122,6 @@ function Post({post}: {post: FullPost}) {
               fontFamily={'body'}>
               {post.title}
             </Heading>
-            // user row
             <HStack justify={"space-between"} align="center">
                 <HStack>
                   <Avatar
@@ -147,7 +143,6 @@ function Post({post}: {post: FullPost}) {
                 </Text>
             </HStack>
             
-            // body
             <Box as={'a'} href={`post/${post.id}`}>
               
               {
@@ -180,7 +175,6 @@ function Post({post}: {post: FullPost}) {
               </Flex>
             )}
             
-            // action row
             <HStack justify={"space-between"}>
               <HStack  divider={<StackDivider borderColor='gray.200' />}>
                 <HStack variant='ghost' as={Button} onClick={e=>handleVote(e, "UPVOTE")}>

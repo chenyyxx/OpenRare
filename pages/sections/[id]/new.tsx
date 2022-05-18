@@ -31,16 +31,15 @@ export default function EditPost() {
     const router = useRouter()
     const { id } = router.query
     const { data: session, status } = useSession()
-    const handleInputChange = (e) => setTitle(e.target.value)
     
-    const handleNewPost = async(e) => {
+    const handleNewPost = async(e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
 
         // create a new post locally
         const newPost = {
             title: title,
             content: content,
-            sectionId: parseInt(id),
+            sectionId: Number(id),
             user: session?.user,
         }
 
@@ -63,11 +62,11 @@ export default function EditPost() {
                 </Box>
                 <Box w="full" p="24px" minH="full">
                     <Box bg="white" rounded={'md'} >
-                        <form onSubmit={handleNewPost}>
+                        <form onSubmit={e=>handleNewPost}>
                             <FormControl p="24px" isRequired>
                                 <Stack spacing={"12px"}>
                                     <FormLabel htmlFor='title'>Create Your Post</FormLabel>
-                                    <Input id='title' type='title' placeholder='Enter post title' isRequired value={title} onChange={handleInputChange}/>
+                                    <Input id='title' type='title' placeholder='Enter post title' isRequired value={title} onChange={(e) => setTitle(e.target.value)}/>
                                     <Box rounded={'md'}>
                                         {/* <ReactQuill modules={modules} theme="snow" value={content} onChange={setCotent}/> */}
                                         <RichTextEditor 
