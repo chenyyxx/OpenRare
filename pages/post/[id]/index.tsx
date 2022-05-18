@@ -31,8 +31,10 @@ import { Prisma } from "@prisma/client";
 
 export type FullPostEx = Prisma.PostGetPayload<{
   include: { 
-    user: {include: { sections: {include: { users: true; posts: true ; _count:true};}; 
-    posts: {include: { user: true; section: true; votes: true; _count: true };}};}; 
+    user: {include: { 
+      sections: {include: { users: true; posts: {include: { user: true; section: true; votes: true; _count: true };} ; _count:true};};
+      posts: {include: { user: true; section: true; votes: true; _count: true };}};}; 
+    posts: {include: { user: true; section: true; votes: true; _count: true };};
     section: true; 
     votes: true; 
     comments: {include: { user: true; subComments: {include: { user: true; parent: {include: {user:true;}}; children: true ;votes: true; comment: true; };}; votes: true; post: true; };};
