@@ -24,17 +24,9 @@ import ProfileRightPanel from '../../../components/right_panel';
 import LargeSection from '../../../components/large_section';
 import sectionsArray from '../../../test_sections';
 import { useRouter } from 'next/router'
+import { FullSection } from '../../../components/section';
 
-interface Section {
-    id: number,
-    name: string,
-    followers: number,
-    posts: number,
-    description: string,
-    picture: string
-}
-
-export default function SectionDetail({sections,}: {sections: Section[]}) {
+export default function SectionDetail({sections,}: {sections: FullSection[]}) {
   const section = sections[0]
 //   console.log(section)
   return (

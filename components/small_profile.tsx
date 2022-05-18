@@ -13,8 +13,15 @@ import {
     StackDivider,
     Link
   } from '@chakra-ui/react';
+import { Prisma } from "@prisma/client";
+
+export type SmallUser = Prisma.UserGetPayload<{
+  include: { 
+    sections: {include: { users: true; posts: {include: { user: true; section: true; votes: true; _count: true };} ; _count:true};};
+    posts: {include: { user: true; section: true; votes: true; _count: true };}};
+}>;
   
-  export default function SmallProfile(props) {
+  export default function SmallProfile({user}:{user:SmallUser}) {
     return (
       <Center>
         <Box
@@ -27,7 +34,7 @@ import {
           <Image
             h={'180px'}
             w={'full'}
-            src={props.user.image}
+            src={user.image as string | undefined}
             objectFit={'cover'}
             alt="small_profile"
           />
@@ -35,7 +42,7 @@ import {
           <Box p={6}>
             <Stack spacing={0} align={'center'} mb={5}>
               <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-                {props.user.name}
+                {user.name}
               </Heading>
             </Stack>
             
@@ -43,7 +50,7 @@ import {
   
             <Stack direction={'row'} justify={'center'} spacing={6}>
               <Stack direction={'row'} spacing={4} align={'center'}>
-                <Text fontWeight={600}>{props.user.sections.length}</Text>
+                <Text fontWeight={600}>{user.sections.length}</Text>
                 <Divider orientation='vertical' borderColor='gray.200' />
                 <Text fontSize={'sm'} color={'gray.500'}>
                   Followed Sections

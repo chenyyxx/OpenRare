@@ -27,8 +27,19 @@ import { useRouter } from 'next/router'
 import PostDetail from '../../../components/post_detail';
 import SmallProfile from '../../../components/small_profile';
 import Comment from '../../../components/comment';
+import { Prisma } from "@prisma/client";
 
-export default function SectionDetail({post,}: {post: Post}) {
+export type FullPostEx = Prisma.PostGetPayload<{
+  include: { 
+    user: {include: { sections: {include: { users: true; posts: true ; _count:true};}; 
+    posts: {include: { user: true; section: true; votes: true; _count: true };}};}; 
+    section: true; 
+    votes: true; 
+    comments: {include: { user: true; subComments: {include: { user: true; parent: {include: {user:true;}}; children: true ;votes: true; comment: true; };}; votes: true; post: true; };};
+    _count: true };
+}>;
+
+export default function SectionDetail({post,}: {post: FullPostEx}) {
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <Nav/>

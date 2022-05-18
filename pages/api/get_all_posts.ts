@@ -13,6 +13,7 @@ const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         }
     })
+    
     res.status(200).json(posts)
 }
 

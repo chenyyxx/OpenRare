@@ -28,10 +28,18 @@ import test_sections from '../test_sections.json'
 import SmallSection from '../components/small_section';
 import { GetServerSideProps } from 'next'
 import { getSession } from "next-auth/react"
+import { SmallUser } from '../components/small_profile';
+import {FullPost} from '../components/post'
+
+type AppProps = {
+  user: SmallUser,
+  user_sections_posts_flat: FullPost[],
+}
 
 export default function Home({
   user, user_sections_posts_flat
-}) {
+}:AppProps) {
+  // console.log(user_sections_posts_flat)
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
       <Nav/>
@@ -108,7 +116,7 @@ export default function Home({
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch data from external API
   const session = await getSession(context)
-  const email = session.user.email //use SWR to handle
+  const email = session?.user.email //use SWR to handle
   const res_full_user = await fetch(`http://localhost:3000/api/get_full_user?email=${email}`)
   const res_user_sections_posts = await fetch(`http://localhost:3000/api/get_user_sections_posts?email=${email}`)
   const user = await res_full_user.json()
@@ -120,6 +128,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       user_sections_posts_flat.push(user_sections_posts.sections[i].posts[j])
     }
   }
+  // console.log(user_sections_posts_flat)
   // Pass data to the page via props
   return { props: { user,  user_sections_posts_flat} }
 }

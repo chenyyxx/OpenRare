@@ -19,38 +19,45 @@ import RichTextEditor from './RichText'
 import {BiCommentDetail, BiLike, BiDislike} from "react-icons/bi";
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { Prisma } from "@prisma/client";
 
+
+export type SubComment = Prisma.SubCommentGetPayload<{
+    include: { user: true; parent: {include: {user:true;}}; children: true ;votes: true; comment: true; };
+}>;
+
+type AppProps = {
+    subComment: SubComment,
+    labelColor: string
+}
 // TODO:
 // this has two types:
 // 1. reply to comment
 // 2. reply to other sub comments: need to add xxx reply to @ xxx in the use box
-export default function SubComments(props){
-    console.log(props)
-    const parent = props.subComment.parent?.user.name
+export default function SubComments({subComment, labelColor}:AppProps){
+    // console.log(props)
+    const parent = subComment.parent?.user.name
     // console.log(parent)
     const { data: session, status } = useSession()
     const [showEditor, setShowEditor] = useState(false)
     const [content, setContent] = useState('')
-    const createdAt = new Date(props.subComment.createdAt)
+    const createdAt = new Date(subComment.createdAt)
     const date = createdAt.getDate()
     const year = createdAt.getFullYear()
     const month = createdAt.getMonth()
-    const handleContentChange = (e) => {
-        const inputValue = e.target.value
-        setContent(inputValue)
-    }
-    const handleReplySubComment = async (e) => {
+
+    const handleReplySubComment = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         setShowEditor(false)
         // submit form here
         // checck if content = ""
         const newSubComment = {
-            commentId: props.subComment.commentId,
+            commentId: subComment.commentId,
             content: content,
             user: session?.user,
-            parentId: props.subComment.id
+            parentId: subComment.id
         }
-        console.log(newSubComment)
+        // console.log(newSubComment)
         if(content==""){
             alert("comment content cannot be empty")
         } else {
@@ -78,11 +85,11 @@ export default function SubComments(props){
             borderBottomWidth='1px'
             // borderLeftStyle="solid"
             borderLeftWidth="4px"
-            borderLeftColor={props.labelColor}
+            borderLeftColor={labelColor}
         >
             <HStack align='top'>
                 <Avatar
-                    src={props.subComment.user.image}
+                    src={subComment.user.image as string | undefined}
                     size='xs'
                 />
                  
@@ -90,7 +97,7 @@ export default function SubComments(props){
                     <HStack>
                         
                         <Stack direction={'row'} spacing={1} fontSize={'sm'} align="center">
-                            <Text fontWeight={600}>{props.subComment.user.name}</Text>
+                            <Text fontWeight={600}>{subComment.user.name}</Text>
                             {
                                 parent ?
                                 
@@ -105,7 +112,7 @@ export default function SubComments(props){
                     </HStack>
                     <RichTextEditor
                         readOnly
-                        value={props.subComment.content}
+                        value={subComment.content}
                         onChange={()=>{}} 
                         styles={{root: { border: 'none'}}}
                         sx={()=> ({
@@ -134,8 +141,8 @@ export default function SubComments(props){
                             rounded={6}
                             isRequired
                             value={content}
-                            onChange={handleContentChange}
-                            placeholder={"Reply to @" + [props.subComment.user.name]}
+                            onChange={e=>setContent(e.target.value)}
+                            placeholder={"Reply to @" + [subComment.user.name]}
                             size='sm'
                         />
                         <HStack pt='12px' justify="right" w="full">

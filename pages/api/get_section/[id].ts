@@ -8,13 +8,18 @@ const get_all_sections = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.id
     const sections = await prisma.section.findMany({
         where : {
-            id: parseInt(id)
+            id: Number(id)
         },
         include: {
             users: true,
             posts: {
                 include: {
-                    user: true
+                    user: true,
+                    section: true,
+                    votes: true,
+                    _count: {
+                        select: {comments:true}
+                    }
                 }
             },
         }

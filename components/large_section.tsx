@@ -16,20 +16,13 @@ import {
     HStack,
   } from '@chakra-ui/react';
 
-  interface Section {
-    id: number,
-    name: string,
-    followers: number,
-    posts: number,
-    description: string,
-    picture: string
-  }
+import { FullSection } from './section';
 
-  export default function LargeSection(props) {
+  export default function LargeSection({section}:{section:FullSection}) {
     // console.log()
-    // const section = props.section.title
-    const sectionTitle = props.section.title
-    const sectionId = props.section.id
+    // const section = section.title
+    const sectionTitle = section.name
+    const sectionId = section.id
     return (
       <Center>
         <Box
@@ -42,7 +35,7 @@ import {
             h={'240px'}
             w={'full'}
             src={
-              props.section.picture
+              section.picture
             }
             objectFit={'cover'}
             alt=".section_picture"
@@ -51,7 +44,7 @@ import {
           <Stack px={48} py={6} spacing={4}>
             <Stack spacing={0} align={'center'} mb={1}>
               <Heading fontSize={'2xl'} fontWeight={500} fontFamily={'body'}>
-                {props.section.name}
+                {section.name}
               </Heading>
               {/* <Text color={'gray.500'}>Frontend Developer</Text> */}
             </Stack>
@@ -61,13 +54,13 @@ import {
                 <Text fontSize={'sm'} color={'gray.500'}>
                   Posts
                 </Text>
-                <Text fontWeight={600}>{props.section.posts.length}</Text>
+                <Text fontWeight={600}>{section.posts.length}</Text>
               </HStack>
               <HStack spacing={2} align={'center'} >
                 <Text fontSize={'sm'} color={'gray.500'}>
                   Followers
                 </Text>
-                <Text fontWeight={600}>{props.section.users.length}</Text>
+                <Text fontWeight={600}>{section.users.length}</Text>
               </HStack>
             </Stack>
             <Divider/>
@@ -108,7 +101,7 @@ import {
                         rounded={'md'}
                         colorScheme={'teal'}
                         as={Link}
-                        href={"https://www." +props.section.definition}
+                        href={"https://www." +section.definition}
                         style={{ textDecoration: 'none' }} _focus={{ boxShadow: 'none' }}
                     >
                         View Definition

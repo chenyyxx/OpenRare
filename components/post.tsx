@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { Prisma } from "@prisma/client";
 import {
   Box,
   Center,
@@ -19,19 +20,20 @@ import {
 import { TriangleUpIcon, TriangleDownIcon } from '@chakra-ui/icons'
 import {BiCommentDetail, BiShare ,BiBookmark} from "react-icons/bi";
 import RichTextEditor from './RichText'
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, MouseEvent } from 'react';
 import { useSession } from 'next-auth/react';
 import { text } from 'stream/consumers';
 
-interface Post {
-  id: number,
-  title: string,
-  body: string
-}
+
+export type FullPost = Prisma.PostGetPayload<{
+  include: { user: true; section: true; votes: true; _count: true };
+}>;
 
 
 
-function Post({post}: {post: Post}) {
+
+function Post({post}: {post: FullPost}) {
+  // console.log(post)
   const [showEditor, setShowEditor] = useState(false)
   const [content, setContent] = useState('')
   const { data: session, status } = useSession()
@@ -43,13 +45,16 @@ function Post({post}: {post: Post}) {
   const downvotes = post.votes.filter((vote)=>vote.voteType === "DOWNVOTE").length
   // console.log(upvotes)
   
-  const textRef = useRef();
+  const textRef = useRef<HTMLParagraphElement | null>(null);
   const [textOpen, setTextOpen] = useState(false);
   const [overflowActive, setOverflowActive] = useState(false);
   const postContent = post.content.replace(/<[^>]+>/g, '') 
 
-  function isOverflowActive(event) {
-    return event.offsetHeight < event.scrollHeight || event.offsetWidth < event.scrollWidth;
+  const isOverflowActive = (textContainer: HTMLParagraphElement | null):boolean => {
+    if (textContainer){
+      return textContainer.offsetHeight < textContainer.scrollHeight || textContainer.offsetWidth < textContainer.scrollWidth;
+    }
+    return false
   }
   useEffect(() => {
     if (isOverflowActive(textRef.current)) {
@@ -63,7 +68,7 @@ function Post({post}: {post: Post}) {
   // this parse the html content into text to display only abstract of content in post
   
   // console.log(postContent)
-  const handleVote = async (e, voteType) => {
+  const handleVote = async (e: React.MouseEvent<HTMLElement>, voteType: string) => {
     e.preventDefault();
     const newVote = {
         voteType: voteType,
@@ -78,6 +83,28 @@ function Post({post}: {post: Post}) {
         body: JSON.stringify(newVote),
     })
   }
+  const handleNewComment = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    setShowEditor(false)
+    const newComment = {
+        postId: post.id,
+        content: content,
+        user: session?.user
+    }
+    if(content==""){
+        alert("comment content cannot be empty")
+    } else {
+        await fetch("/api/create_comment", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newComment),
+        })
+        setContent("")
+    }
+}
+
   return (
     
     // <Center>
@@ -103,7 +130,7 @@ function Post({post}: {post: Post}) {
                 <HStack>
                   <Avatar
                     size="sm"
-                    src={post.user.image}
+                    src={post.user.image as string | undefined}
                   />
                   <Text fontSize={'sm'} fontWeight={600}>{post.user.name}</Text>
                   <Text fontSize={'xs'} color={'gray.500'}>{`${month}-${date}-${year}`}</Text> 
@@ -125,9 +152,9 @@ function Post({post}: {post: Post}) {
               
               {
                 textOpen ?
-                <RichTextEditor
+                <Box ref={textRef}>
+                  <RichTextEditor
                   readOnly
-                  ref={textRef}
                   value={post.content}
                   onChange={()=>{}} 
                   styles={{root: { border: 'none'}}}
@@ -136,7 +163,9 @@ function Post({post}: {post: Post}) {
                       padding: '0px 0px'
                     },
                   })}
-                /> :
+                />
+                </Box>
+                 :
                 <Text fontSize={'sm'} noOfLines={3} ref={textRef}>
                   {postContent}
                 </Text>

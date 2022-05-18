@@ -23,20 +23,25 @@ import {
     FormHelperText,
   } from '@chakra-ui/react'
   import { useSession } from 'next-auth/react';
+import {FullPost} from './post';
 
-export default function PostDetail(props){
+type AppProps = {
+    post: FullPost
+}
+
+export default function PostDetail({post}: AppProps){
     const [showEditor, setShowEditor] = useState(false)
     const [content, setContent] = useState('');
     const { data: session, status } = useSession()
-    const createdAt = new Date(props.post.updatedAt)
+    const createdAt = new Date(post.updatedAt)
     const date = createdAt.getDate()
     const year = createdAt.getFullYear()
     const month = createdAt.getMonth()
-    const handleNewComment = async (e) => {
+    const handleNewComment = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         setShowEditor(false)
         const newComment = {
-            postId: props.post.id,
+            postId: post.id,
             content: content,
             user: session?.user
         }
@@ -65,10 +70,10 @@ export default function PostDetail(props){
             <Stack>
                 <HStack>
                     <Avatar
-                    src={props.post.user.image}
+                    src={post.user.image as string | undefined}
                     />
                     <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-                        <Text fontWeight={600}>{props.post.user.name}</Text>
+                        <Text fontWeight={600}>{post.user.name}</Text>
                         <Text color={'gray.500'}>{`Last Updated: ${month}-${date}-${year}`}</Text> 
                     </Stack>
                 </HStack>
@@ -76,11 +81,11 @@ export default function PostDetail(props){
                     color={useColorModeValue('gray.700', 'white')}
                     fontSize={'2xl'}
                     fontFamily={'body'}>
-                    {props.post.title}
+                    {post.title}
                 </Heading>
                 <RichTextEditor
                     readOnly
-                    value={props.post.content}
+                    value={post.content}
                     onChange={()=>{}} 
                     styles={{root: { border: 'none'}}}
                     sx={()=> ({

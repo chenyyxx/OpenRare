@@ -37,7 +37,6 @@ import {
     FiChevronDown,
 } from 'react-icons/fi';
 
-import EditPost from "./edit_post";
 
 const Links = ['Dashboard', 'Projects', 'Team'];
 

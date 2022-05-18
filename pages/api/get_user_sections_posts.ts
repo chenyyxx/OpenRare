@@ -16,6 +16,10 @@ const get_full_user = async (req: NextApiRequest, res: NextApiResponse) => {
                         include: {
                             user: true,
                             section: true,
+                            votes: true,
+                            _count: {
+                                select: {comments:true}
+                            }
                         }
                     }
                 }

@@ -9,17 +9,9 @@ import Section from '../../components/section';
 import test_sections from '../../test_sections.json'
 import LeftSideBar from '../../components/left_side_bar';
 import { GetServerSideProps, GetStaticPaths} from 'next'
+import { FullSection } from '../../components/section';
 
-interface Section {
-    id: number,
-    name: string,
-    followers: number,
-    posts: number,
-    description: string,
-    picture: string
-}
-
-export default function SectionHome({sections}: {sections: Section[]}) {
+export default function SectionHome({sections}: {sections: FullSection[]}) {
     return (
         <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
             <Nav/>

@@ -16,16 +16,9 @@ import {
   
 import {BiMessageAltDetail, BiUser, BiShare ,BiBookmark} from "react-icons/bi";
 
-interface Section {
-    id: number,
-    name: string,
-    followers: number,
-    posts: number,
-    description: string,
-    picture: string
-}
+import {FullSection} from './section';
 
-export default function SmallSection({section}: {section: Section}) {
+export default function SmallSection({section}: {section: FullSection}) {
     return (
         <Center>
             <Box

@@ -22,11 +22,13 @@ import LargeProfile from '../components/large_profile';
 import ProfileRightPanel from '../components/right_panel';
 import { getSession } from "next-auth/react"
 import { GetServerSideProps } from 'next'
+import { SmallUser } from '../components/small_profile';
+
 
 export default function Profile({
   user,
 }: {
-  user: User
+  user: SmallUser
 }) {
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
@@ -72,7 +74,7 @@ export default function Profile({
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch data from external API
   const session = await getSession(context)
-  const email = session.user.email //use SWR to handle
+  const email = session?.user.email //use SWR to handle
   const res = await fetch(`http://localhost:3000/api/get_full_user?email=${email}`)
   const user = await res.json()
   // Pass data to the page via props

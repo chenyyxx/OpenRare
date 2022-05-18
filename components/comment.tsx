@@ -28,32 +28,33 @@ import {
   } from '@chakra-ui/react'
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { Prisma } from "@prisma/client";
 
-export default function Comment(props){
+type Comment = Prisma.CommentGetPayload<{
+    include: { user: true; subComments: {include: { user: true; parent: {include: {user:true;}}; children: true ;votes: true; comment: true; };}; votes: true; post: true; };
+}>;
+
+export default function Comment({comment}: {comment: Comment}){
     // console.log(props)
-    const numSubComments = props.comment.subComments.length
+    const numSubComments = comment.subComments.length
     // need to get all comments recursively dfs
-    const subComments = props.comment.subComments.slice(0, 5)
+    const subComments = comment.subComments.slice(0, 5)
     const { isOpen, onOpen, onClose } = useDisclosure()
     const [showEditor, setShowEditor] = useState(false)
     const [content, setContent] = useState('')
     const { data: session, status } = useSession()
-    const createdAt = new Date(props.comment.createdAt)
+    const createdAt = new Date(comment.createdAt)
     const date = createdAt.getDate()
     const year = createdAt.getFullYear()
     const month = createdAt.getMonth()
 
-    const handleContentChange = (e) => {
-        const inputValue = e.target.value
-        setContent(inputValue)
-    }
-    const handleNewSubComment = async (e) => {
+    const handleNewSubComment = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
         setShowEditor(false)
         // submit form here
         // checck if content = ""
         const newSubComment = {
-            commentId: props.comment.id,
+            commentId: comment.id,
             content: content,
             user: session?.user
         }
@@ -87,16 +88,16 @@ export default function Comment(props){
             <Stack>
                 <HStack>
                     <Avatar
-                    src={props.comment.user.image}
+                        src={comment.user.image as string | undefined}
                     />
                     <Stack direction={'column'} spacing={0} fontSize={'sm'}>
-                        <Text fontWeight={600}>{props.comment.user.name}</Text>
+                        <Text fontWeight={600}>{comment.user.name}</Text>
                         <Text color={'gray.500'}>{`Created At: ${month}-${date}-${year}`}</Text> 
                     </Stack>
                 </HStack>
                 <RichTextEditor
                     readOnly
-                    value={props.comment.content}
+                    value={comment.content}
                     onChange={()=>{}} 
                     styles={{root: { border: 'none'}}}
                     sx={()=> ({
@@ -118,8 +119,8 @@ export default function Comment(props){
                                 rounded={6}
                                 isRequired
                                 value={content}
-                                onChange={handleContentChange}
-                                placeholder={"Reply to @" + [props.comment.user.name]}
+                                onChange={e=>setContent(e.target.value)}
+                                placeholder={"Reply to @" + [comment.user.name]}
                                 size='sm'
                             />
                             <HStack pt='12px' justify="right" w="full">
@@ -148,7 +149,7 @@ export default function Comment(props){
                             <ModalCloseButton />
                             <ModalBody as={Stack}>
                             {
-                                props.comment.subComments.map((child) => (
+                                comment.subComments.map((child) => (
                                     
                                     child.parent ?
                                     <SubComments subComment={child} labelColor="cyan.300" key={child.id}/> :
