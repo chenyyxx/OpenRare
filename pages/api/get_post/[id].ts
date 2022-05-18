@@ -8,7 +8,7 @@ const get_post = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.id
     const post = await prisma.post.findFirst({
         where : {
-            id: parseInt(id)
+            id: Number(id)
         },
         include: {
             section: true,
