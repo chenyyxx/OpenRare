@@ -8,7 +8,7 @@ const prisma = new PrismaClient()
 const get_full_user = async (req: NextApiRequest, res: NextApiResponse) => {
     const {email} = req.query
     const full_user = await prisma.user.findFirst({
-        where : { email : email},
+        where : { email : String(email)},
         select: {
             sections: {
                 select: {
