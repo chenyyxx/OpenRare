@@ -50,20 +50,21 @@ function Post({post}: {post: FullPost}) {
   const [overflowActive, setOverflowActive] = useState(false);
   const postContent = post.content.replace(/<[^>]+>/g, '') 
 
-  const isOverflowActive = (textContainer: HTMLParagraphElement | null):boolean => {
-    if (textContainer){
-      return textContainer.offsetHeight < textContainer.scrollHeight || textContainer.offsetWidth < textContainer.scrollWidth;
-    }
-    return false
-  }
+  
   useEffect(() => {
+    const isOverflowActive = (textContainer: HTMLParagraphElement | null):boolean => {
+      if (textContainer){
+        return textContainer.offsetHeight < textContainer.scrollHeight || textContainer.offsetWidth < textContainer.scrollWidth;
+      }
+      return false
+    }
     if (isOverflowActive(textRef.current)) {
         setOverflowActive(true);
         return;
     }
 
     setOverflowActive(false);
-  }, [isOverflowActive]);
+  }, []);
   // const parser = new DOMParser()
   // this parse the html content into text to display only abstract of content in post
   

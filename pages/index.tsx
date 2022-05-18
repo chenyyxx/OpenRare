@@ -62,7 +62,7 @@ export default function Explore({
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch data from external API
   // const posts = await fetchData(`http://localhost:3000/api/get_all_posts`)
-  const res = await fetch(`http://localhost:3000/api/get_all_posts`)
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/get_all_posts`)
   const posts = await res.json()
 
   // Pass data to the page via props

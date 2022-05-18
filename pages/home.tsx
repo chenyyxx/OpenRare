@@ -117,8 +117,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch data from external API
   const session = await getSession(context)
   const email = session?.user.email //use SWR to handle
-  const res_full_user = await fetch(`http://localhost:3000/api/get_full_user?email=${email}`)
-  const res_user_sections_posts = await fetch(`http://localhost:3000/api/get_user_sections_posts?email=${email}`)
+  const res_full_user = await fetch(`${process.env.NEXTAUTH_URL}/api/get_full_user?email=${email}`)
+  const res_user_sections_posts = await fetch(`${process.env.NEXTAUTH_URL}/api/get_user_sections_posts?email=${email}`)
   const user = await res_full_user.json()
   const user_sections_posts = await res_user_sections_posts.json()
   // console.log(user_sections_posts.sections)

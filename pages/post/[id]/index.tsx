@@ -74,7 +74,7 @@ export default function SectionDetail({post,}: {post: FullPostEx}) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     // ...
-    const res = await fetch(`http://localhost:3000/api/get_post/${context.query.id}`)
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/get_post/${context.query.id}`)
     const post = await res.json()
     return { props: {post}}
 }

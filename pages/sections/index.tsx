@@ -44,7 +44,7 @@ export default function SectionHome({sections}: {sections: FullSection[]}) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     // ...
-    const res = await fetch(`http://localhost:3000/api/get_all_sections`)
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/get_all_sections`)
     const sections = await res.json()
     return { props: {sections}}
 }

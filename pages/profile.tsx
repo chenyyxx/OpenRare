@@ -76,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)
   const email = session?.user.email //use SWR to handle
   // console.log(email)
-  const res = await fetch(`http://localhost:3000/api/get_full_user?email=${email}`)
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/get_full_user?email=${email}`)
   const user = await res.json()
   // Pass data to the page via props
   return { props: { user } }
