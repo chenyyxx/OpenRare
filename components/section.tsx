@@ -21,7 +21,12 @@ export type FullSection = Prisma.SectionGetPayload<{
     include: {
         users: true;
         posts: {
-            include: { user: true; section: true; votes: true; _count: true };
+            include: {
+                user: true;
+                section: true;
+                votes: { include: { user: true } };
+                _count: true;
+            };
         };
         _count: true;
     };

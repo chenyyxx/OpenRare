@@ -15,7 +15,7 @@ import LeftSideBar from "../components/left_side_bar";
 import { Button } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import useSWR from "swr";
-import { fetchData } from "./utils/utils";
+import { fetchData } from "../utils/utils";
 
 export default function Explore({
     initialPosts,

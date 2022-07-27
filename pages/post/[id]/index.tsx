@@ -40,7 +40,7 @@ export type FullPostEx = Prisma.PostGetPayload<{
                             include: {
                                 user: true;
                                 section: true;
-                                votes: true;
+                                votes: { include: { user: true } };
                                 _count: true;
                             };
                         };
@@ -51,7 +51,7 @@ export type FullPostEx = Prisma.PostGetPayload<{
                     include: {
                         user: true;
                         section: true;
-                        votes: true;
+                        votes: { include: { user: true } };
                         _count: true;
                     };
                 };
