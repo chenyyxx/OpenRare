@@ -50,7 +50,7 @@ export default function PostDetail({ post }: AppProps) {
         if (content == "") {
             alert("comment content cannot be empty");
         } else {
-            await fetch("/api/create_comment", {
+            await fetch(`${process.env.NEXTAUTH_URL}/api/create_comment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

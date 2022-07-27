@@ -61,7 +61,7 @@ export default function Comment({comment}: {comment: Comment}){
         if(content==""){
             alert("comment content cannot be empty")
         } else {
-            await fetch("/api/create_subcomment", {
+            await fetch(`${process.env.NEXTAUTH_URL}/api/create_subcomment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
