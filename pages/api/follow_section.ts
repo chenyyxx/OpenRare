@@ -3,8 +3,6 @@ import prisma from "../../db";
 
 const follow = async (req: NextApiRequest, res: NextApiResponse) => {
     const {email, sectionId} = req.body;
-    console.log(req.body)
-    console.log(email)
     try {
         const user = await prisma.user.update({
             where: {
