@@ -67,7 +67,7 @@ export default function Nav() {
                     </HStack>
                 </GridItem >
                 <GridItem display='flex' alignItems='center' justifyContent='center'>
-                    <InputGroup w={600} size='md'>
+                    {/* <InputGroup w={600} size='md'>
                         <Input
                             pr='4.5rem'
                             placeholder='Search Forum'
@@ -80,16 +80,16 @@ export default function Nav() {
                                 icon={<SearchIcon />}
                             />
                         </InputRightElement>
-                    </InputGroup>
+                    </InputGroup> */}
                 </GridItem >
                 <GridItem display='flex' alignItems='center' justifyContent='end'>
                     <HStack  spacing={7}>
-                        <IconButton
+                        {/* <IconButton
                             variant='link'
                             aria-label='notification button'
                             colorScheme={'gray.100'}
                             icon={<IoNotificationsOutline />}
-                        />
+                        /> */}
                         
                         <Menu>
                             <MenuButton

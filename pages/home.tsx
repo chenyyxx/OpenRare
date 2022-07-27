@@ -16,15 +16,11 @@ import {
   Wrap,
   WrapItem,
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
 import SmallProfile from '../components/small_profile';
 import Nav from "../components/nav";
 import Post from '../components/post';
 import LeftSideBar from '../components/left_side_bar';
 import { Button } from '@chakra-ui/react';
-import LargeProfile from '../components/large_profile';
-import ProfileRightPanel from '../components/right_panel';
-import test_sections from '../test_sections.json'
 import SmallSection from '../components/small_section';
 import { GetServerSideProps } from 'next'
 import { getSession } from "next-auth/react"
@@ -58,11 +54,11 @@ export default function Home({
                 <Wrap justify="center" pt="24px" pl="24px" pr="24px">
                   {/* <HStack> */}
                   <WrapItem><Button colorScheme='teal' variant='solid' rounded={20}>My Posts</Button></WrapItem>
-                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button></WrapItem>
-                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button></WrapItem>
+                  {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button></WrapItem> */}
+                  {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button></WrapItem> */}
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Comments</Button></WrapItem>
-                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
-                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem>
+                  {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
+                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem> */}
                 </Wrap>
                 <VStack p="24px" minH="full" spacing={"24px"}>
                     {user_sections_posts_flat.map((post) => (
