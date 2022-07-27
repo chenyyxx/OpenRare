@@ -42,7 +42,7 @@ export default function Section({ section }: { section: FullSection }) {
                 email: session?.user.email,
                 sectionId: section.id,
             };
-            await fetch(`${process.env.NEXTAUTH_URL}/api/follow_section`, {
+            await fetch(`/api/follow_section`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

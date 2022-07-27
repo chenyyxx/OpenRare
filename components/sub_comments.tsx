@@ -61,7 +61,7 @@ export default function SubComments({subComment, labelColor}:AppProps){
         if(content==""){
             alert("comment content cannot be empty")
         } else {
-            await fetch(`${process.env.NEXTAUTH_URL}/api/reply_subcomment`, {
+            await fetch(`/api/reply_subcomment`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
