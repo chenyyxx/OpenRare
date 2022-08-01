@@ -35,8 +35,7 @@ export type FullSection = Prisma.SectionGetPayload<{
 export default function Section({ section }: { section: FullSection }) {
     const { data: session } = useSession();
     const onFollowClick = async () => {
-        console.log(1);
-
+        //TODO: refactor this to the top level
         if (session) {
             const data = {
                 email: session?.user.email,

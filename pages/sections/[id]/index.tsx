@@ -46,7 +46,7 @@ export default function SectionDetail({
                         <LargeSection section={section} />
                     </Box>
                     {/* <Wrap justify="center" pt="24px" pl="24px" pr="24px"> */}
-                    <HStack
+                    {/* <HStack
                         justify="space-between"
                         pt="24px"
                         pl="24px"
@@ -93,7 +93,7 @@ export default function SectionDetail({
                                 />
                             </InputRightElement>
                         </InputGroup>
-                    </HStack>
+                    </HStack> */}
                     {/* replace this render methods with section.posts */}
                     <VStack p="24px" w="full" spacing={"24px"}>
                         {section.posts.map((post) => (

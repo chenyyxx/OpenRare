@@ -18,8 +18,8 @@ import {
   FiHome,
   FiTrendingUp,
   FiCompass,
-  FiStar,
-  FiSettings,
+  FiUser,
+  FiList,
   FiMenu,
 } from 'react-icons/fi';
 import { IconType } from 'react-icons';
@@ -33,9 +33,8 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, link: '/home' },
   { name: 'Explore', icon: FiCompass, link: '/' },
-  { name: 'Sections', icon: FiTrendingUp, link: '/sections' },
-  { name: 'Profile', icon: FiTrendingUp, link: '/profile' },
-  { name: 'Settings', icon: FiSettings, link: '/settings' },
+  { name: 'Sections', icon: FiList, link: '/sections' },
+  { name: 'Profile', icon: FiUser, link: '/profile' },
 ];
 
 // export default function LeftSideBar() {

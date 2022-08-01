@@ -22,7 +22,7 @@ import {
     InputGroup,
     InputRightElement,
     IconButton,
-    Flex
+    Image
 } from '@chakra-ui/react';
 import { AddIcon, SearchIcon, TriangleDownIcon } from '@chakra-ui/icons';
 import { IoNotificationsOutline } from "react-icons/io5";
@@ -63,7 +63,15 @@ export default function Nav() {
             <Grid h={16} templateColumns='repeat(3, 1fr)' gap={6}>
                 <GridItem display='flex' alignItems='center' justifyContent='start'>
                     <HStack spacing={8} alignItems={'center'}>
-                        <Box>OpenRare</Box>
+                        
+                        <Box>
+                            <Image 
+                                src="https://firebasestorage.googleapis.com/v0/b/rare-disease-forum.appspot.com/o/OpenRare-logos_transparent.png?alt=media&token=5364c0e6-1493-440a-a082-f2ff1e302484" 
+                                width='256px' 
+                                height='64px'
+                                objectFit="cover"
+                            />
+                        </Box>
                     </HStack>
                 </GridItem >
                 <GridItem display='flex' alignItems='center' justifyContent='center'>
