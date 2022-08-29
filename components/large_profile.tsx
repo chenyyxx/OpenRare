@@ -52,7 +52,7 @@ export default function LargeProfile({user}: {user: SmallUser}) {
           h={"240px"}
           w={"full"}
           src={
-            `${user.backGroundImage}`
+            `${user?.backGroundImage}`
           }
           objectFit={"cover"}
           alt="profile_image"
@@ -68,7 +68,7 @@ export default function LargeProfile({user}: {user: SmallUser}) {
               <Avatar
                 boxSize={"204px"}
                 src={
-                  `${user.image}`
+                  `${user?.image}`
                 }
                 css={{
                   border: "2px solid white",
