@@ -21,7 +21,6 @@ import { Button } from "@chakra-ui/react";
 import LargeProfile from "../components/large_profile";
 import ProfileRightPanel from "../components/right_panel";
 import { getSession, signIn, useSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
 import { SmallUser } from "../components/small_profile";
 import useSWR from "swr";
 import { fetchData } from "../utils/utils";
@@ -47,7 +46,7 @@ export default function Profile() {
           </VStack>
           <Box>
             <Box pt="24px" pl="24px" pr="24px">
-              {user && <LargeProfile user={user} />}
+              {session && user && <LargeProfile user={user} />}
             </Box>
             <Wrap justify="center" pt="24px" pl="24px" pr="24px">
               {/* <HStack> */}
