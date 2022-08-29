@@ -82,13 +82,6 @@ export default function SubComments({subComment, url, labelColor}:AppProps){
             rounded={'md'}
             p='12px'
             overflow={'hidden'}
-            borderColor="gray.500"
-            borderTopWidth='1px'
-            borderRightWidth='1px'
-            borderBottomWidth='1px'
-            // borderLeftStyle="solid"
-            borderLeftWidth="4px"
-            borderLeftColor={labelColor}
         >
             <HStack align='top'>
                 <Avatar

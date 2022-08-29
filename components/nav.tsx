@@ -85,8 +85,8 @@ export default function Nav() {
             <Button
               colorScheme="teal"
               variant="solid"
-              as={Link}
-              // href={`/sections/${sectionId}/new`}
+              as={"a"}
+              href={`/create_post`}
             >
               Create Post
             </Button>

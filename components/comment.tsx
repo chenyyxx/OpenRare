@@ -51,9 +51,11 @@ type Comment = Prisma.CommentGetPayload<{
 export default function Comment({
   comment,
   url,
+  isCompact,
 }: {
   comment: Comment;
   url: string;
+  isCompact: boolean;
 }) {
   // console.log(props)
   const numSubComments = comment.subComments.length;
@@ -98,13 +100,18 @@ export default function Comment({
     <Box
       w={"full"}
       bg="white"
-      boxShadow={"2xl"}
       rounded={"md"}
       p={6}
       overflow={"hidden"}
       borderColor="teal.400"
       // borderLeftStyle="solid"
-      borderLeftWidth="6px"
+      borderRightColor="gray.200"
+      borderRightWidth="1px"
+      borderTopColor="gray.200"
+      borderTopWidth="1px"
+      borderBottomColor="gray.200"
+      borderBottomWidth="1px"
+      borderLeftWidth="4px"
     >
       <Stack>
         <HStack>
@@ -127,24 +134,26 @@ export default function Comment({
             },
           })}
         />
-        <Flex justify="right">
-          <Button
-            size="sm"
-            variant="ghost"
-            leftIcon={<BiCommentDetail />}
-            onClick={() => {
-              setShowEditor(true);
-            }}
-          >
-            {comment.subComments.length + ' comments'}
-          </Button>
-          <Button size="sm" variant="ghost" leftIcon={<BiLike />}>
+        {!isCompact && (
+          <Flex justify="right">
+            <Button
+              size="sm"
+              variant="ghost"
+              leftIcon={<BiCommentDetail />}
+              onClick={() => {
+                setShowEditor(true);
+              }}
+            >
+              {comment.subComments.length + " comments"}
+            </Button>
+            {/* <Button size="sm" variant="ghost" leftIcon={<BiLike />}>
             Share
           </Button>
           <Button size="sm" variant="ghost" leftIcon={<BiBookmark />}>
             Save
-          </Button>
-        </Flex>
+          </Button> */}
+          </Flex>
+        )}
         {showEditor ? (
           <Box mt="12px">
             <Textarea
@@ -171,24 +180,35 @@ export default function Comment({
         ) : (
           <></>
         )}
-        {subComments.map((child) =>
-          child.parent ? (
-            <SubComments
-              subComment={child}
-              url={url}
-              labelColor={"cyan.300"}
-              key={child.id}
-            />
-          ) : (
-            <SubComments
-              subComment={child}
-              url={url}
-              labelColor={"purple.300"}
-              key={child.id}
-            />
-          )
+        {!isCompact && subComments.length > 0 && (
+          <VStack
+            divider={<StackDivider borderColor="gray.200" />}
+            spacing={0}
+            align="stretch"
+            borderColor="gray.200"
+            borderWidth="1px"
+            rounded={"md"}
+          >
+            {subComments.map((child) =>
+              child.parent ? (
+                <SubComments
+                  subComment={child}
+                  url={url}
+                  labelColor={"cyan.300"}
+                  key={child.id}
+                />
+              ) : (
+                <SubComments
+                  subComment={child}
+                  url={url}
+                  labelColor={"purple.300"}
+                  key={child.id}
+                />
+              )
+            )}
+          </VStack>
         )}
-        {numSubComments > 5 ? (
+        {!isCompact && numSubComments > 5 ? (
           <Center>
             <Button
               size="xs"
@@ -227,7 +247,6 @@ export default function Comment({
                   <Button colorScheme="blue" mr={3} onClick={onClose}>
                     Close
                   </Button>
-                  <Button variant="ghost">Secondary Action</Button>
                 </ModalFooter>
               </ModalContent>
             </Modal>

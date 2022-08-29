@@ -78,28 +78,46 @@ export type FullPostEx = Prisma.PostGetPayload<{
   };
 }>;
 
-export default function SectionDetail({ initialPost, id }: { initialPost: FullPostEx, id: string }) {
-  const url = `/api/get_post/${id}`;
-  const { data: post, error } = useSWR<FullPostEx, Error>(
+export function usePostDetail(url: string, fallbackData: FullPostEx | null) {
+  const { data, error } = useSWR<FullPostEx, Error>(
     url,
-    fetchData, {
-      fallbackData: initialPost,
-    }
+    fetchData
   );
+  return {
+    postDetail: data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}
+
+export default function SectionDetail({
+  initialPost,
+  id,
+}: {
+  initialPost: FullPostEx;
+  id: string;
+}) {
+  const url = `/api/get_post/${id}`;
+  // const { data: post, error } = useSWR<FullPostEx, Error>(url, fetchData, {
+  //   fallbackData: initialPost,
+  // });
+  const {postDetail, isLoading, isError} = usePostDetail(url, initialPost);
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       <Nav />
       <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
         <VStack h="max" p={"24px"} spacing={"24px"} pos="sticky" top={"64px"}>
           <LeftSideBar />
-          {post && <SmallProfile user={post.user} />}
+          {postDetail && <SmallProfile user={postDetail.user} />}
         </VStack>
-        {post && <VStack w="full" p="24px">
-          <PostDetail post={post} url={url} />
-          {post.comments.map((comment) => (
-            <Comment comment={comment} url={url} key={comment.id} />
-          ))}
-        </VStack>}
+        {postDetail && (
+          <VStack w="full" p="24px">
+            <PostDetail post={postDetail} url={url} />
+            {postDetail.comments.map((comment) => (
+              <Comment comment={comment} url={url} isCompact={false} key={comment.id} />
+            ))}
+          </VStack>
+        )}
       </Flex>
     </Box>
   );
@@ -107,11 +125,9 @@ export default function SectionDetail({ initialPost, id }: { initialPost: FullPo
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // ...
-  const id  = context.query.id;
-  const res = await fetch(
-    `${process.env.NEXTAUTH_URL}/api/get_post/${id}`
-  );
+  const id = context.query.id;
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/get_post/${id}`);
   const initialPost = await res.json();
-  
+
   return { props: { initialPost, id } };
 };

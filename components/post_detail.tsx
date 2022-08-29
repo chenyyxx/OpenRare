@@ -68,7 +68,9 @@ export default function PostDetail({ post, url }: AppProps) {
     <Box
       w={"full"}
       bg="white"
-      boxShadow={"2xl"}
+      // boxShadow={"2xl"}
+      borderColor="gray.200"
+      borderWidth="1px"
       rounded={"md"}
       p={6}
       overflow={"hidden"}
@@ -112,12 +114,12 @@ export default function PostDetail({ post, url }: AppProps) {
           >
             {post.comments.length + ' comments'}
           </Button>
-          <Button size="sm" variant="ghost" leftIcon={<BiShare />}>
+          {/* <Button size="sm" variant="ghost" leftIcon={<BiShare />}>
             Share
           </Button>
           <Button size="sm" variant="ghost" leftIcon={<BiBookmark />}>
             Save
-          </Button>
+          </Button> */}
         </Flex>
         {showEditor ? (
           <Box mt="12px">

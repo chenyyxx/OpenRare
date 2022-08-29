@@ -35,7 +35,7 @@ export default function Explore({
           <LeftSideBar />
         </Box>
         <Box>
-          <VStack p="24px" minH="full" spacing={"24px"}>
+          <VStack p="24px" minH="full" spacing={"12px"}>
             {posts && posts.map((post) => <Post post={post} key={post.id} />)}
           </VStack>
         </Box>
