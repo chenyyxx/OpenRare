@@ -51,6 +51,8 @@ export type FullPostEx = Prisma.PostGetPayload<{
             _count: true;
           };
         };
+        followedBy: true;
+        following: true;
       };
     };
     posts: {
