@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../db";
 
 const follow = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { email, targetEmail } = req.body;
+  const { email, targetId } = req.body;
   try {
     const user = await prisma.user.update({
       where: {
@@ -11,7 +11,7 @@ const follow = async (req: NextApiRequest, res: NextApiResponse) => {
       data: {
         following: {
           connect: {
-            email: targetEmail,
+            id: targetId,
           },
         },
       },
