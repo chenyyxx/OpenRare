@@ -10,7 +10,7 @@ const followSection = async (req: NextApiRequest, res: NextApiResponse) => {
       },
       data: {
         sections: {
-          connect: {
+          disconnect: {
             id: Number(sectionId),
           },
         },

@@ -1,17 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../db";
 
-const followSection = async (req: NextApiRequest, res: NextApiResponse) => {
-  const { email, sectionId } = req.body;
+const unfollow = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { email, targetEmail } = req.body;
   try {
     const user = await prisma.user.update({
       where: {
         email: email,
       },
       data: {
-        sections: {
-          connect: {
-            id: Number(sectionId),
+        following: {
+          disconnect: {
+            email: targetEmail,
           },
         },
       },
@@ -23,4 +23,4 @@ const followSection = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default followSection;
+export default unfollow;

@@ -28,6 +28,8 @@ const get_full_user = async (req: NextApiRequest, res: NextApiResponse) => {
             },
             votes: true,
             comments: true,
+            followedBy: true,
+            following: true,
         }
     })
     // console.log(full_user)

@@ -39,6 +39,8 @@ export type SmallUser = Prisma.UserGetPayload<{
                 _count: true;
             };
         };
+        followedBy: true;
+        following: true;
     };
 }>;
 
