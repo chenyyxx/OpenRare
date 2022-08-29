@@ -1,32 +1,65 @@
 import {
-  Button,
   Box,
+  Button,
+  Flex,
   FormControl,
   FormLabel,
-  Input,
-  useColorModeValue,
-  Flex,
   HStack,
+  Input,
   Stack,
   useToast,
 } from "@chakra-ui/react";
-
-import RichTextEditor from "../../../components/RichText";
-
-import { useState } from "react";
-
-import Nav from "../../../components/nav";
-import LeftSideBar from "../../../components/left_side_bar";
+import RichTextEditor from "../components/RichText";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import LeftSideBar from "../components/left_side_bar";
+import Nav from "../components/nav";
+import useSWR from "swr";
+import Select from "react-select";
+import { FullSection } from "../components/section";
+import { fetchData } from "../utils/utils";
 import { useSession } from "next-auth/react";
 
-export default function EditPost() {
+// TODO: put this in util function
+export function useSections() {
+  const { data, error } = useSWR<FullSection[], Error>(
+    `/api/get_all_sections`,
+    fetchData
+  );
+  return {
+    sections: data,
+    isLoading: !error && !data,
+    isError: error,
+  };
+}
+
+export type SelectOption = {
+  value: string;
+  label: string;
+};
+
+export function buildSelectOptions(sections: FullSection[]): SelectOption[] {
+  return sections.map((s) => ({
+    value: String(s.id),
+    label: s.name,
+  }));
+}
+
+export default function CreatePost() {
   const [content, setCotent] = useState("");
   const [title, setTitle] = useState("");
+  const [options, setOptions] = useState([] as SelectOption[]);
+  const [selectedSectionId, setSelectedSectionId] = useState("");
   const router = useRouter();
-  const { id } = router.query;
   const { data: session, status } = useSession();
   const toast = useToast();
+
+  const { sections, isLoading, isError } = useSections();
+  useEffect(() => {
+    if (!isLoading) {
+      setOptions(buildSelectOptions(sections as FullSection[]));
+    }
+  }, [sections, isLoading]);
 
   const handleNewPost = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -36,12 +69,18 @@ export default function EditPost() {
         status: "warning",
         isClosable: true,
       });
+    } else if (selectedSectionId.trim() === "") {
+      toast({
+        title: "Section Cannot be Empty",
+        status: "warning",
+        isClosable: true,
+      });
     } else {
       // create a new post locally
       const newPost = {
         title: title,
         content: content,
-        sectionId: Number(id),
+        sectionId: Number(selectedSectionId),
         user: session?.user,
       };
       // api request
@@ -52,11 +91,14 @@ export default function EditPost() {
         },
         body: JSON.stringify({ post: newPost }),
       });
-      router.push(`/sections/${id}`);
+      router.push("/");
     }
   };
+
+  if (isError) return <div>Failed to load</div>;
+
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Box minH="100vh" bg={"gray.100"}>
       <Nav />
       <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
         <Box minH="full" p={"24px"}>
@@ -67,6 +109,15 @@ export default function EditPost() {
             <FormControl p="24px">
               <Stack spacing={"12px"}>
                 <FormLabel htmlFor="title">Create Your Post</FormLabel>
+                <Select
+                  placeholder="Select a Section..."
+                  isSearchable
+                  isClearable
+                  onChange={(e) => {
+                    setSelectedSectionId(e == null ? "" : e.value);
+                  }}
+                  options={options}
+                />
                 <Input
                   id="title"
                   type="title"
@@ -86,9 +137,9 @@ export default function EditPost() {
                       root: {
                         borderColor: "#E2E8F0",
                         borderRadius: "0.375rem",
-                        minHeight: "200px",
+                        minHeight: "300px",
                       },
-                      toolbar: { borderColor: "#E2E8F0" },
+                      toolbar: { borderColor: "#E2E8F0", zIndex: 0 },
                     }}
                     value={content}
                     onChange={setCotent}
@@ -137,7 +188,6 @@ export default function EditPost() {
                 </HStack>
               </Stack>
             </FormControl>
-            {/* </form> */}
           </Box>
         </Box>
       </Flex>

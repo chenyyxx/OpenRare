@@ -2,12 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from "next-auth/react"
 import prisma from "../../db";
-// const prisma = new PrismaClient()
 
 const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
     const { post } = req.body;
     const session = await getSession({ req });
-    // console.log(session)
     if (!session) {
         return res.status(500).json({ error: "You have to be logged in." });
     }

@@ -20,7 +20,7 @@ import {BiCommentDetail, BiLike, BiDislike} from "react-icons/bi";
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { Prisma } from "@prisma/client";
-
+import { useSWRConfig } from "swr";
 
 export type SubComment = Prisma.SubCommentGetPayload<{
     include: { user: true; parent: {include: {user:true;}}; children: true ;votes: true; comment: true; };
@@ -28,13 +28,14 @@ export type SubComment = Prisma.SubCommentGetPayload<{
 
 type AppProps = {
     subComment: SubComment,
+    url: string,
     labelColor: string
 }
 // TODO:
 // this has two types:
 // 1. reply to comment
 // 2. reply to other sub comments: need to add xxx reply to @ xxx in the use box
-export default function SubComments({subComment, labelColor}:AppProps){
+export default function SubComments({subComment, url, labelColor}:AppProps){
     // console.log(props)
     const parent = subComment.parent?.user.name
     // console.log(parent)
@@ -45,6 +46,7 @@ export default function SubComments({subComment, labelColor}:AppProps){
     const date = createdAt.getDate()
     const year = createdAt.getFullYear()
     const month = createdAt.getMonth()
+    const { mutate } = useSWRConfig();
 
     const handleReplySubComment = async (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
@@ -68,7 +70,8 @@ export default function SubComments({subComment, labelColor}:AppProps){
                 },
                 body: JSON.stringify(newSubComment),
             })
-            setContent("")
+            setContent("");
+            mutate(url);
         }
         
     }

@@ -4,6 +4,9 @@ import prisma from "../../db";
 
 const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
     const posts = await prisma.post.findMany({
+        orderBy: {
+            updatedAt: 'desc'
+        },
         include: {
             user: true,
             section: true,
