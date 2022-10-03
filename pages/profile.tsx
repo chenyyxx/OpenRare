@@ -24,6 +24,7 @@ import { getSession, signIn, useSession } from "next-auth/react";
 import { SmallUser } from "../components/small_profile";
 import useSWR from "swr";
 import { fetchData } from "../utils/utils";
+import Sidebar from "../components/sidebar";
 
 export default function Profile() {
   const { data: session, status } = useSession();
@@ -37,57 +38,54 @@ export default function Profile() {
   }
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <Nav />
-      {status === "authenticated" && (
-        <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
-          <VStack h="max" p={"24px"} spacing={"24px"} pos="sticky" top={"64px"}>
-            <LeftSideBar />
-            {/* <ProfileRightPanel/> */}
-          </VStack>
-          <Box>
-            <Box pt="24px" pl="24px" pr="24px">
-              {session && user && <LargeProfile user={user} />}
+      <Sidebar>
+        {status === "authenticated" && (
+          <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
+            <Box>
+              <Box pt="24px" pl="24px" pr="24px">
+                {session && user && <LargeProfile user={user} />}
+              </Box>
+              <Wrap justify="center" pt="24px" pl="24px" pr="24px">
+                {/* <HStack> */}
+                <WrapItem>
+                  <Button colorScheme="teal" variant="solid" rounded={20}>
+                    My Posts
+                  </Button>
+                </WrapItem>
+                <WrapItem>
+                  <Button colorScheme="teal" variant="outline" rounded={20}>
+                    Favorites
+                  </Button>
+                </WrapItem>
+                <WrapItem>
+                  <Button colorScheme="teal" variant="outline" rounded={20}>
+                    Upvoted
+                  </Button>
+                </WrapItem>
+                <WrapItem>
+                  <Button colorScheme="teal" variant="outline" rounded={20}>
+                    Comments
+                  </Button>
+                </WrapItem>
+                <WrapItem>
+                  <Button colorScheme="teal" variant="outline" rounded={20}>
+                    Messages
+                  </Button>
+                </WrapItem>
+                <WrapItem>
+                  <Button colorScheme="teal" variant="outline" rounded={20}>
+                    Notifications
+                  </Button>
+                </WrapItem>
+              </Wrap>
+              <VStack p="24px" minH="full" spacing={"24px"}>
+                {user &&
+                  user.posts.map((post) => <Post post={post} key={post.id} />)}
+              </VStack>
             </Box>
-            <Wrap justify="center" pt="24px" pl="24px" pr="24px">
-              {/* <HStack> */}
-              <WrapItem>
-                <Button colorScheme="teal" variant="solid" rounded={20}>
-                  My Posts
-                </Button>
-              </WrapItem>
-              <WrapItem>
-                <Button colorScheme="teal" variant="outline" rounded={20}>
-                  Favorites
-                </Button>
-              </WrapItem>
-              <WrapItem>
-                <Button colorScheme="teal" variant="outline" rounded={20}>
-                  Upvoted
-                </Button>
-              </WrapItem>
-              <WrapItem>
-                <Button colorScheme="teal" variant="outline" rounded={20}>
-                  Comments
-                </Button>
-              </WrapItem>
-              <WrapItem>
-                <Button colorScheme="teal" variant="outline" rounded={20}>
-                  Messages
-                </Button>
-              </WrapItem>
-              <WrapItem>
-                <Button colorScheme="teal" variant="outline" rounded={20}>
-                  Notifications
-                </Button>
-              </WrapItem>
-            </Wrap>
-            <VStack p="24px" minH="full" spacing={"24px"}>
-              {user &&
-                user.posts.map((post) => <Post post={post} key={post.id} />)}
-            </VStack>
-          </Box>
-        </Flex>
-      )}
+          </Flex>
+        )}
+      </Sidebar>
     </Box>
   );
 }

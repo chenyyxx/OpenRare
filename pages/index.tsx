@@ -16,6 +16,7 @@ import { Button } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import useSWR from "swr";
 import { fetchData } from "../utils/utils";
+import Sidebar from "../components/sidebar";
 
 export default function Explore({
   initialPosts,
@@ -29,17 +30,16 @@ export default function Explore({
 
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <Nav />
-      <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
-        <Box h="max" p={"24px"} pos="sticky" top={"64px"}>
-          <LeftSideBar />
-        </Box>
-        <Box>
-          <VStack p="24px" minH="full" spacing={"12px"}>
-            {posts && posts.map((post) => <Post post={post} key={post.id} />)}
-          </VStack>
-        </Box>
-      </Flex>
+      {/* <Nav /> */}
+      <Sidebar >
+        <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
+          <Box>
+            <VStack p="24px" minH="full" spacing={"12px"}>
+              {posts && posts.map((post) => <Post post={post} key={post.id} />)}
+            </VStack>
+          </Box>
+        </Flex>
+      </Sidebar>
     </Box>
   );
 }

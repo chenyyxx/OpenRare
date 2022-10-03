@@ -29,6 +29,7 @@ import { SmallUser } from "../components/small_profile";
 import { FullPost } from "../components/post";
 import useSWR from "swr";
 import { fetchData, fetchFlatUserSectionPost } from "../utils/utils";
+import Sidebar from '../components/sidebar';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -48,12 +49,9 @@ export default function Home() {
   return (
     <Box minH="100vh" bg={"gray.100"}>
       <Nav />
+      <Sidebar>
       {status === "authenticated" && (
         <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
-          <VStack h="max" p={"24px"} spacing={"24px"} pos="sticky" top={"64px"}>
-            <LeftSideBar />
-            {/* <ProfileRightPanel/> */}
-          </VStack>
           <Box>
             <Wrap justify="center" pt="24px" pl="24px" pr="24px">
               {/* <HStack> */}
@@ -121,6 +119,7 @@ export default function Home() {
           </VStack>
         </Flex>
       )}
+      </Sidebar>
     </Box>
   );
 }
