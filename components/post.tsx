@@ -72,6 +72,7 @@ function Post({ post }: { post: FullPost }) {
   return (
     <Box
       w={"full"}
+      maxW='800px'
       bg={useColorModeValue("white", "gray.900")}
       borderColor="gray.200"
       borderWidth="1px"
@@ -85,7 +86,7 @@ function Post({ post }: { post: FullPost }) {
             as={Link}
             href={`/post/${post.id}`}
             color={useColorModeValue("gray.700", "white")}
-            fontSize={"2xl"}
+            fontSize={["xl","2xl"]}
             fontFamily={"body"}
           >
             {post.title}
@@ -93,7 +94,7 @@ function Post({ post }: { post: FullPost }) {
           <HStack justify={"space-between"} align="center">
             <HStack>
               <Avatar size="sm" src={post.user.image as string | undefined} />
-              <Text fontSize={"sm"} fontWeight={600}>
+              <Text fontSize={["xs","sm"]} fontWeight={600}>
                 {post.user.name}
               </Text>
               <Text
@@ -103,16 +104,29 @@ function Post({ post }: { post: FullPost }) {
             </HStack>
             <Text
               as={Link}
+              display={["none","flex"]}
               href={`/sections/${post.section?.id}`}
               color={"green.500"}
               textTransform={"uppercase"}
               fontWeight={800}
-              fontSize={"sm"}
+              fontSize={["xs","sm"]}
               letterSpacing={1.1}
             >
               {post.section?.name}
             </Text>
           </HStack>
+          <Text
+              as={Link}
+              display={["flex","none"]}
+              href={`/sections/${post.section?.id}`}
+              color={"green.500"}
+              textTransform={"uppercase"}
+              fontWeight={800}
+              fontSize={["xs","sm"]}
+              letterSpacing={1.1}
+            >
+              {post.section?.name}
+            </Text>
 
           <Box as={"a"} href={`post/${post.id}`}>
             {textOpen ? (
@@ -130,7 +144,7 @@ function Post({ post }: { post: FullPost }) {
                 />
               </Box>
             ) : (
-              <Text as={Link} fontSize={"sm"} noOfLines={3} ref={textRef}>
+              <Text as={Link} fontSize={"sm"} noOfLines={5} ref={textRef}>
                 {postContent}
               </Text>
             )}
@@ -151,7 +165,8 @@ function Post({ post }: { post: FullPost }) {
             <HStack divider={<StackDivider borderColor="gray.200" />}></HStack>
             <HStack spacing={2}>
               {/* <BiCommentDetail /> */}
-              <Button fontSize="md" variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count.comments} Comments`}</Button>
+              <Button display={['none', 'flex']} fontSize={"md"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count.comments} Comments`}</Button>
+              <Button display={['flex', 'none']} fontSize={"sm"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count.comments}`}</Button>
               <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
                 <ModalOverlay />
                 <ModalContent>
@@ -179,6 +194,12 @@ function Post({ post }: { post: FullPost }) {
       }
     </Box>
   );
+}
+
+const MobilePost = () => {
+  return (
+    <></>
+  )
 }
 
 export default Post;

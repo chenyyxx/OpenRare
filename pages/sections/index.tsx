@@ -16,13 +16,15 @@ export default function SectionHome() {
   return (
     <Box minH="100vh" bg={"gray.100"}>
       <Sidebar>
-        <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
+        <Flex justify="center" pt={"78px"}>
           <VStack
-            p="24px"
-            mt="24px"
+            p="12px"
+            m="12px"
+            w="full"
+            maxW="1200px"
             divider={<StackDivider borderColor="gray.200" />}
             spacing={4}
-            align="stretch"
+            // align="stretch"
             bg={"white"}
             rounded={"md"}
           >

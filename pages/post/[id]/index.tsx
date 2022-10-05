@@ -24,6 +24,7 @@ import Comment from "../../../components/comment";
 import { Prisma } from "@prisma/client";
 import useSWR from "swr";
 import { fetchData } from "../../../utils/utils";
+import Sidebar from "../../../components/sidebar";
 
 export type FullPostEx = Prisma.PostGetPayload<{
   include: {
@@ -106,21 +107,22 @@ export default function SectionDetail({
   const {postDetail, isLoading, isError} = usePostDetail(url, initialPost);
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <Nav />
-      <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
-        <VStack h="max" p={"24px"} spacing={"24px"} pos="sticky" top={"64px"}>
-          <LeftSideBar />
-          {postDetail && <SmallProfile user={postDetail.user} />}
-        </VStack>
-        {postDetail && (
-          <VStack w="full" p="24px">
-            <PostDetail post={postDetail} url={url} />
-            {postDetail.comments.map((comment) => (
-              <Comment comment={comment} url={url} isCompact={false} key={comment.id} />
-            ))}
-          </VStack>
-        )}
-      </Flex>
+      <Sidebar>
+        <Flex justify="center" pt={"78px"}>
+          {/* <VStack h="max" p={"24px"} spacing={"24px"} pos="sticky" top={"64px"}>
+            {postDetail && <SmallProfile user={postDetail.user} />}
+          </VStack> */}
+          {postDetail && (
+            <VStack w="full" maxW="1200px" p={"12px"}>
+              <PostDetail post={postDetail} url={url} />
+              {postDetail.comments.map((comment) => (
+                <Comment comment={comment} url={url} isCompact={false} key={comment.id} />
+              ))}
+            </VStack>
+          )}
+        </Flex>
+      </Sidebar>
+      
     </Box>
   );
 }

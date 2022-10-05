@@ -53,14 +53,18 @@ export default function Section({ section }: { section: FullSection }) {
     }
   };
   return (
-    <Flex w={"full"} justify="space-between">
+    <Stack
+      w={"full"}
+      direction={["column", "column", "column", "row"]}
+      justify="space-between"
+    >
       <HStack align={"center"} mb={1} spacing={8}>
         <Avatar size={"md"} name={section.name} objectFit={"cover"} />
         <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
           {section.name}
         </Heading>
       </HStack>
-      <HStack spacing={8}>
+      <HStack spacing={8} justify="space-between">
         <Stack
           direction={"row"}
           justify={"center"}
@@ -116,6 +120,6 @@ export default function Section({ section }: { section: FullSection }) {
           </Box>
         </HStack>
       </HStack>
-    </Flex>
+    </Stack>
   );
 }

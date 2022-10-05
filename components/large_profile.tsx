@@ -6,15 +6,16 @@ import {
   Center,
   HStack,
   Image,
-  Flex,
+  VStack,
   Text,
   Stack,
   Button,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { SmallUser } from "./small_profile";
+import { SimpleGrid } from "@chakra-ui/react";
 
-export default function LargeProfile({user}: {user: SmallUser}) {
+export default function LargeProfile({ user }: { user: SmallUser }) {
   const parentRef = useRef(null);
   const [leftColWidth, setLeftColWidth] = useState(0);
 
@@ -40,88 +41,79 @@ export default function LargeProfile({user}: {user: SmallUser}) {
 
   return (
     <Center>
-      <Box
+      <VStack
         w={"full"}
+        maxW={['800px','800px','800px','800px','1200px']}
         bg={useColorModeValue("white", "gray.800")}
-        boxShadow={"2xl"}
         rounded={"md"}
-        pos="relative"
-        overflow={"hidden"}
       >
-        <Image
-          h={"240px"}
-          w={"full"}
-          src={
-            `${user?.backGroundImage}`
-          }
-          objectFit={"cover"}
-          alt="profile_image"
-        />
-        <HStack>
-          <Box w={"40%"} ref={parentRef}>
-            <Flex
-              pos="absolute"
-              top="140px"
-              left={(leftColWidth / 2 - 102).toString() + "px"}
+        <SimpleGrid columns={[1, 1, 1, 1 ,2]}>
+          <VStack>
+            <VStack
+              p="24px"
+              spacing="24px"
+              // top="140px"
+              // left={(leftColWidth / 2 - 102).toString() + "px"}
             >
               {/* <Flex justify={'center'} mt={-32}> */}
               <Avatar
                 boxSize={"204px"}
-                src={
-                  `${user?.image}`
-                }
+                src={`${user?.image}`}
                 css={{
                   border: "2px solid white",
                 }}
               />
-            </Flex>
+            </VStack>
 
-            <Box pt={24} px={6} pb={6}>
+            <Box w="full" px={6} pb={6}>
               <Stack direction={"row"} justify={"center"} spacing={6}>
                 <Stack w={"15%"} spacing={0} align={"center"}>
-                  <Text fontWeight={600}>{user.posts ? user.posts.length : 0}</Text>
+                  <Text fontWeight={600}>
+                    {user.posts ? user.posts.length : 0}
+                  </Text>
                   <Text fontSize={"sm"} color={"gray.500"}>
                     Posts
                   </Text>
                 </Stack>
                 <Stack w={"15%"} spacing={0} align={"center"}>
-                  <Text fontWeight={600}>{user.followedBy ? user.followedBy.length : 0}</Text>
+                  <Text fontWeight={600}>
+                    {user.followedBy ? user.followedBy.length : 0}
+                  </Text>
                   <Text fontSize={"sm"} color={"gray.500"}>
                     Followers
                   </Text>
                 </Stack>
                 <Stack w={"15%"} spacing={0} align={"center"}>
-                  <Text fontWeight={600}>{user.following ? user.following.length : 0}</Text>
+                  <Text fontWeight={600}>
+                    {user.following ? user.following.length : 0}
+                  </Text>
                   <Text fontSize={"sm"} color={"gray.500"}>
                     Following
                   </Text>
                 </Stack>
               </Stack>
-
-              <Button
-                colorScheme="teal"
-                variant="solid"
-                rounded={"md"}
-                pos="absolute"
-                top="264px"
-                right="64px"
-              >
+            </Box>
+          </VStack>
+          <Stack
+            spacing={4}
+            align={"start"}
+            h="full"
+            pl={["24px", "24px", "24px", "24px" , "0px"]}
+            pr="64px"
+            py="36px"
+          >
+            <HStack w='full' justify={'space-between'}>
+              <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
+                {user.name}
+              </Heading>
+              <Button  colorScheme="teal" variant="solid" rounded={"md"}>
                 Edit Profile
               </Button>
-            </Box>
-          </Box>
-          <Box w={"60%"}>
-            <Stack spacing={4} align={"start"} h="full" pr="64px" py="36px">
-              <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-                 {user.name}
-              </Heading>
-              <Text>
-                {user.description}
-              </Text>
-            </Stack>
-          </Box>
-        </HStack>
-      </Box>
+            </HStack>
+            <Text>{user.description}</Text>
+          </Stack>
+        </SimpleGrid>
+      </VStack>
     </Center>
   );
 }

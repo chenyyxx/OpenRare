@@ -19,6 +19,7 @@ import Select from "react-select";
 import { FullSection } from "../components/section";
 import { fetchData } from "../utils/utils";
 import { useSession } from "next-auth/react";
+import Sidebar from "../components/sidebar";
 
 // TODO: put this in util function
 export function useSections() {
@@ -99,98 +100,96 @@ export default function CreatePost() {
 
   return (
     <Box minH="100vh" bg={"gray.100"}>
-      <Nav />
-      <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
-        <Box minH="full" p={"24px"}>
-          <LeftSideBar />
-        </Box>
-        <Box w="full" p="24px" minH="full">
-          <Box bg="white" rounded={"md"}>
-            <FormControl p="24px">
-              <Stack spacing={"12px"}>
-                <FormLabel htmlFor="title">Create Your Post</FormLabel>
-                <Select
-                  placeholder="Select a Section..."
-                  isSearchable
-                  isClearable
-                  onChange={(e) => {
-                    setSelectedSectionId(e == null ? "" : e.value);
-                  }}
-                  options={options}
-                />
-                <Input
-                  id="title"
-                  type="title"
-                  placeholder="Enter post title"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-                <Box rounded={"md"}>
-                  <RichTextEditor
-                    controls={[
-                      ["bold", "italic", "underline", "link"],
-                      ["unorderedList", "h1", "h2", "h3"],
-                      ["sup", "sub"],
-                      ["alignLeft", "alignCenter", "alignRight"],
-                    ]}
-                    styles={{
-                      root: {
-                        borderColor: "#E2E8F0",
-                        borderRadius: "0.375rem",
-                        minHeight: "300px",
-                      },
-                      toolbar: { borderColor: "#E2E8F0", zIndex: 0 },
+      <Sidebar>
+        <Flex justify="center" pt={"78px"}>
+          <Box w="full" p="24px" minH="full" maxW='1200px'>
+            <Box bg="white" rounded={"md"}>
+              <FormControl p="24px">
+                <Stack spacing={"12px"}>
+                  <FormLabel htmlFor="title">Create Your Post</FormLabel>
+                  <Select
+                    placeholder="Select a Section..."
+                    isSearchable
+                    isClearable
+                    onChange={(e) => {
+                      setSelectedSectionId(e == null ? "" : e.value);
                     }}
-                    value={content}
-                    onChange={setCotent}
+                    options={options}
                   />
-                </Box>
-                <HStack justify={"end"}>
-                  <Box>
-                    <Button
-                      w={"full"}
-                      mt={2}
-                      color={"white"}
-                      rounded={"md"}
-                      colorScheme={"teal"}
-                      _hover={{
-                        transform: "translateY(-2px)",
-                        boxShadow: "lg",
+                  <Input
+                    id="title"
+                    type="title"
+                    placeholder="Enter post title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <Box rounded={"md"}>
+                    <RichTextEditor
+                      controls={[
+                        ["bold", "italic", "underline", "link"],
+                        ["unorderedList", "h1", "h2", "h3"],
+                        ["sup", "sub"],
+                        ["alignLeft", "alignCenter", "alignRight"],
+                      ]}
+                      styles={{
+                        root: {
+                          borderColor: "#E2E8F0",
+                          borderRadius: "0.375rem",
+                          minHeight: "300px",
+                        },
+                        toolbar: { borderColor: "#E2E8F0", zIndex: 0 },
                       }}
-                      style={{ textDecoration: "none" }}
-                      _focus={{ boxShadow: "none" }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        router.back();
-                      }}
-                    >
-                      Cancel
-                    </Button>
+                      value={content}
+                      onChange={setCotent}
+                    />
                   </Box>
-                  <Box>
-                    <Button
-                      onClick={handleNewPost}
-                      w={"full"}
-                      mt={2}
-                      color={"white"}
-                      rounded={"md"}
-                      colorScheme={"teal"}
-                      _hover={{
-                        transform: "translateY(-2px)",
-                        boxShadow: "lg",
-                      }}
-                      style={{ textDecoration: "none" }}
-                      _focus={{ boxShadow: "none" }}
-                    >
-                      Create
-                    </Button>
-                  </Box>
-                </HStack>
-              </Stack>
-            </FormControl>
+                  <HStack justify={"end"}>
+                    <Box>
+                      <Button
+                        w={"full"}
+                        mt={2}
+                        color={"white"}
+                        rounded={"md"}
+                        colorScheme={"teal"}
+                        _hover={{
+                          transform: "translateY(-2px)",
+                          boxShadow: "lg",
+                        }}
+                        style={{ textDecoration: "none" }}
+                        _focus={{ boxShadow: "none" }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          router.back();
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </Box>
+                    <Box>
+                      <Button
+                        onClick={handleNewPost}
+                        w={"full"}
+                        mt={2}
+                        color={"white"}
+                        rounded={"md"}
+                        colorScheme={"teal"}
+                        _hover={{
+                          transform: "translateY(-2px)",
+                          boxShadow: "lg",
+                        }}
+                        style={{ textDecoration: "none" }}
+                        _focus={{ boxShadow: "none" }}
+                      >
+                        Create
+                      </Button>
+                    </Box>
+                  </HStack>
+                </Stack>
+              </FormControl>
+            </Box>
           </Box>
-        </Box>
-      </Flex>
+        </Flex>
+      </Sidebar>
     </Box>
   );
 }

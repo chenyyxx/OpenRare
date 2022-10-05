@@ -32,7 +32,9 @@ import {
   FiUser,
   FiMenu,
   FiChevronDown,
+  FiPlusSquare,
 } from "react-icons/fi";
+import { IoCreateOutline } from "react-icons/io5";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
 
@@ -42,10 +44,10 @@ interface LinkItemProps {
   link: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: 'Home', icon: FiHome, link: '/home' },
-  { name: 'Explore', icon: FiCompass, link: '/' },
-  { name: 'Sections', icon: FiList, link: '/sections' },
-  { name: 'Profile', icon: FiUser, link: '/profile' },
+  { name: "Home", icon: FiHome, link: "/home" },
+  { name: "Explore", icon: FiCompass, link: "/" },
+  { name: "Sections", icon: FiList, link: "/sections" },
+  { name: "Profile", icon: FiUser, link: "/profile" },
 ];
 
 export default function Sidebar({ children }: { children: ReactNode }) {
@@ -72,7 +74,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, md: 60 }} p="0px">
         {children}
       </Box>
     </Box>
@@ -136,7 +138,7 @@ const NavItem = ({ icon, link, children, ...rest }: NavItemProps) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
+          bg: "teal.500",
           color: "white",
         }}
         {...rest}
@@ -194,17 +196,29 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         objectFit="cover"
       />
 
-      <HStack spacing={{ base: "0", md: "6" }}>
+      <HStack spacing={{ base: "3", md: "6" }}>
         {/* TODO: Move the create post button sticky on top below the nav bar */}
         <Button
+          leftIcon={<IoCreateOutline />}
           display={{ base: "none", md: "flex" }}
           colorScheme="teal"
           variant="solid"
           as={"a"}
           href={`/create_post`}
         >
-          Create Post
+          New
         </Button>
+        <IconButton
+          icon={<IoCreateOutline />}
+          display={{ base: "flex", md: "none" }}
+          colorScheme="teal"
+          variant="solid"
+          rounded={"3xl"}
+          aria-label="create new post"
+          as={"a"}
+          size='sm'
+          href={`/create_post`}
+        />
         <Flex alignItems={"center"}>
           <Menu>
             <MenuButton

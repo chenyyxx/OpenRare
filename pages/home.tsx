@@ -29,12 +29,12 @@ import { SmallUser } from "../components/small_profile";
 import { FullPost } from "../components/post";
 import useSWR from "swr";
 import { fetchData, fetchFlatUserSectionPost } from "../utils/utils";
-import Sidebar from '../components/sidebar';
+import Sidebar from "../components/sidebar";
 
 export default function Home() {
   const { data: session, status } = useSession();
 
-  const email = session?.user.email; 
+  const email = session?.user.email;
   const { data: user, error: userError } = useSWR<SmallUser>(
     `/api/get_full_user?email=${email}`,
     fetchData
@@ -50,75 +50,80 @@ export default function Home() {
     <Box minH="100vh" bg={"gray.100"}>
       <Nav />
       <Sidebar>
-      {status === "authenticated" && (
-        <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
-          <Box>
-            <Wrap justify="center" pt="24px" pl="24px" pr="24px">
-              {/* <HStack> */}
-              <WrapItem>
-                <Button colorScheme="teal" variant="solid" rounded={20}>
-                  My Posts
-                </Button>
-              </WrapItem>
-              {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button></WrapItem> */}
-              {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button></WrapItem> */}
-              <WrapItem>
-                <Button colorScheme="teal" variant="outline" rounded={20}>
-                  Comments
-                </Button>
-              </WrapItem>
-              {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
+        {status === "authenticated" && (
+          <Flex justify="center" pt={"78px"}>
+            <Box>
+              <Wrap justify="center" pt="24px" pl="24px" pr="24px">
+                {/* <HStack> */}
+                <WrapItem>
+                  <Button colorScheme="teal" variant="solid" rounded={20}>
+                    My Posts
+                  </Button>
+                </WrapItem>
+                {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button></WrapItem> */}
+                {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button></WrapItem> */}
+                <WrapItem>
+                  <Button colorScheme="teal" variant="outline" rounded={20}>
+                    Comments
+                  </Button>
+                </WrapItem>
+                {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem> */}
-            </Wrap>
-            <VStack p="24px" minH="full" spacing={"24px"}>
-              {user_sections_posts_flat &&
-                user_sections_posts_flat.map((post) => (
-                  <Post post={post} key={post.id} />
-                ))}
-            </VStack>
-          </Box>
-          <VStack minH="full" p={"24px"} spacing={"24px"}>
-            {/* <LeftSideBar/> */}
-            <Stack
-              divider={<StackDivider borderColor="gray.200" />}
-              bg={"white"}
-              borderRight="1px"
-              borderRightColor={"gray.200"}
-              w={{ base: "none", md: "320px" }}
-              rounded={"md"}
-              h="max"
-              p={6}
-              spacing={"24px"}
-            >
-              <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-                My Profile
-              </Heading>
-              {user && <SmallProfile user={user} />}
-            </Stack>
-            <Stack
-              divider={<StackDivider borderColor="gray.200" />}
-              bg={"white"}
-              borderRight="1px"
-              borderRightColor={"gray.200"}
-              w={{ base: "none", md: "320px" }}
-              rounded={"md"}
-              h="max"
-              p={6}
-              spacing={"24px"}
-            >
-              <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-                My Sections
-              </Heading>
-              <VStack minH="full" spacing={"12px"}>
-                {user &&
-                  user.sections.map((section) => (
-                    <SmallSection section={section} key={section.id} />
+              </Wrap>
+              <VStack p="24px" minH="full" spacing={"24px"}>
+                {user_sections_posts_flat &&
+                  user_sections_posts_flat.map((post) => (
+                    <Post post={post} key={post.id} />
                   ))}
               </VStack>
-            </Stack>
-          </VStack>
-        </Flex>
-      )}
+            </Box>
+            <VStack
+              minH="full"
+              p={"24px"}
+              spacing={"24px"}
+              display={["none", "none", "none", "none", "flex"]}
+            >
+              {/* <LeftSideBar/> */}
+              <Stack
+                divider={<StackDivider borderColor="gray.200" />}
+                bg={"white"}
+                borderRight="1px"
+                borderRightColor={"gray.200"}
+                w={{ base: "none", md: "320px" }}
+                rounded={"md"}
+                h="max"
+                p={6}
+                spacing={"24px"}
+              >
+                <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
+                  My Profile
+                </Heading>
+                {user && <SmallProfile user={user} />}
+              </Stack>
+              <Stack
+                divider={<StackDivider borderColor="gray.200" />}
+                bg={"white"}
+                borderRight="1px"
+                borderRightColor={"gray.200"}
+                w={{ base: "none", md: "320px" }}
+                rounded={"md"}
+                h="max"
+                p={6}
+                spacing={"24px"}
+              >
+                <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
+                  My Sections
+                </Heading>
+                <VStack minH="full" spacing={"12px"}>
+                  {user &&
+                    user.sections.map((section) => (
+                      <SmallSection section={section} key={section.id} />
+                    ))}
+                </VStack>
+              </Stack>
+            </VStack>
+          </Flex>
+        )}
       </Sidebar>
     </Box>
   );

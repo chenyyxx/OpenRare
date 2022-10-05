@@ -8,7 +8,7 @@ import {
   InputGroup,
   Input,
   InputRightElement,
-  IconButton,
+  SimpleGrid,
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
@@ -40,9 +40,9 @@ export default function Profile() {
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       <Sidebar>
         {status === "authenticated" && (
-          <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
+          <Flex justify="center" pt={"78px"}>
             <Box>
-              <Box pt="24px" pl="24px" pr="24px">
+              <Box pt="24px" pl="24px" pr="24px" maxW="1200px">
                 {session && user && <LargeProfile user={user} />}
               </Box>
               <Wrap justify="center" pt="24px" pl="24px" pr="24px">
@@ -78,10 +78,10 @@ export default function Profile() {
                   </Button>
                 </WrapItem>
               </Wrap>
-              <VStack p="24px" minH="full" spacing={"24px"}>
+              <SimpleGrid p="12px" columns={[1,1,1,1,2]} spacing='12px' maxW='1200px'>
                 {user &&
                   user.posts.map((post) => <Post post={post} key={post.id} />)}
-              </VStack>
+              </SimpleGrid>
             </Box>
           </Flex>
         )}

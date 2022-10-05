@@ -7,6 +7,7 @@ import {
   Flex,
   Wrap,
   WrapItem,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import Nav from "../components/nav";
 import Post from "../components/post";
@@ -32,11 +33,13 @@ export default function Explore({
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       {/* <Nav /> */}
       <Sidebar >
-        <Flex justify="center" pl={"20%"} pr={"20%"} pt={"64px"}>
+        <Flex justify="center" pt={"78px"}>
           <Box>
-            <VStack p="24px" minH="full" spacing={"12px"}>
-              {posts && posts.map((post) => <Post post={post} key={post.id} />)}
-            </VStack>
+            {/* <VStack p="24px" minH="full" spacing={"12px"}> */}
+              <SimpleGrid p="12px" columns={[1,1,1,1,2]} spacing='12px'>
+                {posts && posts.map((post) => <Post post={post} key={post.id} />)}
+              </SimpleGrid>
+            {/* </VStack> */}
           </Box>
         </Flex>
       </Sidebar>
