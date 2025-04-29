@@ -26,6 +26,7 @@ import RichTextEditor from "./RichText";
 import { useState, useRef, useEffect } from "react";
 import { usePostDetail } from "../pages/post/[id]";
 import Comment from "./comment";
+import { useRouter } from 'next/navigation'
 
 export type FullPost = Prisma.PostGetPayload<{
   include: {
@@ -48,6 +49,7 @@ function Post({ post }: { post: FullPost }) {
   const postContent = post.content.replace(/<[^>]+>/g, "");
   const url = `/api/get_post/${post.id}`;
   const {postDetail, isLoading, isError} = usePostDetail(url, null);
+  const router = useRouter();
 
   useEffect(() => {
     const isOverflowActive = (
@@ -144,7 +146,7 @@ function Post({ post }: { post: FullPost }) {
                 />
               </Box>
             ) : (
-              <Text as={Link} fontSize={"sm"} noOfLines={5} ref={textRef}>
+              <Text fontSize={"sm"} noOfLines={5} ref={textRef}>
                 {postContent}
               </Text>
             )}
