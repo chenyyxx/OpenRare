@@ -122,6 +122,7 @@ export default function LargeSection({ section }: { section: FullSection }) {
                 colorScheme={"teal"}
                 as={Link}
                 href={section.definition}
+                passHref={true}
                 style={{ textDecoration: "none" }}
                 _focus={{ boxShadow: "none" }}
               >
