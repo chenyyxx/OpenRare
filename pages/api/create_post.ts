@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from "next-auth/react"
 import prisma from "../../db";
 
-const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
+const create_post = async (req: NextApiRequest, res: NextApiResponse) => {
     const { post } = req.body;
     const session = await getSession({ req });
     if (!session) {
@@ -29,4 +29,4 @@ const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
     
 }
 
-export default get_all_posts
+export default create_post
