@@ -21,6 +21,12 @@ import { fetchData } from "../utils/utils";
 import { useSession } from "next-auth/react";
 import Sidebar from "../components/sidebar";
 
+// Define the option type
+interface Option {
+  value: string;
+  label: string;
+}
+
 // TODO: put this in util function
 export function useSections() {
   const { data, error } = useSWR<FullSection[], Error>(
@@ -111,7 +117,7 @@ export default function CreatePost() {
                     placeholder="Select a Section..."
                     isSearchable
                     isClearable
-                    onChange={(e) => {
+                    onChange={(e: Option | null) => {
                       setSelectedSectionId(e == null ? "" : e.value);
                     }}
                     options={options}
@@ -121,7 +127,7 @@ export default function CreatePost() {
                     type="title"
                     placeholder="Enter post title"
                     value={title}
-                    onChange={(e) => setTitle(e.target.value)}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
                   />
                   <Box rounded={"md"}>
                     <RichTextEditor
@@ -157,7 +163,7 @@ export default function CreatePost() {
                         }}
                         style={{ textDecoration: "none" }}
                         _focus={{ boxShadow: "none" }}
-                        onClick={(e) => {
+                        onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
                           e.preventDefault();
                           router.back();
                         }}

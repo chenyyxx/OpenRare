@@ -14,10 +14,12 @@ import {
 } from "@chakra-ui/react";
 import { SmallUser } from "./small_profile";
 import { SimpleGrid } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 
 export default function LargeProfile({ user }: { user: SmallUser }) {
   const parentRef = useRef(null);
   const [leftColWidth, setLeftColWidth] = useState(0);
+  const router = useRouter();
 
   // This function calculates width of the leftCol
   const getLeftColWidth = () => {
@@ -106,7 +108,7 @@ export default function LargeProfile({ user }: { user: SmallUser }) {
               <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
                 {user.name}
               </Heading>
-              <Button  colorScheme="teal" variant="solid" rounded={"md"}>
+              <Button  colorScheme="teal" variant="solid" rounded={"md"} onClick={() => router.push("/edit_profile")}>
                 Edit Profile
               </Button>
             </HStack>

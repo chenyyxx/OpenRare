@@ -160,7 +160,7 @@ export default function Comment({
               rounded={6}
               isRequired
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setContent(e.target.value)}
               placeholder={"Reply to @" + [comment.user.name]}
               size="sm"
             />
@@ -171,7 +171,7 @@ export default function Comment({
               <Button
                 size="sm"
                 colorScheme="teal"
-                onClick={(e) => handleNewSubComment(e)}
+                onClick={(e: React.MouseEvent<HTMLElement>) => handleNewSubComment(e)}
               >
                 Comment
               </Button>

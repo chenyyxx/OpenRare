@@ -148,7 +148,7 @@ export default function PostDetail({ post, url }: AppProps) {
               <Button
                 size="sm"
                 colorScheme="teal"
-                onClick={(e) => handleNewComment(e)}
+                onClick={(e: React.MouseEvent<HTMLElement>) => handleNewComment(e)}
               >
                 Comment
               </Button>

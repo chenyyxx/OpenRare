@@ -72,7 +72,7 @@ export default function EditPost() {
                   type="title"
                   placeholder="Enter post title"
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e:React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
                 />
                 <Box rounded={"md"}>
                   <RichTextEditor
@@ -108,7 +108,7 @@ export default function EditPost() {
                       }}
                       style={{ textDecoration: "none" }}
                       _focus={{ boxShadow: "none" }}
-                      onClick={(e) => {
+                      onClick={(e: React.MouseEvent<HTMLElement>) => {
                         e.preventDefault();
                         router.back();
                       }}

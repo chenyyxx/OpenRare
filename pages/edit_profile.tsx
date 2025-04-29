@@ -9,7 +9,8 @@ import {
     Flex,
     Button,
     HStack,
-    useToast
+    useToast,
+    Textarea
   } from '@chakra-ui/react'
 import Nav from "../components/nav";
 import Sidebar from "../components/sidebar";
@@ -62,15 +63,36 @@ export default function EditProfile() {
                                     <Input 
                                         placeholder='Enter Your Name' 
                                         value={name}
-                                        onChange={(e) => setName(e.target.value)}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                                     />
                                     <FormLabel>Profile Description</FormLabel>
-                                    <Input 
+                                    <Textarea 
                                         placeholder='Enter Your Profile Description' 
                                         value={description}
-                                        onChange={(e) => setDescription(e.target.value)}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
                                     />
                                     <HStack justify={"end"}>
+                                        <Box>
+                                            <Button
+                                                w={"full"}
+                                                mt={2}
+                                                color={"white"}
+                                                rounded={"md"}
+                                                colorScheme={"teal"}
+                                                _hover={{
+                                                    transform: "translateY(-2px)",
+                                                    boxShadow: "lg",
+                                                }}
+                                                style={{ textDecoration: "none" }}
+                                                _focus={{ boxShadow: "none" }}
+                                                onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                    e.preventDefault();
+                                                    router.back();
+                                                }}
+                                            >
+                                                Cancel
+                                            </Button>
+                                        </Box>
                                         <Box>
                                             <Button
                                                 onClick={handleEditProfile}

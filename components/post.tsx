@@ -156,7 +156,7 @@ function Post({ post }: { post: FullPost }) {
               <Text
                 fontSize={"sm"}
                 as={Link}
-                onClick={(e) => setTextOpen(!textOpen)}
+                onClick={(e: React.MouseEvent<HTMLElement>) => setTextOpen(!textOpen)}
               >
                 {textOpen ? "show less" : "... show more"}
               </Text>

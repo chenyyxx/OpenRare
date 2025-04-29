@@ -137,13 +137,13 @@ export default function SubComments({subComment, url, labelColor}:AppProps){
                             rounded={6}
                             isRequired
                             value={content}
-                            onChange={e=>setContent(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setContent(e.target.value)}
                             placeholder={"Reply to @" + [subComment.user.name]}
                             size='sm'
                         />
                         <HStack pt='12px' justify="right" w="full">
                             <Button size='sm'  onClick={()=>setShowEditor(false)}>Cancel</Button>
-                            <Button  size='sm' colorScheme="teal" onClick={e=>handleReplySubComment(e)} >Comment</Button>
+                            <Button  size='sm' colorScheme="teal" onClick={(e: React.MouseEvent<HTMLElement>) => handleReplySubComment(e)} >Comment</Button>
                         </HStack>
                     </Box>  
                 :
