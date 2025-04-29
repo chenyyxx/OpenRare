@@ -108,7 +108,7 @@ export default function EditPost() {
                       }}
                       style={{ textDecoration: "none" }}
                       _focus={{ boxShadow: "none" }}
-                      onClick={(e: React.MouseEvent<HTMLElement>) => {
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                         e.preventDefault();
                         router.back();
                       }}

@@ -85,7 +85,7 @@ export default function EditProfile() {
                                                 }}
                                                 style={{ textDecoration: "none" }}
                                                 _focus={{ boxShadow: "none" }}
-                                                onClick={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                                     e.preventDefault();
                                                     router.back();
                                                 }}
