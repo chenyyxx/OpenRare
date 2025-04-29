@@ -160,7 +160,7 @@ export default function Comment({
               rounded={6}
               isRequired
               value={content}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setContent(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
               placeholder={"Reply to @" + [comment.user.name]}
               size="sm"
             />
