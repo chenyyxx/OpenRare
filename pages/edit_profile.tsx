@@ -69,7 +69,7 @@ export default function EditProfile() {
                                     <Textarea 
                                         placeholder='Enter Your Profile Description' 
                                         value={description}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
+                                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
                                     />
                                     <HStack justify={"end"}>
                                         <Box>

@@ -137,7 +137,7 @@ export default function SubComments({subComment, url, labelColor}:AppProps){
                             rounded={6}
                             isRequired
                             value={content}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setContent(e.target.value)}
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
                             placeholder={"Reply to @" + [subComment.user.name]}
                             size='sm'
                         />
