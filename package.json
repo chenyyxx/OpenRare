@@ -1,6 +1,6 @@
 {
   "name": "rare_disease_forum",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -22,7 +22,7 @@
     "fetch-dedupe": "^3.0.0",
     "framer-motion": "^6.2.8",
     "next": "^15.3.1",
-    "next-auth": "^4.10.0",
+    "next-auth": "^4.24.11",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^4.3.1",
@@ -32,7 +32,7 @@
   "devDependencies": {
     "@types/node": "^17.0.21",
     "@types/react": "18.0.0",
-    "eslint": "8.11.0",
+    "eslint": "9.25.1",
     "eslint-config-next": "15.3.1",
     "prisma": "^4.0.0",
     "ts-node": "^10.7.0",

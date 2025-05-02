@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 // import EmailProvider from 'next-auth/providers/email'
@@ -8,7 +8,7 @@ import { PrismaClient } from "@prisma/client";
 import prisma from "../../../db";
 // import { redirect } from 'next/dist/server/api-utils';
 
-export default NextAuth({
+export const authOptions: AuthOptions = {
   providers: [
     // OAuth authentication providers...
     GoogleProvider({
@@ -75,4 +75,6 @@ export default NextAuth({
     //   async session(message) { /* session is active */ },
     //   async error(message) { /* error in authentication flow */ }
   },
-});
+}
+
+export default NextAuth(authOptions);
