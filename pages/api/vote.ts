@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth/react"
+import { authOptions } from "./auth/[...nextauth]"
 import prisma from "../../db";
 // const prisma = new PrismaClient()
 
@@ -9,7 +10,7 @@ const vote = async (req: NextApiRequest, res: NextApiResponse) => {
     if (method == "POST") {
         const user_vote = req.body;
         console.log(user_vote);
-        const session = await getSession({ req });
+        const session = await getServerSession(req, res, authOptions)
 
         if (!session) {
             return res.status(500).json({ error: "You have to be logged in." });

@@ -1,11 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getSession } from "next-auth/react"
+import { getServerSession } from "next-auth/react"
+import { authOptions } from "./auth/[...nextauth]"
 import prisma from "../../db";
 
 const edit_profile = async (req: NextApiRequest, res: NextApiResponse) => {
     const { profileEdits } = req.body;
-    const session = await getSession({ req });
+    const session = await getServerSession(req, res, authOptions)
     if (!session) {
         return res.status(500).json({ error: "You have to be logged in." });
     }
