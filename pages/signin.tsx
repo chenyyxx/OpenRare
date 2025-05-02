@@ -36,7 +36,14 @@ export default function SignIn({providers}:{providers: Providers} ) {
           </Center>
         </Button> */}
         {Object.values(providers).map(provider => (
-          <Button key={provider.name} colorScheme="teal" mb={3} onClick={() => signIn(provider.id)}>
+          <Button 
+            key={provider.name} 
+            colorScheme="teal" mb={3} 
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
+              e.preventDefault()
+              signIn(provider.id)
+            }
+          }>
             Sign in with {provider.name}
           </Button>
         ))}
