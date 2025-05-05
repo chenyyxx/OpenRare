@@ -39,7 +39,6 @@ export default function EditProfile() {
         description: description,
         user: session?.user,
       };
-      console.log(newProfileEdits)
       // api request
       await fetch("/api/edit_profile", {
         method: "POST",

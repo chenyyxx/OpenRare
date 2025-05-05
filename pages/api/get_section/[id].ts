@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 const prisma = new PrismaClient()
 
-const get_all_sections = async (req: NextApiRequest, res: NextApiResponse) => {
+const get_section = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.id
     const sections = await prisma.section.findMany({
         where : {
@@ -27,4 +27,4 @@ const get_all_sections = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(200).json(sections)
 }
 
-export default get_all_sections
+export default get_section
