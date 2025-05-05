@@ -80,7 +80,6 @@ export default function Home() {
                     w={"full"}
                     minW="500px"
                     maxW="800px"
-                    bg={useColorModeValue("white", "gray.900")}
                     borderColor="gray.200"
                     borderWidth="1px"
                     rounded={"md"}
