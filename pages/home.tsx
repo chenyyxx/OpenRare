@@ -53,7 +53,7 @@ export default function Home() {
         {status === "authenticated" && (
           <Flex justify="center" pt={"78px"}>
             <Box>
-              <Wrap justify="center" pt="24px" pl="24px" pr="24px">
+              <Wrap justify="left" pt="24px" pl="24px" pr="24px">
                 {/* <HStack> */}
                 <WrapItem>
                   <Button colorScheme="teal" variant="solid" rounded={20}>
@@ -62,19 +62,34 @@ export default function Home() {
                 </WrapItem>
                 {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button></WrapItem> */}
                 {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button></WrapItem> */}
-                <WrapItem>
+                {/* <WrapItem>
                   <Button colorScheme="teal" variant="outline" rounded={20}>
                     Comments
                   </Button>
-                </WrapItem>
+                </WrapItem> */}
                 {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem> */}
               </Wrap>
               <VStack p="24px" minH="full" spacing={"24px"}>
-                {user_sections_posts_flat &&
+                {user_sections_posts_flat && user_sections_posts_flat.length !== 0 ? (
                   user_sections_posts_flat.map((post) => (
                     <Post post={post} key={post.id} />
-                  ))}
+                  ))
+                ) : (
+                  <Box
+                    w={"full"}
+                    minW="500px"
+                    maxW="800px"
+                    bg={useColorModeValue("white", "gray.900")}
+                    borderColor="gray.200"
+                    borderWidth="1px"
+                    rounded={"md"}
+                    p={6}
+                    overflow={"hidden"}
+                  >
+                    You have no posts
+                  </Box>
+                )}
               </VStack>
             </Box>
             <VStack

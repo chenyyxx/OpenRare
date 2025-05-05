@@ -45,14 +45,14 @@ export default function Profile() {
               <Box pt="24px" pl="24px" pr="24px" maxW="1200px">
                 {session && user && <LargeProfile user={user} />}
               </Box>
-              <Wrap justify="center" pt="24px" pl="24px" pr="24px">
+              <Wrap justify="left" pt="24px" pl="24px" pr="24px">
                 {/* <HStack> */}
                 <WrapItem>
                   <Button colorScheme="teal" variant="solid" rounded={20}>
                     My Posts
                   </Button>
                 </WrapItem>
-                <WrapItem>
+                {/* <WrapItem>
                   <Button colorScheme="teal" variant="outline" rounded={20}>
                     Favorites
                   </Button>
@@ -76,7 +76,7 @@ export default function Profile() {
                   <Button colorScheme="teal" variant="outline" rounded={20}>
                     Notifications
                   </Button>
-                </WrapItem>
+                </WrapItem> */}
               </Wrap>
               <SimpleGrid p="12px" columns={[1,1,1,1,2]} spacing='12px' maxW='1200px'>
                 {user &&
