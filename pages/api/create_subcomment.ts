@@ -1,36 +1,34 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { getServerSession } from "next-auth"
-import { authOptions } from "./auth/[...nextauth]"
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./auth/[...nextauth]";
 import prisma from "../../db";
 // const prisma = new PrismaClient()
 
 const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
-    
-    const subComment = req.body;
-    const session = await getServerSession(req, res, authOptions)
-    
-    if (!session) {
-        return res.status(500).json({ error: "You have to be logged in." });
-    }
-    try {
-        const newSubComment = await prisma.subComment.create({
-            data: {   
-                user: {
-                    connect: {email: subComment.user.email}
-                },
-                content: subComment.content,
-                comment: {
-                    connect: {id: subComment.commentId}
-                }
-            },
-        })
-        res.status(200).json(newSubComment)
-    } catch (e) {
-        return res.status(500).json({ error: e });
-    }
-    
-}
+  const subComment = req.body;
+  const session = await getServerSession(req, res, authOptions);
 
-export default get_all_posts
+  if (!session) {
+    return res.status(500).json({ error: "You have to be logged in." });
+  }
+  try {
+    const newSubComment = await prisma.subComment.create({
+      data: {
+        user: {
+          connect: { email: subComment.user.email },
+        },
+        content: subComment.content,
+        comment: {
+          connect: { id: subComment.commentId },
+        },
+      },
+    });
+    res.status(200).json(newSubComment);
+  } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+};
+
+export default get_all_posts;
