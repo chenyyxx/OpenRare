@@ -18,7 +18,6 @@
 
 - [x] 3. Create user registration API endpoint
 
-
   - Implement `/api/auth/register` endpoint for email/password registration
   - Add email format validation and duplicate email checking
   - Integrate password hashing for new user accounts
@@ -26,7 +25,8 @@
   - Write tests for registration endpoint
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 4.2_
 
-- [ ] 4. Configure NextAuth credentials provider
+- [x] 4. Configure NextAuth credentials provider
+
 
   - Add CredentialsProvider to NextAuth configuration
   - Implement user authentication logic for email/password
