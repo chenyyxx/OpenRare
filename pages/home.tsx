@@ -43,8 +43,17 @@ export default function Home() {
     `/api/get_user_sections_posts?email=${email}`,
     fetchFlatUserSectionPost
   );
+  if (status === "loading") {
+    return (
+      <Box minH="100vh" bg={"gray.100"} display="flex" alignItems="center" justifyContent="center">
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
+
   if (status === "unauthenticated") {
     signIn();
+    return null;
   }
   return (
     <Box minH="100vh" bg={"gray.100"}>

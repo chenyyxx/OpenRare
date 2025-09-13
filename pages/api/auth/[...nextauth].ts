@@ -16,6 +16,11 @@ export const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
+      authorization: {
+        params: {
+          prompt: "select_account",
+        },
+      },
     }),
     // Email/Password authentication
     CredentialsProvider({
@@ -78,6 +83,9 @@ export const authOptions: AuthOptions = {
   //   from: 'NextAuth.js <no-reply@example.com>'
   // }),
   adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
   secret: process.env.SECRET,
   pages: {
     signIn: "/signin",
@@ -156,15 +164,31 @@ export const authOptions: AuthOptions = {
 
       return true;
     },
-    async redirect({ baseUrl }) {
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
-    // async session({ session, user, token }) {
-    //   return session
-    // },
-    // async jwt({ token, user, account, profile, isNewUser }) {
-    //   return token
-    // }
+    async jwt({ token, user, account }) {
+      // Persist the OAuth account_id and or the user id to the token right after signin
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Send properties to the client, like an access_token from a provider.
+      session.accessToken = token.accessToken;
+      if (token.id) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    },
   },
   events: {
     // async signIn(message) {
