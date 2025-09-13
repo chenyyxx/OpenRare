@@ -41,6 +41,7 @@ model User {
   image           String?
   backGroundImage String?
   description     String?
+  password        String?      // Hashed password for email/password authentication
   accounts        Account[]
   comments        Comment[]
   subComments     SubComment[]
