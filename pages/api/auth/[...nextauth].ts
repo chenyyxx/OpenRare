@@ -183,9 +183,9 @@ export const authOptions: AuthOptions = {
     },
     async session({ session, token }) {
       // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
+      (session as any).accessToken = token.accessToken;
       if (token.id) {
-        session.user.id = token.id as string;
+        (session.user as any).id = token.id as string;
       }
       return session;
     },

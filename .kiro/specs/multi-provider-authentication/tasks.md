@@ -36,14 +36,14 @@
 
 - [x] 5. Update sign-in page UI with enhanced features
 
-
   - Add email/password form fields to existing sign-in page
   - Add "Create Account" link for new email registrations
   - Update form handling for multiple authentication methods
   - Write component tests for updated sign-in form
   - _Requirements: 2.1_
 
-- [ ] 6. Create registration page UI
+- [x] 6. Create registration page UI
+
 
   - Build registration form component with email/password fields
   - Add password strength indicator and validation feedback

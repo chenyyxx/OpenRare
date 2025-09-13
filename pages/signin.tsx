@@ -1,9 +1,10 @@
 import { getProviders, signIn } from "next-auth/react"
-import { Button, Flex, Heading, Input, Divider, Text, Link, Alert, AlertIcon, FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react'
+import { Button, Flex, Heading, Input, Divider, Text, Alert, AlertIcon, FormControl, FormLabel, FormErrorMessage } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next'
 import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
+import GoogleSignInButton from '../components/GoogleSignInButton'
 
 interface Provider {
   id: string,
@@ -143,21 +144,35 @@ export default function SignIn({providers}:{providers: Providers} ) {
             <Text textAlign="center" mb={3} fontSize="sm" color="gray.600">
               Or continue with
             </Text>
-            {oauthProviders.map(provider => (
-              <Button 
-                key={provider.name} 
-                variant="outline"
-                mb={3} 
-                width="full"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  e.preventDefault()
-                  signIn(provider.id, { callbackUrl: '/' })
-                }}
-                disabled={isLoading}
-              >
-                Sign in with {provider.name}
-              </Button>
-            ))}
+            {oauthProviders.map(provider => {
+              if (provider.id === 'google') {
+                return (
+                  <GoogleSignInButton
+                    key={provider.name}
+                    onClick={() => signIn(provider.id, { callbackUrl: '/' })}
+                    disabled={isLoading}
+                    isLoading={false}
+                  />
+                )
+              }
+              
+              // For other OAuth providers, use the default button
+              return (
+                <Button 
+                  key={provider.name} 
+                  variant="outline"
+                  mb={3} 
+                  width="full"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    e.preventDefault()
+                    signIn(provider.id, { callbackUrl: '/' })
+                  }}
+                  disabled={isLoading}
+                >
+                  Sign in with {provider.name}
+                </Button>
+              )
+            })}
           </>
         )}
       </Flex>

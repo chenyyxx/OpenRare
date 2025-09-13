@@ -2,9 +2,11 @@ import {
   hashPassword,
   verifyPassword,
   validatePassword,
+} from "../../utils/password";
+import {
   generateSecurePassword,
   PASSWORD_REQUIREMENTS,
-} from "../../utils/password";
+} from "../../utils/password-client";
 
 describe("Password Utilities", () => {
   describe("hashPassword", () => {
