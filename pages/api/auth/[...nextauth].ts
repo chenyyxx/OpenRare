@@ -20,6 +20,51 @@ export const authOptions: AuthOptions = {
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
+    // Email/Password authentication
+    CredentialsProvider({
+      id: "credentials",
+      name: "Email and Password",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        try {
+          // Find user by email
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email.toLowerCase() },
+            include: { accounts: true }
+          });
+
+          if (!user || !user.password) {
+            return null;
+          }
+
+          // Verify password
+          const bcrypt = require('bcrypt');
+          const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+
+          if (!isValidPassword) {
+            return null;
+          }
+
+          // Return user object for NextAuth
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            image: user.image
+          };
+        } catch (error) {
+          console.error('Credentials authentication error:', error);
+          return null;
+        }
+      }
+    }),
     //   FacebookProvider({
     //     clientId: process.env.FACEBOOK_CLIENT_ID,
     //     clientSecret: process.env.FACEBOOK_CLIENT_SECRET
@@ -46,6 +91,11 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      // Allow credentials authentication (email/password)
+      if (account?.provider === "credentials") {
+        return true;
+      }
+
       // Handle account linking for Google authentication
       if (account?.provider === "google" && user?.email) {
         try {

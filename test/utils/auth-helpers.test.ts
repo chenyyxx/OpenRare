@@ -17,7 +17,6 @@ describe('Auth Helper Utilities', () => {
     id: 'user-123',
     name: 'Test User',
     email: 'test@example.com',
-    emailVerified: null,
     image: null,
     backGroundImage: null,
     description: null,
