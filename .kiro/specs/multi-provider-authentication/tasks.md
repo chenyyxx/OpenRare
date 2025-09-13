@@ -1,6 +1,11 @@
 # Implementation Plan
 
-- [ ] 1. Implement account linking for Google authentication
+- [x] 1. Implement account linking for Google authentication
+
+
+
+
+
 
 
 
