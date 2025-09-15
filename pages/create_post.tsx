@@ -168,6 +168,16 @@ export default function CreatePost() {
     }
   }, [diseases, diseasesLoading]);
 
+  // Handle theme pre-selection from query parameter
+  useEffect(() => {
+    if (router.query.theme && typeof router.query.theme === 'string' && themes) {
+      const themeExists = themes.find(theme => theme.id === router.query.theme);
+      if (themeExists) {
+        setSelectedThemeId(router.query.theme);
+      }
+    }
+  }, [router.query.theme, themes]);
+
   // Validation functions
   const validateForm = () => {
     let isValid = true;
