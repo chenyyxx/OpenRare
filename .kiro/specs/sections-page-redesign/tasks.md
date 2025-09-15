@@ -76,15 +76,7 @@
   - Ensure posts show both theme and disease information
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 6. Update post display components with theme indicators
-
-  - Modify PostCard component to display theme badges/indicators
-  - Update post detail pages to show both theme and disease information prominently
-  - Ensure theme indicators are consistent across all post displays
-  - Add theme context to post navigation and breadcrumbs
-  - _Requirements: 3.1, 3.2, 3.3, 3.5_
-
-- [ ] 7. Repurpose rare diseases page and update platform terminology
+- [ ] 6. Repurpose rare diseases page and update platform terminology
 
   - Remove old section detail page functionality and routes
   - Create new rare diseases page with disease information display
@@ -97,7 +89,7 @@
   - Update form labels and help text to use new terminology consistently
   - _Requirements: 7.1, 7.2, 7.3, 7.4, 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 8. Add performance optimizations and loading states
+- [ ] 7. Add performance optimizations and loading states
 
   - Implement lazy loading for theme page post lists
   - Add skeleton screens for explore page theme cards
@@ -105,7 +97,7 @@
   - Add loading states for post creation and theme navigation
   - _Requirements: 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 9. Testing and validation
+- [ ] 8. Testing and validation
   - Write unit tests for theme components and post creation validation
   - Test theme navigation flow and post filtering functionality
   - Validate disease selection always shows "Other" and "General" options
