@@ -45,7 +45,7 @@ model User {
   comments        Comment[]
   subComments     SubComment[]
   posts           Post[]
-  sections        Section[]
+  diseases        Disease[]
   sessions        Session[]
   votes           Vote[]
   followedBy      User[]       @relation("UserFollows")
@@ -60,7 +60,18 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Section {
+model Theme {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  icon        String
+  color       String
+  guidelines  String
+  createdAt   DateTime @default(now())
+  posts       Post[]
+}
+
+model Disease {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now())
   name        String   @unique
@@ -75,11 +86,13 @@ model Post {
   id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  sectionId Int
+  diseaseId Int
+  themeId   String
   userId    String
   title     String
   content   String
-  section   Section   @relation(fields: [sectionId], references: [id])
+  disease   Disease   @relation(fields: [diseaseId], references: [id])
+  theme     Theme     @relation(fields: [themeId], references: [id])
   user      User      @relation(fields: [userId], references: [id])
   comments  Comment[]
   votes     Vote[]
