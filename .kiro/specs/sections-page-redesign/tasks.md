@@ -10,7 +10,13 @@
   - Seed database with 4 initial themes: Personal Stories, Help & Support, Events, Research & Information
   - _Requirements: 1.1, 2.1, 6.1, 6.2, 6.3_
 
-- [ ] 2. Update Post model, creation logic, and improve UI design
+- [x] 2. Update Post model, creation logic, and improve UI design
+
+
+
+
+
+
 
   - Modify Post model to include theme relationship and rename section to disease
   - Update post creation API to require theme selection in addition to disease selection

@@ -43,6 +43,7 @@ The 4 themes organize content by purpose rather than disease:
 ### Explore Page Components
 
 #### ThemeCard Component
+
 ```typescript
 interface ThemeCardProps {
   theme: {
@@ -58,6 +59,7 @@ interface ThemeCardProps {
 ```
 
 #### ExploreLayout Component
+
 ```typescript
 interface ExploreLayoutProps {
   themes: Theme[];
@@ -68,6 +70,7 @@ interface ExploreLayoutProps {
 ### Theme Page Components
 
 #### ThemePostList Component
+
 ```typescript
 interface ThemePostListProps {
   themeId: string;
@@ -77,6 +80,7 @@ interface ThemePostListProps {
 ```
 
 #### PostCard Component (Enhanced)
+
 ```typescript
 interface PostCardProps {
   post: Post & {
@@ -91,6 +95,7 @@ interface PostCardProps {
 ### Rare Diseases Page Components
 
 #### DiseaseSearch Component
+
 ```typescript
 interface DiseaseSearchProps {
   diseases: Disease[];
@@ -100,6 +105,7 @@ interface DiseaseSearchProps {
 ```
 
 #### DiseaseInfo Component
+
 ```typescript
 interface DiseaseInfoProps {
   disease: Disease;
@@ -111,6 +117,7 @@ interface DiseaseInfoProps {
 ## Data Models
 
 ### Enhanced Post Model
+
 ```typescript
 interface Post {
   id: string;
@@ -119,15 +126,15 @@ interface Post {
   authorId: string;
   createdAt: Date;
   updatedAt: Date;
-  
+
   // New theme field
   themeId: string;
   theme: Theme;
-  
+
   // Renamed from sectionId to diseaseId
   diseaseId: string;
   disease: Disease;
-  
+
   // Existing fields
   votes: Vote[];
   comments: Comment[];
@@ -135,6 +142,7 @@ interface Post {
 ```
 
 ### Theme Model
+
 ```typescript
 interface Theme {
   id: string;
@@ -144,13 +152,14 @@ interface Theme {
   color: string;
   guidelines: string;
   createdAt: Date;
-  
+
   // Relationships
   posts: Post[];
 }
 ```
 
 ### Disease Model (Renamed from Section)
+
 ```typescript
 interface Disease {
   id: string;
@@ -158,12 +167,12 @@ interface Disease {
   description?: string;
   definition?: string;
   picture?: string;
-  
+
   // New fields for information page
   symptoms?: string[];
   treatments?: string[];
   resources?: string[];
-  
+
   // Relationships
   posts: Post[];
   interestedUsers: User[];
@@ -171,6 +180,7 @@ interface Disease {
 ```
 
 ### User Interest Model (Reusing Existing Follow System)
+
 ```typescript
 // Reuse existing follow relationship between User and Disease (formerly Section)
 // No new model needed - existing UserSection/UserDisease follow relationship handles interests
@@ -272,18 +282,21 @@ interface Disease {
 ## Theme Visual Design
 
 ### Theme Color Scheme
+
 - **Personal Stories**: Warm orange/amber (#F59E0B)
 - **Help & Support**: Caring blue (#3B82F6)
 - **Events**: Energetic purple (#8B5CF6)
 - **Research & Information**: Professional green (#10B981)
 
 ### Theme Icons
+
 - **Personal Stories**: User/person icon
 - **Help & Support**: Heart/helping hands icon
 - **Events**: Calendar/event icon
 - **Research & Information**: Book/microscope icon
 
 ### Visual Indicators
+
 - Theme badges on posts with consistent colors
 - Disease tags as subtle secondary badges
 - Clear visual hierarchy between theme and disease information
@@ -291,17 +304,20 @@ interface Disease {
 ## Error Handling
 
 ### Post Creation Validation
+
 - Theme selection required - show error if not selected
 - Disease selection required - show error if not selected
 - Always show "Other" and "General" in disease dropdown
 - Provide clear error messages for missing required fields
 
 ### Navigation Error Handling
+
 - Handle removed section detail pages gracefully
 - Redirect old section URLs to appropriate theme pages
 - Provide 404 pages for non-existent content
 
 ### Data Loading States
+
 - Skeleton screens for theme cards while loading
 - Loading states for post lists
 - Error states for failed API calls
@@ -310,24 +326,28 @@ interface Disease {
 ## Testing Strategy
 
 ### Unit Testing
+
 - Theme card component rendering
 - Post card component with theme indicators
 - Disease search and selection functionality
 - Post creation form validation
 
 ### Integration Testing
+
 - Explore page theme navigation
 - Theme page post filtering
 - Disease interest management
 - Post creation with theme and disease selection
 
 ### User Experience Testing
+
 - Theme navigation flow
 - Post creation workflow
 - Disease selection and interest management
 - Visual theme indicator clarity
 
 ### Performance Testing
+
 - Explore page load times
 - Theme page post loading
 - Disease search autocomplete performance
@@ -338,16 +358,19 @@ interface Disease {
 Since there are no active users, migration focuses on:
 
 1. **Database Schema Updates**
+
    - Add theme table and relationships
    - Rename section references to disease
    - Reuse existing follow system for disease interests
 
 2. **Component Updates**
+
    - Update all "section" terminology to "rare disease"
    - Add theme selection to post creation
    - Update post displays with theme indicators
 
 3. **Route Changes**
+
    - Remove section detail routes
    - Add theme page routes
    - Update rare diseases page functionality

@@ -10,22 +10,46 @@ const create_post = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!session) {
     return res.status(500).json({ error: "You have to be logged in." });
   }
+
+  // Validate required fields
+  if (!post.title || post.title.trim() === "") {
+    return res.status(400).json({ error: "Title is required" });
+  }
+  if (!post.content || post.content.trim() === "") {
+    return res.status(400).json({ error: "Content is required" });
+  }
+  if (!post.themeId || post.themeId.trim() === "") {
+    return res.status(400).json({ error: "Theme selection is required" });
+  }
+  if (!post.diseaseId) {
+    return res.status(400).json({ error: "Disease selection is required" });
+  }
+
   try {
     const newPost = await prisma.post.create({
       data: {
         user: {
           connect: { email: post.user.email },
         },
-        title: post.title,
-        content: post.content,
-        section: {
-          connect: { id: post.sectionId },
+        title: post.title.trim(),
+        content: post.content.trim(),
+        theme: {
+          connect: { id: post.themeId },
         },
+        disease: {
+          connect: { id: post.diseaseId },
+        },
+      },
+      include: {
+        theme: true,
+        disease: true,
+        user: true,
       },
     });
     res.status(200).json(newPost);
   } catch (e) {
-    return res.status(500).json({ error: e });
+    console.error("Error creating post:", e);
+    return res.status(500).json({ error: "Failed to create post" });
   }
 };
 
