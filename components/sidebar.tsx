@@ -106,6 +106,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           width="256px"
           height="64px"
           objectFit="cover"
+          alt="OpenRare Logo"
         />
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
@@ -194,6 +195,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         width="256px"
         height="64px"
         objectFit="cover"
+        alt="OpenRare Logo"
       />
 
       <HStack spacing={{ base: "3", md: "6" }}>

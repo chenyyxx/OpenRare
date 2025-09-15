@@ -48,13 +48,17 @@ export default function ThemePage({
   const { id } = router.query;
   const [selectedDisease, setSelectedDisease] = useState<string>("all");
 
+  // Move all hooks to the top level
+  const bgColor = useColorModeValue("gray.50", "gray.900");
+  const selectBg = useColorModeValue("white", "gray.700");
+  const emptyStateBg = useColorModeValue("white", "gray.800");
+  const emptyStateBorderColor = useColorModeValue("gray.200", "gray.600");
+
   const url =
     id && typeof id === "string" ? `/api/get_theme_posts?id=${id}` : null;
   const { data, error } = useSWR<ThemePageData>(url, url ? fetchData : null, {
     fallbackData: initialData || undefined,
   });
-
-  const bgColor = useColorModeValue("gray.50", "gray.900");
 
   if (error) {
     return (
@@ -139,7 +143,7 @@ export default function ThemePage({
                       value={selectedDisease}
                       onChange={(e) => setSelectedDisease(e.target.value)}
                       size="sm"
-                      bg={useColorModeValue("white", "gray.700")}
+                      bg={selectBg}
                     >
                       <option value="all">
                         All diseases ({data.posts.length})
@@ -206,10 +210,10 @@ export default function ThemePage({
               <Box
                 textAlign="center"
                 py={16}
-                bg={useColorModeValue("white", "gray.800")}
+                bg={emptyStateBg}
                 borderRadius="lg"
                 border="1px"
-                borderColor={useColorModeValue("gray.200", "gray.600")}
+                borderColor={emptyStateBorderColor}
               >
                 <VStack spacing={6}>
                   <VStack spacing={2}>

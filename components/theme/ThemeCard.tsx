@@ -128,7 +128,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
                   key={post.id}
                   p={2}
                   borderRadius="md"
-                  bg={useColorModeValue('gray.50', 'gray.700')}
+                  bg={hoverBg}
                   borderLeft="3px"
                   borderLeftColor={themeColor}
                 >
@@ -159,7 +159,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
               <Box
                 p={3}
                 borderRadius="md"
-                bg={useColorModeValue('gray.50', 'gray.700')}
+                bg={hoverBg}
                 textAlign="center"
               >
                 <Text fontSize="xs" color={textColor} fontStyle="italic">

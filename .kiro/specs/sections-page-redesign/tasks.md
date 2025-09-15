@@ -12,12 +12,6 @@
 
 - [x] 2. Update Post model, creation logic, and improve UI design
 
-
-
-
-
-
-
   - Modify Post model to include theme relationship and rename section to disease
   - Update post creation API to require theme selection in addition to disease selection
   - Add validation to ensure both theme and disease are selected during post creation
@@ -32,11 +26,6 @@
 
 - [x] 3. Create theme visual system and components
 
-
-
-
-
-
   - Define theme color scheme constants (orange, blue, purple, green)
   - Create theme icon components for each theme type
   - Build ThemeCard component with theme info, post count, and navigation
@@ -45,11 +34,6 @@
   - _Requirements: 1.2, 3.1, 3.2, 3.3_
 
 - [x] 4. Build new explore page with theme organization and descriptions
-
-
-
-
-
 
   - Create new explore page layout with 4 theme sections
   - Implement ThemeCard components displaying theme info and recent posts
@@ -63,11 +47,6 @@
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 5.1, 5.2, 5.3, 5.4_
 
 - [x] 5. Create individual theme pages
-
-
-
-
-
 
   - Build theme page layout showing all posts for selected theme
   - Implement post filtering by disease within theme pages

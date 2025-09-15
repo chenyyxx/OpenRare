@@ -53,6 +53,7 @@ export default function Nav() {
                 width="256px"
                 height="64px"
                 objectFit="cover"
+                alt="OpenRare Logo"
               />
             </Box>
           </HStack>
