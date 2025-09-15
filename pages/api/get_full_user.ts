@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client";
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "../../db";
@@ -12,14 +10,15 @@ const get_full_user = async (req: NextApiRequest, res: NextApiResponse) => {
       posts: {
         include: {
           user: true,
-          section: true,
+          disease: true,
+          theme: true,
           votes: true,
           _count: {
             select: { comments: true },
           },
         },
       },
-      sections: {
+      diseases: {
         include: {
           _count: {
             select: { posts: true, users: true },

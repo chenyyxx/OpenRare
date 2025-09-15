@@ -26,18 +26,24 @@ import RichTextEditor from "./RichText";
 import { useState, useRef, useEffect } from "react";
 import { usePostDetail } from "../pages/post/[id]";
 import Comment from "./comment";
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
+import { ThemeBadge } from "./theme/ThemeBadge";
 
 export type FullPost = Prisma.PostGetPayload<{
   include: {
     user: true;
-    section: true;
+    disease: true;
+    theme: true;
     votes: { include: { user: true } };
-    _count: true;
   };
-}>;
+}> & {
+  _count?: {
+    comments: number;
+  };
+};
 
 function Post({ post }: { post: FullPost }) {
+  console.log("post", post)
   const createdAt = new Date(post.updatedAt);
   const date = createdAt.getDate();
   const year = createdAt.getFullYear();
@@ -84,15 +90,24 @@ function Post({ post }: { post: FullPost }) {
     >
       {
         <Stack>
-          <Heading
-            as={Link}
-            href={`/post/${post.id}`}
-            color={useColorModeValue("gray.700", "white")}
-            fontSize={["xl","2xl"]}
-            fontFamily={"body"}
-          >
-            {post.title}
-          </Heading>
+          <HStack justify="space-between" align="start" wrap="wrap">
+            <Heading
+              as={Link}
+              href={`/post/${post.id}`}
+              color={useColorModeValue("gray.700", "white")}
+              fontSize={["xl","2xl"]}
+              fontFamily={"body"}
+              flex={1}
+            >
+              {post.title}
+            </Heading>
+            {post.theme && (
+              <ThemeBadge 
+                themeName={post.theme.name} 
+                size="sm"
+              />
+            )}
+          </HStack>
           <HStack justify={"space-between"} align="center">
             <HStack>
               <Avatar size="sm" src={post.user.image as string | undefined} />
@@ -107,27 +122,27 @@ function Post({ post }: { post: FullPost }) {
             <Text
               as={Link}
               display={["none","flex"]}
-              href={`/sections/${post.section?.id}`}
+              href={`/rare-diseases/${post.disease?.id}`}
               color={"green.500"}
               textTransform={"uppercase"}
               fontWeight={800}
               fontSize={["xs","sm"]}
               letterSpacing={1.1}
             >
-              {post.section?.name}
+              {post.disease?.name}
             </Text>
           </HStack>
           <Text
               as={Link}
               display={["flex","none"]}
-              href={`/sections/${post.section?.id}`}
+              href={`/rare-diseases/${post.disease?.id}`}
               color={"green.500"}
               textTransform={"uppercase"}
               fontWeight={800}
               fontSize={["xs","sm"]}
               letterSpacing={1.1}
             >
-              {post.section?.name}
+              {post.disease?.name}
             </Text>
 
           <Box as={"a"} href={`post/${post.id}`}>
@@ -167,12 +182,12 @@ function Post({ post }: { post: FullPost }) {
             <HStack divider={<StackDivider borderColor="gray.200" />}></HStack>
             <HStack spacing={2}>
               {/* <BiCommentDetail /> */}
-              <Button display={['none', 'flex']} fontSize={"md"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count.comments} Comments`}</Button>
-              <Button display={['flex', 'none']} fontSize={"sm"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count.comments}`}</Button>
+              <Button display={['none', 'flex']} fontSize={"md"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count?.comments || 0} Comments`}</Button>
+              <Button display={['flex', 'none']} fontSize={"sm"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count?.comments || 0}`}</Button>
               <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
                 <ModalOverlay />
                 <ModalContent>
-                  <ModalHeader>{`All ${post._count.comments} comments`}</ModalHeader>
+                  <ModalHeader>{`All ${post._count?.comments || 0} comments`}</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody as={Stack}>
                     {postDetail?.comments.map((comment) => (

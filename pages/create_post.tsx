@@ -26,6 +26,7 @@ import { useSession } from "next-auth/react";
 import Sidebar from "../components/sidebar";
 import { Prisma } from "@prisma/client";
 import { FiUser, FiHeart, FiCalendar, FiBook } from "react-icons/fi";
+import { getThemeColor } from "../utils/theme-constants";
 
 // Define types for the new schema
 export type FullTheme = Prisma.ThemeGetPayload<{
@@ -81,27 +82,35 @@ export type SelectOption = {
   label: string;
 };
 
-export function buildDiseaseSelectOptions(diseases: FullDisease[]): SelectOption[] {
+export function buildDiseaseSelectOptions(
+  diseases: FullDisease[]
+): SelectOption[] {
   if (!diseases) return [];
-  
+
   // Always ensure "Other" and "General" appear first
-  const otherOption = diseases.find(d => d.name.toLowerCase() === "other");
-  const generalOption = diseases.find(d => d.name.toLowerCase() === "general");
-  const otherDiseases = diseases.filter(d => 
-    d.name.toLowerCase() !== "other" && d.name.toLowerCase() !== "general"
+  const otherOption = diseases.find((d) => d.name.toLowerCase() === "other");
+  const generalOption = diseases.find(
+    (d) => d.name.toLowerCase() === "general"
+  );
+  const otherDiseases = diseases.filter(
+    (d) =>
+      d.name.toLowerCase() !== "other" && d.name.toLowerCase() !== "general"
   );
 
   const options: SelectOption[] = [];
-  
+
   if (generalOption) {
-    options.push({ value: String(generalOption.id), label: generalOption.name });
+    options.push({
+      value: String(generalOption.id),
+      label: generalOption.name,
+    });
   }
   if (otherOption) {
     options.push({ value: String(otherOption.id), label: otherOption.name });
   }
-  
+
   // Add remaining diseases
-  otherDiseases.forEach(d => {
+  otherDiseases.forEach((d) => {
     options.push({ value: String(d.id), label: d.name });
   });
 
@@ -131,7 +140,7 @@ export default function CreatePost() {
   const [selectedDiseaseId, setSelectedDiseaseId] = useState("");
   const [selectedThemeId, setSelectedThemeId] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Form validation states
   const [titleError, setTitleError] = useState("");
   const [themeError, setThemeError] = useState("");
@@ -142,8 +151,16 @@ export default function CreatePost() {
   const { data: session, status } = useSession();
   const toast = useToast();
 
-  const { themes, isLoading: themesLoading, isError: themesError } = useThemes();
-  const { diseases, isLoading: diseasesLoading, isError: diseasesError } = useDiseases();
+  const {
+    themes,
+    isLoading: themesLoading,
+    isError: themesError,
+  } = useThemes();
+  const {
+    diseases,
+    isLoading: diseasesLoading,
+    isError: diseasesError,
+  } = useDiseases();
 
   useEffect(() => {
     if (!diseasesLoading && diseases) {
@@ -154,7 +171,7 @@ export default function CreatePost() {
   // Validation functions
   const validateForm = () => {
     let isValid = true;
-    
+
     if (!title.trim()) {
       setTitleError("Title is required");
       isValid = false;
@@ -188,7 +205,7 @@ export default function CreatePost() {
 
   const handleNewPost = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -249,7 +266,7 @@ export default function CreatePost() {
     <Box minH="100vh" bg={"gray.50"}>
       <Sidebar>
         <Flex justify="center" pt={"78px"}>
-          <Box w="full" p="24px" minH="full" maxW='800px'>
+          <Box w="full" p="24px" minH="full" maxW="800px">
             <VStack spacing={6} align="stretch">
               {/* Header */}
               <Box bg="white" rounded={"lg"} p={6} shadow="sm">
@@ -264,44 +281,61 @@ export default function CreatePost() {
               {/* Main Form */}
               <Box bg="white" rounded={"lg"} shadow="sm">
                 <VStack spacing={6} p={6} align="stretch">
-                  
                   {/* Theme Selection Section */}
                   <Box>
-                    <FormLabel fontSize="md" fontWeight="semibold" color="gray.700" mb={3}>
+                    <FormLabel
+                      fontSize="md"
+                      fontWeight="semibold"
+                      color="gray.700"
+                      mb={3}
+                    >
                       Select Theme
                     </FormLabel>
                     <Text fontSize="sm" color="gray.600" mb={4}>
                       Choose the category that best fits your post
                     </Text>
-                    
+
                     {themesLoading ? (
                       <Text>Loading themes...</Text>
                     ) : (
                       <VStack spacing={3} align="stretch">
                         {themes?.map((theme) => {
                           const IconComponent = getThemeIcon(theme.name);
+                          const themeColor = getThemeColor(theme.name);
                           const isSelected = selectedThemeId === theme.id;
-                          
+
                           return (
                             <Box
                               key={theme.id}
                               p={4}
                               border="2px"
-                              borderColor={isSelected ? theme.color : "gray.200"}
+                              borderColor={
+                                isSelected ? themeColor : "gray.200"
+                              }
                               borderRadius="md"
                               cursor="pointer"
-                              bg={isSelected ? `${theme.color}10` : "white"}
-                              _hover={{ borderColor: theme.color, bg: `${theme.color}05` }}
+                              bg={isSelected ? `${themeColor}10` : "white"}
+                              _hover={{
+                                borderColor: themeColor,
+                                bg: `${themeColor}05`,
+                              }}
                               onClick={() => {
                                 setSelectedThemeId(theme.id);
                                 setThemeError("");
                               }}
                             >
                               <HStack spacing={3}>
-                                <Icon as={IconComponent} color={theme.color} boxSize={5} />
+                                <Icon
+                                  as={IconComponent}
+                                  color={themeColor}
+                                  boxSize={5}
+                                />
                                 <VStack align="start" spacing={1} flex={1}>
                                   <HStack>
-                                    <Text fontWeight="semibold" color="gray.700">
+                                    <Text
+                                      fontWeight="semibold"
+                                      color="gray.700"
+                                    >
                                       {theme.name}
                                     </Text>
                                     <Badge colorScheme="gray" size="sm">
@@ -329,7 +363,11 @@ export default function CreatePost() {
 
                   {/* Disease Selection Section */}
                   <FormControl isInvalid={!!diseaseError}>
-                    <FormLabel fontSize="md" fontWeight="semibold" color="gray.700">
+                    <FormLabel
+                      fontSize="md"
+                      fontWeight="semibold"
+                      color="gray.700"
+                    >
                       Select Rare Disease
                     </FormLabel>
                     <Text fontSize="sm" color="gray.600" mb={3}>
@@ -348,17 +386,18 @@ export default function CreatePost() {
                       styles={{
                         control: (base: any) => ({
                           ...base,
-                          minHeight: '44px',
-                          borderColor: diseaseError ? '#E53E3E' : '#E2E8F0',
-                          '&:hover': {
-                            borderColor: diseaseError ? '#E53E3E' : '#CBD5E0',
+                          minHeight: "44px",
+                          borderColor: diseaseError ? "#E53E3E" : "#E2E8F0",
+                          "&:hover": {
+                            borderColor: diseaseError ? "#E53E3E" : "#CBD5E0",
                           },
                         }),
                       }}
                     />
                     <FormErrorMessage>{diseaseError}</FormErrorMessage>
                     <Text fontSize="xs" color="gray.500" mt={2}>
-                      &quot;General&quot; and &quot;Other&quot; options are always available regardless of search
+                      &quot;General&quot; and &quot;Other&quot; options are
+                      always available regardless of search
                     </Text>
                   </FormControl>
 
@@ -366,7 +405,11 @@ export default function CreatePost() {
 
                   {/* Title Section */}
                   <FormControl isInvalid={!!titleError}>
-                    <FormLabel fontSize="md" fontWeight="semibold" color="gray.700">
+                    <FormLabel
+                      fontSize="md"
+                      fontWeight="semibold"
+                      color="gray.700"
+                    >
                       Post Title
                     </FormLabel>
                     <Input
@@ -382,10 +425,12 @@ export default function CreatePost() {
                       bg="gray.50"
                       border="1px"
                       borderColor={titleError ? "red.300" : "gray.200"}
-                      _hover={{ borderColor: titleError ? "red.400" : "gray.300" }}
-                      _focus={{ 
+                      _hover={{
+                        borderColor: titleError ? "red.400" : "gray.300",
+                      }}
+                      _focus={{
                         borderColor: titleError ? "red.500" : "blue.500",
-                        bg: "white"
+                        bg: "white",
                       }}
                     />
                     <FormErrorMessage>{titleError}</FormErrorMessage>
@@ -393,12 +438,16 @@ export default function CreatePost() {
 
                   {/* Content Section */}
                   <FormControl isInvalid={!!contentError}>
-                    <FormLabel fontSize="md" fontWeight="semibold" color="gray.700">
+                    <FormLabel
+                      fontSize="md"
+                      fontWeight="semibold"
+                      color="gray.700"
+                    >
                       Post Content
                     </FormLabel>
-                    <Box 
-                      rounded={"md"} 
-                      border="1px" 
+                    <Box
+                      rounded={"md"}
+                      border="1px"
                       borderColor={contentError ? "red.300" : "gray.200"}
                     >
                       <RichTextEditor
@@ -414,10 +463,10 @@ export default function CreatePost() {
                             borderRadius: "0.375rem",
                             minHeight: "300px",
                           },
-                          toolbar: { 
-                            borderColor: contentError ? "#FC8181" : "#E2E8F0", 
+                          toolbar: {
+                            borderColor: contentError ? "#FC8181" : "#E2E8F0",
                             zIndex: 0,
-                            backgroundColor: "#F7FAFC"
+                            backgroundColor: "#F7FAFC",
                           },
                         }}
                         value={content}

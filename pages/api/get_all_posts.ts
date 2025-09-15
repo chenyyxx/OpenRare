@@ -9,7 +9,8 @@ const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
         },
         include: {
             user: true,
-            section: true,
+            disease: true,
+            theme: true,
             votes: {
                 include: {
                     user: true,

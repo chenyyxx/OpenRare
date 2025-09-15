@@ -135,12 +135,12 @@ export default function Home() {
                 spacing={"24px"}
               >
                 <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-                  My Sections
+                  My Rare Diseases
                 </Heading>
                 <VStack minH="full" spacing={"12px"}>
                   {user &&
-                    user.sections.map((section) => (
-                      <SmallSection section={section} key={section.id} />
+                    user.diseases.map((disease) => (
+                      <SmallSection section={disease} key={disease.id} />
                     ))}
                 </VStack>
               </Stack>

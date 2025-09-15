@@ -11,10 +11,11 @@ const get_post = async (req: NextApiRequest, res: NextApiResponse) => {
             id: Number(id)
         },
         include: {
-            section: true,
+            disease: true,
+            theme: true,
             user: {
                 include: {
-                    sections: true
+                    diseases: true
                 }
             },
             comments: {

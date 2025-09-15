@@ -105,38 +105,38 @@ async function main() {
     }
   }
 
-  // Seed NORD rare disease list
-  console.log("Seeding NORD rare disease list...");
+  // // Seed NORD rare disease list
+  // console.log("Seeding NORD rare disease list...");
   
-  let createdCount = 0;
-  let existingCount = 0;
+  // let createdCount = 0;
+  // let existingCount = 0;
   
-  for (const nordDisease of nordDiseases) {
-    const existingDisease = await prisma.disease.findUnique({
-      where: { name: nordDisease.name },
-    });
+  // for (const nordDisease of nordDiseases) {
+  //   const existingDisease = await prisma.disease.findUnique({
+  //     where: { name: nordDisease.name },
+  //   });
 
-    if (!existingDisease) {
-      await prisma.disease.create({
-        data: {
-          name: nordDisease.name,
-          definition: nordDisease.definition,
-          description: nordDisease.definition, // Using definition as description since that's what we have
-          picture: "", // No picture data in NORD list
-        },
-      });
-      createdCount++;
+  //   if (!existingDisease) {
+  //     await prisma.disease.create({
+  //       data: {
+  //         name: nordDisease.name,
+  //         definition: nordDisease.definition,
+  //         description: nordDisease.definition, // Using definition as description since that's what we have
+  //         picture: "", // No picture data in NORD list
+  //       },
+  //     });
+  //     createdCount++;
       
-      // Log progress every 100 diseases
-      if (createdCount % 100 === 0) {
-        console.log(`Created ${createdCount} diseases so far...`);
-      }
-    } else {
-      existingCount++;
-    }
-  }
+  //     // Log progress every 100 diseases
+  //     if (createdCount % 100 === 0) {
+  //       console.log(`Created ${createdCount} diseases so far...`);
+  //     }
+  //   } else {
+  //     existingCount++;
+  //   }
+  // }
   
-  console.log(`NORD disease seeding completed: ${createdCount} created, ${existingCount} already existed`);
+  // console.log(`NORD disease seeding completed: ${createdCount} created, ${existingCount} already existed`);
   console.log("Seeding completed!");
 }
 
