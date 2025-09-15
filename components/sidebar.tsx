@@ -262,9 +262,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>Settings</MenuItem>
-              <MenuItem>Billing</MenuItem>
+              <MenuItem as="a" href="/profile">Profile</MenuItem>
+              <MenuItem as="a" href="/edit_profile">Edit Profile</MenuItem>
               <MenuDivider />
               {session ? (
                 <MenuItem onClick={() => signOut()}>Sign Out</MenuItem>

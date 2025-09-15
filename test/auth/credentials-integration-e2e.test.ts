@@ -1,5 +1,5 @@
 /**
- * End-to-end integration test for credentials provider with account linking
+ * End-to-end integration test for credentials provider
  */
 
 import { hashPassword } from '../../utils/password';
@@ -24,25 +24,18 @@ describe('Credentials Provider End-to-End Integration', () => {
     jest.clearAllMocks();
   });
 
-  describe('Integration with Google Account Linking', () => {
-    it('should allow credentials login for user who also has Google account linked', async () => {
+  describe('Credentials Authentication', () => {
+    it('should allow credentials login for users with passwords', async () => {
       const testPassword = 'TestPassword123!';
       const hashedPassword = await hashPassword(testPassword);
       
-      // User with both password and Google account
+      // User with password
       const mockUser = {
         id: 'user-123',
         email: 'test@example.com',
         name: 'Test User',
         image: null,
         password: hashedPassword,
-        accounts: [
-          {
-            provider: 'google',
-            providerAccountId: 'google-123',
-            type: 'oauth',
-          },
-        ],
       };
 
       mockPrisma.user.findUnique.mockResolvedValue(mockUser);
@@ -87,60 +80,6 @@ describe('Credentials Provider End-to-End Integration', () => {
       });
 
       expect(signInResult).toBe(true);
-    });
-
-    it('should maintain account linking behavior for Google while supporting credentials', async () => {
-      const { authOptions } = require('../../pages/api/auth/[...nextauth]');
-      
-      // Mock existing user with password (registered via email)
-      const existingUser = {
-        id: 'user-123',
-        email: 'test@example.com',
-        name: 'Test User',
-        password: 'hashed-password',
-        accounts: [],
-      };
-
-      mockPrisma.user.findUnique.mockResolvedValue(existingUser);
-      mockPrisma.account.create.mockResolvedValue({});
-
-      // Test Google account linking to existing email/password user
-      const signInResult = await authOptions.callbacks.signIn({
-        user: {
-          id: 'temp-id',
-          email: 'test@example.com',
-          name: 'Test User',
-        },
-        account: {
-          provider: 'google',
-          providerAccountId: 'google-123',
-          type: 'oauth',
-          refresh_token: 'refresh-token',
-          access_token: 'access-token',
-          expires_at: 1234567890,
-          token_type: 'Bearer',
-          scope: 'email profile',
-          id_token: 'id-token',
-          session_state: 'session-state',
-        },
-      });
-
-      expect(signInResult).toBe(true);
-      expect(mockPrisma.account.create).toHaveBeenCalledWith({
-        data: {
-          userId: 'user-123',
-          type: 'oauth',
-          provider: 'google',
-          providerAccountId: 'google-123',
-          refresh_token: 'refresh-token',
-          access_token: 'access-token',
-          expires_at: 1234567890,
-          token_type: 'Bearer',
-          scope: 'email profile',
-          id_token: 'id-token',
-          session_state: 'session-state',
-        },
-      });
     });
   });
 

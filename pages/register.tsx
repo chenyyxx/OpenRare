@@ -28,10 +28,7 @@ import { validatePassword } from '../utils/password-client'
 import type { PasswordValidationResult } from '../types/password'
 import GoogleSignInButton from '../components/GoogleSignInButton'
 
-interface AccountLinkingInfo {
-  hasExistingAccount: boolean;
-  existingProviders: string[];
-}
+
 
 interface Provider {
   id: string,
@@ -55,7 +52,7 @@ export default function Register({providers}: {providers: Providers}) {
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
   const [passwordValidation, setPasswordValidation] = useState<PasswordValidationResult | null>(null)
-  const [accountLinking, setAccountLinking] = useState<AccountLinkingInfo | null>(null)
+
   const router = useRouter()
 
   // Validate email format
@@ -101,7 +98,7 @@ export default function Register({providers}: {providers: Providers}) {
     setEmailError('')
     setPasswordError('')
     setConfirmPasswordError('')
-    setAccountLinking(null)
+
 
     // Client-side validation
     let hasErrors = false
@@ -158,11 +155,7 @@ export default function Register({providers}: {providers: Providers}) {
           router.push('/signin')
         }, 2000)
       } else {
-        if (response.status === 409 && data.accountLinking) {
-          // Handle account linking scenario
-          setAccountLinking(data.accountLinking)
-          setError(data.message)
-        } else {
+        {
           setError(data.message || 'Registration failed. Please try again.')
         }
       }
@@ -192,19 +185,7 @@ export default function Register({providers}: {providers: Providers}) {
           </Alert>
         )}
 
-        {accountLinking && (
-          <Alert status="info" mb={4} rounded="md">
-            <AlertIcon />
-            <VStack align="start" spacing={2}>
-              <Text>You can sign in with your existing Google account or link accounts after signing in.</Text>
-              <NextLink href="/signin">
-                <Button size="sm" colorScheme="blue" variant="outline">
-                  Go to Sign In
-                </Button>
-              </NextLink>
-            </VStack>
-          </Alert>
-        )}
+
 
         <form onSubmit={handleSubmit}>
           <FormControl mb={4}>

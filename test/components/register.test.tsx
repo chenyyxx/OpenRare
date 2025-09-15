@@ -334,53 +334,7 @@ describe("Register Component", () => {
     });
   });
 
-  it("displays account linking notification for existing Google user", async () => {
-    (validatePassword as jest.Mock).mockReturnValue({
-      isValid: true,
-      errors: [],
-      strength: "strong",
-    });
-    (fetch as jest.Mock).mockResolvedValueOnce({
-      ok: false,
-      status: 409,
-      json: async () => ({
-        success: false,
-        message:
-          "An account with this email already exists. You can sign in with Google or link your accounts.",
-        accountLinking: {
-          hasExistingAccount: true,
-          existingProviders: ["google"],
-        },
-      }),
-    });
 
-    customRender(<Register />);
-
-    const emailInput = screen.getByLabelText(/email \*/i);
-    const passwordInput = screen.getByLabelText(/^password \*/i);
-    const confirmPasswordInput = screen.getByLabelText(/confirm password \*/i);
-    const submitButton = screen.getByRole("button", {
-      name: /create account/i,
-    });
-
-    fireEvent.change(emailInput, { target: { value: "google@example.com" } });
-    fireEvent.change(passwordInput, {
-      target: { value: "StrongPassword123!" },
-    });
-    fireEvent.change(confirmPasswordInput, {
-      target: { value: "StrongPassword123!" },
-    });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/you can sign in with your existing google account/i)
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: /go to sign in/i })
-      ).toBeInTheDocument();
-    });
-  });
 
   it("handles network errors gracefully", async () => {
     (validatePassword as jest.Mock).mockReturnValue({

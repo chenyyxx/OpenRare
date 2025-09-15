@@ -17,19 +17,12 @@ jest.mock("../../utils/password", () => ({
   validatePassword: jest.fn(),
 }));
 
-// Mock auth helpers
-jest.mock("../../utils/auth-helpers", () => ({
-  hasGoogleAccountLinked: jest.fn(),
-}));
-
 const mockPrisma = prisma as jest.Mocked<typeof prisma>;
 const mockHashPassword = hashPassword as jest.MockedFunction<
   typeof hashPassword
 >;
 const mockValidatePassword = require("../../utils/password")
   .validatePassword as jest.MockedFunction<any>;
-const mockHasGoogleAccountLinked = require("../../utils/auth-helpers")
-  .hasGoogleAccountLinked as jest.MockedFunction<any>;
 
 describe("/api/auth/register", () => {
   beforeEach(() => {
@@ -43,7 +36,6 @@ describe("/api/auth/register", () => {
       strength: "strong",
     });
     mockHashPassword.mockResolvedValue("hashed_password_123");
-    mockHasGoogleAccountLinked.mockReturnValue(false);
   });
 
   describe("HTTP Method Validation", () => {
@@ -154,7 +146,7 @@ describe("/api/auth/register", () => {
       };
 
       mockPrisma.user.findUnique.mockResolvedValue(existingUser);
-      mockHasGoogleAccountLinked.mockReturnValue(false);
+
 
       const { req, res } = createMocks({
         method: "POST",
@@ -173,38 +165,7 @@ describe("/api/auth/register", () => {
       });
     });
 
-    it("should return 409 with account linking info when user has Google account", async () => {
-      const existingUser = {
-        id: "user123",
-        email: "test@example.com",
-        password: null,
-        accounts: [{ provider: "google", providerAccountId: "google123" }],
-      };
 
-      mockPrisma.user.findUnique.mockResolvedValue(existingUser);
-      mockHasGoogleAccountLinked.mockReturnValue(true);
-
-      const { req, res } = createMocks({
-        method: "POST",
-        body: {
-          email: "test@example.com",
-          password: "ValidPass123!",
-        },
-      });
-
-      await handler(req, res);
-
-      expect(res._getStatusCode()).toBe(409);
-      expect(JSON.parse(res._getData())).toEqual({
-        success: false,
-        message:
-          "An account with this email already exists. You can sign in with Google or link your accounts.",
-        accountLinking: {
-          hasExistingAccount: true,
-          existingProviders: ["google"],
-        },
-      });
-    });
   });
 
   describe("Successful Registration", () => {
