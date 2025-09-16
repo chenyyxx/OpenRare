@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Box, VStack, Text, useColorModeValue } from "@chakra-ui/react";
 import SearchAndFilter, { FilterState, Disease, Theme } from "./SearchAndFilter";
+import FollowedDiseasesTags, { FollowedDisease } from "./FollowedDiseasesTags";
 import { FullPost } from "./post";
 import { TabType } from "./TabNavigation";
 import { usePostFilters } from "../hooks/usePostFilters";
+import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { fetchData } from "../utils/utils";
 
@@ -30,6 +32,8 @@ export default function FilterablePostTabs({
   onFilteredPostsChange,
   children,
 }: FilterablePostTabsProps) {
+  const { data: session } = useSession();
+  
   // Track filters per tab to maintain separate filter states
   const [tabFilters, setTabFilters] = useState<Record<TabType, FilterState>>({
     following: { search: "", diseaseId: null, themeId: null },
@@ -38,6 +42,9 @@ export default function FilterablePostTabs({
     favorites: { search: "", diseaseId: null, themeId: null },
     replies: { search: "", diseaseId: null, themeId: null },
   });
+
+  // Track selected disease for Following tab disease tags
+  const [selectedDisease, setSelectedDisease] = useState<number | null>(null);
 
   // Get current tab's filters
   const currentFilters = tabFilters[activeTab];
@@ -48,6 +55,12 @@ export default function FilterablePostTabs({
   // Fetch all diseases and themes for filter dropdowns
   const { data: allDiseases } = useSWR<Disease[]>('/api/get_all_diseases', fetchData);
   const { data: allThemes } = useSWR<Theme[]>('/api/get_themes_with_posts', fetchData);
+  
+  // Fetch user's followed diseases for Following tab
+  const { data: followedDiseases, isLoading: diseasesLoading } = useSWR<FollowedDisease[]>(
+    session?.user?.email ? `/api/get_user_diseases?email=${session.user.email}` : null,
+    fetchData
+  );
 
   // Use the post filters hook
   const {
@@ -71,6 +84,19 @@ export default function FilterablePostTabs({
     }));
   };
 
+  // Handle disease tag selection for Following tab
+  const handleDiseaseTagClick = (diseaseId: number | null) => {
+    setSelectedDisease(diseaseId);
+    
+    // Update the filter state to include the selected disease
+    const newFilters = {
+      ...currentFilters,
+      diseaseId: diseaseId ? String(diseaseId) : null,
+    };
+    
+    handleFiltersChange(newFilters);
+  };
+
   // Update parent component with filtered posts
   useEffect(() => {
     if (isFilterableTab) {
@@ -87,6 +113,13 @@ export default function FilterablePostTabs({
       onFilteredPostsChange(posts);
     }
   }, [activeTab, isFilterableTab, posts, onFilteredPostsChange]);
+
+  // Reset selected disease when switching away from Following tab
+  useEffect(() => {
+    if (activeTab !== 'following') {
+      setSelectedDisease(null);
+    }
+  }, [activeTab]);
 
   // Prepare filter options - use all available options or extracted from current posts
   const filterDiseases = useMemo(() => {
@@ -107,6 +140,16 @@ export default function FilterablePostTabs({
 
   return (
     <VStack spacing={6} align="stretch">
+      {/* Show followed diseases tags for Following tab */}
+      {activeTab === 'following' && (
+        <FollowedDiseasesTags
+          diseases={followedDiseases || []}
+          onDiseaseClick={handleDiseaseTagClick}
+          selectedDisease={selectedDisease}
+          isLoading={diseasesLoading}
+        />
+      )}
+
       {/* Show search and filter only for filterable tabs */}
       {isFilterableTab && (
         <Box>

@@ -101,7 +101,6 @@
 
 - [x] 4. Implement search and filter functionality
 
-
   - Create SearchAndFilter component with real-time search
   - Add dropdown filters for rare disease and theme
   - Implement filter logic for post-based tabs
@@ -131,7 +130,8 @@
   - Show filter state clearly to users
   - _Requirements: 10.6_
 
-- [ ] 5. Create followed diseases tags component
+- [x] 5. Create followed diseases tags component
+
 
   - Build FollowedDiseasesTags component for the Following tab
   - Display user's followed diseases as clickable tags
@@ -139,7 +139,7 @@
   - Add link to rare diseases page for managing interests
   - _Requirements: 1.3, 1.4, 1.6_
 
-- [ ] 5.1 Create FollowedDiseasesTags component
+- [x] 5.1 Create FollowedDiseasesTags component
 
   - Build component that displays diseases as clickable tag/badge elements
   - Style tags with Chakra UI Badge or Tag components
@@ -147,7 +147,7 @@
   - Show selected state when a disease tag is active
   - _Requirements: 1.3, 1.4_
 
-- [ ] 5.2 Add disease management link
+- [x] 5.2 Add disease management link
 
   - Include prominent link/button to rare diseases page
   - Position link appropriately within the Following tab
