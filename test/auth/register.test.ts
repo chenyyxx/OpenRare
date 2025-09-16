@@ -202,7 +202,6 @@ describe("/api/auth/register", () => {
       // Verify database calls
       expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
         where: { email: "newuser@example.com" },
-        include: { accounts: true },
       });
 
       expect(mockHashPassword).toHaveBeenCalledWith("ValidPass123!");
@@ -276,7 +275,6 @@ describe("/api/auth/register", () => {
 
       expect(mockPrisma.user.findUnique).toHaveBeenCalledWith({
         where: { email: "newuser@example.com" },
-        include: { accounts: true },
       });
 
       expect(mockPrisma.user.create).toHaveBeenCalledWith({
