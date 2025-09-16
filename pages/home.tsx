@@ -384,15 +384,6 @@ export default function Home() {
     }
   };
 
-  console.log(
-    "post",
-    userPosts,
-    "replies",
-    userComments,
-    userReplies,
-    "comments"
-  );
-
   return (
     <Box minH="100vh" bg={"gray.50"}>
       <Sidebar>

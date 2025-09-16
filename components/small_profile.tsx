@@ -93,11 +93,11 @@ export default function SmallProfile({ user }: { user: SmallUser }) {
                             rounded={"md"}
                             colorScheme={"teal"}
                             as={Link}
-                            href={"/profile"}
+                            href={"/edit_profile"}
                             style={{ textDecoration: "none" }}
                             _focus={{ boxShadow: "none" }}
                         >
-                            Profile
+                            Settings
                         </Button>
                     </Stack>
                 </Box>

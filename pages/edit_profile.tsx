@@ -47,7 +47,7 @@ export default function EditProfile() {
         },
         body: JSON.stringify({ profileEdits: newProfileEdits }),
       });
-      router.push(`/profile`);
+      router.push(`/edit_profile`);
     }
   };
 

@@ -34,7 +34,7 @@ const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, link: '/home' },
   { name: 'Explore', icon: FiCompass, link: '/' },
   { name: 'Rare Diseases', icon: FiList, link: '/rare-diseases' },
-  { name: 'Profile', icon: FiUser, link: '/profile' },
+  { name: 'Settings', icon: FiUser, link: '/edit_profile' },
 ];
 
 // export default function LeftSideBar() {
