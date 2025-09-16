@@ -33,15 +33,6 @@ const tabContent: Record<TabType, React.ReactNode> = {
       </Box>
     </VStack>
   ),
-  favorites: (
-    <VStack spacing={4} align="stretch">
-      <Text fontSize="lg" fontWeight="bold">Favorites Tab</Text>
-      <Text>This shows posts you&apos;ve upvoted.</Text>
-      <Box p={4} bg="gray.50" borderRadius="md">
-        <Text>Favorited post...</Text>
-      </Box>
-    </VStack>
-  ),
   replies: (
     <VStack spacing={4} align="stretch">
       <Text fontSize="lg" fontWeight="bold">Replies Tab</Text>

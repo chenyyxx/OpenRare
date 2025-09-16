@@ -42,10 +42,7 @@ export default function HomePageWithRefresh() {
     fetchData
   );
 
-  const { data: favoritesPosts, error: favoritesError, isLoading: favoritesLoading, mutate: mutateFavorites } = useSWR<FullPost[]>(
-    email ? `/api/get_user_favorites?email=${email}` : null,
-    fetchFlatUserSectionPost
-  );
+
 
   const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: mutateReplies } = useSWR(
     email ? `/api/get_user_replies?email=${email}` : null,
@@ -64,9 +61,6 @@ export default function HomePageWithRefresh() {
           break;
         case 'myComments':
           await mutateComments();
-          break;
-        case 'favorites':
-          await mutateFavorites();
           break;
         case 'replies':
           await mutateReplies();
@@ -100,8 +94,6 @@ export default function HomePageWithRefresh() {
         return myPostsLoading;
       case 'myComments':
         return commentsLoading;
-      case 'favorites':
-        return favoritesLoading;
       case 'replies':
         return repliesLoading;
       default:
@@ -118,8 +110,6 @@ export default function HomePageWithRefresh() {
         return myPostsError?.message;
       case 'myComments':
         return commentsError?.message;
-      case 'favorites':
-        return favoritesError?.message;
       case 'replies':
         return repliesError?.message;
       default:
@@ -132,7 +122,6 @@ export default function HomePageWithRefresh() {
     following: followingPosts?.length || 0,
     myPosts: myPosts?.length || 0,
     myComments: myComments?.length || 0,
-    favorites: favoritesPosts?.length || 0,
     replies: replies?.length || 0,
   };
 
@@ -172,7 +161,6 @@ export default function HomePageWithRefresh() {
             followingPosts={followingPosts}
             myPosts={myPosts}
             myComments={myComments}
-            favoritesPosts={favoritesPosts}
             replies={replies}
           />
         </VStack>

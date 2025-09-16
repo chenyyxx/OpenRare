@@ -31,7 +31,6 @@ interface FilteredContentAreaProps {
   followingPosts?: FullPost[];
   myPosts?: FullPost[];
   myComments?: any[]; // UserComment type from CommentList
-  favoritesPosts?: FullPost[];
   replies?: any[]; // UserReply type from ReplyList
 }
 
@@ -47,7 +46,6 @@ export default function FilteredContentArea({
   followingPosts = [],
   myPosts = [],
   myComments = [],
-  favoritesPosts = [],
   replies = [],
 }: FilteredContentAreaProps) {
   const [filteredPosts, setFilteredPosts] = useState<FullPost[]>([]);
@@ -64,8 +62,6 @@ export default function FilteredContentArea({
         return myPosts;
       case 'myComments':
         return myComments;
-      case 'favorites':
-        return favoritesPosts;
       case 'replies':
         return replies;
       default:
@@ -153,7 +149,6 @@ export default function FilteredContentArea({
     switch (activeTab) {
       case 'following':
       case 'myPosts':
-      case 'favorites':
         // Post-based tabs - use filtered posts
         const postsToShow = isTabFilterable(activeTab) ? filteredPosts : (currentData as FullPost[]);
         

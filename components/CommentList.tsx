@@ -2,6 +2,7 @@ import {
   Box,
   Text,
   HStack,
+  VStack,
   Stack,
   Avatar,
   useColorModeValue,
@@ -12,19 +13,38 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import RichTextEditor from "./RichText";
+import { Prisma } from "@prisma/client";
 
-export interface UserComment {
-  id: string;
-  content: string;
-  createdAt: Date;
-  post: {
-    id: string;
-    title: string;
-    disease: {
-      name: string;
+// Type for comments extracted from user's posts
+export type UserComment = Prisma.CommentGetPayload<{
+  include: {
+    user: true;
+    subComments: {
+      include: {
+        user: true;
+        parent: { include: { user: true } };
+      };
     };
   };
-}
+}> & {
+  post: {
+    id: number;
+    title: string;
+    disease: {
+      id: number;
+      name: string;
+    };
+    theme: {
+      id: string;
+      name: string;
+    };
+    user: {
+      id: string;
+      name: string | null;
+      image: string | null;
+    };
+  };
+};
 
 interface CommentListProps {
   comments: UserComment[];
@@ -37,7 +57,7 @@ function CommentItem({ comment }: { comment: UserComment }) {
   const date = createdAt.getDate();
   const year = createdAt.getFullYear();
   const month = createdAt.getMonth();
-  
+
   // Strip HTML tags for preview
   const commentText = comment.content.replace(/<[^>]+>/g, "");
   const isLongComment = commentText.length > 200;
@@ -54,37 +74,61 @@ function CommentItem({ comment }: { comment: UserComment }) {
       overflow="hidden"
     >
       <Stack spacing={4}>
-        {/* Comment metadata */}
+        {/* Comment metadata with commenter info */}
         <HStack justify="space-between" align="start" wrap="wrap">
-          <Text
-            fontSize="sm"
-            color="gray.500"
-          >
-            {`${month + 1}/${date}/${year}`}
-          </Text>
-          <Badge
-            colorScheme="green"
-            variant="subtle"
-            fontSize="xs"
-          >
-            {comment.post.disease.name}
+          <HStack spacing={3}>
+            <Avatar size="sm" src={comment.user.image || undefined} />
+            <VStack align="start" spacing={0}>
+              <Text
+                fontSize="sm"
+                fontWeight="600"
+                color={useColorModeValue("gray.700", "gray.200")}
+              >
+                {comment.user.name}
+              </Text>
+              <Text fontSize="xs" color="gray.500">
+                {`${month + 1}/${date}/${year}`}
+              </Text>
+            </VStack>
+          </HStack>
+          <Badge colorScheme="green" variant="subtle" fontSize="xs">
+            🧬 {comment.post?.disease?.name || "Unknown"}
           </Badge>
         </HStack>
 
         {/* Post context */}
-        <Box>
-          <Text fontSize="sm" color="gray.600" mb={2}>
-            Comment on:
-          </Text>
+        <Box
+          bg={useColorModeValue("blue.25", "gray.800")}
+          p={4}
+          rounded="md"
+          borderLeft="4px"
+          borderLeftColor="blue.400"
+          border="1px"
+          borderColor={useColorModeValue("blue.100", "gray.600")}
+        >
+          <HStack spacing={2} mb={2}>
+            <Text
+              fontSize="xs"
+              color="gray.600"
+              fontWeight="600"
+              textTransform="uppercase"
+            >
+              Comment on your post:
+            </Text>
+            <Badge size="sm" colorScheme="blue" variant="subtle">
+              YOUR POST
+            </Badge>
+          </HStack>
           <Text
             as={Link}
-            href={`/post/${comment.post.id}`}
+            href={`/post/${comment.post?.id}`}
             fontSize="md"
             fontWeight="semibold"
             color={useColorModeValue("blue.600", "blue.300")}
             _hover={{ textDecoration: "underline" }}
+            lineHeight="1.5"
           >
-            {comment.post.title}
+            {comment.post?.title || "Unknown Post"}
           </Text>
         </Box>
 
@@ -126,7 +170,7 @@ function CommentItem({ comment }: { comment: UserComment }) {
         <Flex justify="end">
           <Button
             as={Link}
-            href={`/post/${comment.post.id}`}
+            href={`/post/${comment.post?.id}`}
             size="sm"
             variant="outline"
             colorScheme="blue"
@@ -161,7 +205,7 @@ export default function CommentList({ comments, isLoading }: CommentListProps) {
   }
 
   if (comments.length === 0) {
-    return null; // EmptyState will be handled by parent component
+    return <EmptyState tabType="myComments" />;
   }
 
   return (

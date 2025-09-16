@@ -28,25 +28,52 @@ export default function HomePageWithFilters() {
     fetchFlatUserSectionPost
   );
 
-  const { data: myPosts, error: myPostsError, isLoading: myPostsLoading } = useSWR<FullPost[]>(
+  const { data: myPostsResponse, error: myPostsError, isLoading: myPostsLoading } = useSWR(
     email ? `/api/get_user_posts?email=${email}` : null,
-    fetchFlatUserSectionPost
-  );
-
-  const { data: myComments, error: commentsError, isLoading: commentsLoading } = useSWR(
-    email ? `/api/get_user_comments?email=${email}` : null,
     fetchData
   );
 
-  const { data: favoritesPosts, error: favoritesError, isLoading: favoritesLoading } = useSWR<FullPost[]>(
-    email ? `/api/get_user_favorites?email=${email}` : null,
-    fetchFlatUserSectionPost
-  );
+  const myPosts = myPostsResponse?.posts || [];
 
-  const { data: replies, error: repliesError, isLoading: repliesLoading } = useSWR(
-    email ? `/api/get_user_replies?email=${email}` : null,
-    fetchData
-  );
+  // Extract comments and replies directly from myPosts
+  // ALL comments on my posts (including my own comments) with post context
+  const myComments = myPosts
+    .flatMap(post => 
+      (post.comments || []).map(comment => ({
+        ...comment,
+        post: {
+          id: post.id,
+          title: post.title,
+          disease: post.disease,
+          theme: post.theme,
+          user: post.user
+        }
+      }))
+    )
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  // ALL subcomments on my comments (including my own replies) with comment and post context
+  const replies = myPosts
+    .flatMap(post => 
+      post.comments
+        ?.filter(comment => comment.user.email === email) // My comments only
+        ?.flatMap(comment => 
+          (comment.subComments || []).map(subComment => ({
+            ...subComment,
+            comment: {
+              ...comment,
+              post: {
+                id: post.id,
+                title: post.title,
+                disease: post.disease,
+                theme: post.theme,
+                user: post.user
+              }
+            }
+          }))
+        ) || []
+    )
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   // Determine loading state for current tab
   const getCurrentTabLoading = () => {
@@ -54,13 +81,9 @@ export default function HomePageWithFilters() {
       case 'following':
         return followingLoading;
       case 'myPosts':
-        return myPostsLoading;
       case 'myComments':
-        return commentsLoading;
-      case 'favorites':
-        return favoritesLoading;
       case 'replies':
-        return repliesLoading;
+        return myPostsLoading;
       default:
         return false;
     }
@@ -72,13 +95,9 @@ export default function HomePageWithFilters() {
       case 'following':
         return followingError?.message;
       case 'myPosts':
-        return myPostsError?.message;
       case 'myComments':
-        return commentsError?.message;
-      case 'favorites':
-        return favoritesError?.message;
       case 'replies':
-        return repliesError?.message;
+        return myPostsError?.message;
       default:
         return undefined;
     }
@@ -89,7 +108,6 @@ export default function HomePageWithFilters() {
     following: followingPosts?.length || 0,
     myPosts: myPosts?.length || 0,
     myComments: myComments?.length || 0,
-    favorites: favoritesPosts?.length || 0,
     replies: replies?.length || 0,
   };
 
@@ -125,7 +143,6 @@ export default function HomePageWithFilters() {
             followingPosts={followingPosts}
             myPosts={myPosts}
             myComments={myComments}
-            favoritesPosts={favoritesPosts}
             replies={replies}
           />
         </VStack>
@@ -163,7 +180,6 @@ export function HomePageContentWithFilters() {
         followingPosts={followingPosts}
         myPosts={[]} // Add other data sources as needed
         myComments={[]}
-        favoritesPosts={[]}
         replies={[]}
       />
     </VStack>
@@ -213,7 +229,6 @@ export function CustomHomePageWithFilters({
           followingPosts={[]}
           myPosts={[]}
           myComments={[]}
-          favoritesPosts={[]}
           replies={[]}
         />
       </Box>

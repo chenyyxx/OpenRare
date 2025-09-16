@@ -83,46 +83,49 @@ export default function PostDetail({ post, url }: AppProps) {
           </VStack>
         </HStack>
 
-        {/* Post Title and Theme */}
-        <VStack align="stretch" spacing={3}>
-          <Flex 
-            direction={{ base: "column", md: "row" }} 
-            justify={{ base: "flex-start", md: "space-between" }} 
-            align={{ base: "flex-start", md: "flex-start" }}
-            gap={3}
-          >
-            <Heading
-              color="gray.800"
-              fontSize={{ base: "lg", md: "2xl" }}
-              fontFamily="body"
-              lineHeight="shorter"
-              flex={1}
-            >
-              {post.title}
-            </Heading>
-            {post.theme && (
-              <Box flexShrink={0}>
-                <Text
-                  fontSize="xs"
-                  fontWeight="600"
-                  color="purple.600"
-                  bg="purple.50"
-                  px={3}
-                  py={1}
-                  rounded="full"
-                  border="1px"
-                  borderColor="purple.200"
-                >
-                  {post.theme.name}
-                </Text>
-              </Box>
-            )}
-          </Flex>
-        </VStack>
+        {/* Post Title */}
+        <Heading
+          color="gray.800"
+          fontSize={{ base: "lg", md: "2xl" }}
+          fontFamily="body"
+          lineHeight="shorter"
+        >
+          {post.title}
+        </Heading>
 
-        {/* Disease Information */}
-        {post.disease && (
-          <Box>
+        {/* Theme and Disease Badges */}
+        <HStack spacing={3} wrap="wrap">
+          {post.theme && (
+            <HStack
+              as="a"
+              href={`/themes/${post.theme.id}`}
+              spacing={1}
+              fontSize="xs"
+              fontWeight="600"
+              color="purple.700"
+              bg="purple.50"
+              px={3}
+              py={1}
+              rounded="full"
+              border="1px"
+              borderColor="purple.200"
+              display="inline-flex"
+              _hover={{
+                bg: "purple.100",
+                borderColor: "purple.300",
+                textDecoration: "none",
+              }}
+              transition="all 0.2s"
+            >
+              <Box as="span" fontSize="10px">
+                🏷️
+              </Box>
+              <Text as="span">
+                {post.theme.name}
+              </Text>
+            </HStack>
+          )}
+          {post.disease && (
             <HStack
               as="a"
               href={`/rare-diseases?disease=${post.disease.id}`}
@@ -153,8 +156,8 @@ export default function PostDetail({ post, url }: AppProps) {
                 {post.disease.name}
               </Text>
             </HStack>
-          </Box>
-        )}
+          )}
+        </HStack>
 
         {/* Post Content */}
         <Box>

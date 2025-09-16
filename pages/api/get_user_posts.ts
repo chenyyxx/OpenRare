@@ -12,12 +12,22 @@ const get_user_posts = async (req: NextApiRequest, res: NextApiResponse) => {
             })
         }
 
-        // Fetch user's posts with all required information
+        // First, get the user ID
+        const user = await prisma.user.findUnique({
+            where: { email: email },
+            select: { id: true }
+        })
+
+        if (!user) {
+            return res.status(404).json({ 
+                error: 'User not found' 
+            })
+        }
+
+        // Fetch user's posts with all required information including full comment trees
         const userPosts = await prisma.post.findMany({
             where: {
-                user: {
-                    email: email
-                }
+                userId: user.id
             },
             orderBy: {
                 createdAt: 'desc'
@@ -27,6 +37,21 @@ const get_user_posts = async (req: NextApiRequest, res: NextApiResponse) => {
                 disease: true,
                 theme: true,
                 votes: true,
+                comments: {
+                    include: {
+                        user: true,
+                        subComments: {
+                            include: {
+                                user: true,
+                                parent: {
+                                    include: {
+                                        user: true,
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 _count: {
                     select: { comments: true }
                 }

@@ -7,7 +7,7 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 
-export type TabType = 'following' | 'myPosts' | 'myComments' | 'favorites' | 'replies';
+export type TabType = 'following' | 'myPosts' | 'myComments' | 'replies';
 
 interface TabNavigationProps {
   activeTab: TabType;
@@ -25,9 +25,8 @@ interface TabConfig {
 const tabs: TabConfig[] = [
   { key: 'following', label: 'Following', shortLabel: 'Following' },
   { key: 'myPosts', label: 'My Posts', shortLabel: 'Posts' },
-  { key: 'myComments', label: 'My Comments', shortLabel: 'Comments' },
-  { key: 'favorites', label: 'Favorites', shortLabel: 'Favorites' },
-  { key: 'replies', label: 'Replies', shortLabel: 'Replies' },
+  { key: 'myComments', label: 'Comments on My Posts', shortLabel: 'Comments' },
+  { key: 'replies', label: 'Replies to My Comments', shortLabel: 'Replies' },
 ];
 
 export default function TabNavigation({ 

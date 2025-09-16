@@ -2,6 +2,7 @@ import {
   Box,
   Text,
   HStack,
+  VStack,
   Stack,
   Avatar,
   useColorModeValue,
@@ -12,27 +13,44 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { BiCommentDetail, BiMessageDetail } from "react-icons/bi";
+import { BiCommentDetail } from "react-icons/bi";
 import RichTextEditor from "./RichText";
+import { Prisma } from "@prisma/client";
 
-export interface UserReply {
-  id: string;
-  content: string;
-  createdAt: Date;
-  parentType: 'post' | 'comment';
-  parent: {
-    id: string;
-    title?: string; // for posts
-    content?: string; // for comments
-    post?: {
+// Type for subcomments extracted from user's posts
+export type UserReply = Prisma.SubCommentGetPayload<{
+  include: {
+    user: true;
+    parent: { include: { user: true } };
+  };
+}> & {
+  comment: {
+    id: number;
+    content: string;
+    user: {
       id: string;
+      name: string | null;
+      image: string | null;
+    };
+    post: {
+      id: number;
       title: string;
       disease: {
+        id: number;
         name: string;
+      };
+      theme: {
+        id: string;
+        name: string;
+      };
+      user: {
+        id: string;
+        name: string | null;
+        image: string | null;
       };
     };
   };
-}
+};
 
 interface ReplyListProps {
   replies: UserReply[];
@@ -50,36 +68,22 @@ function ReplyItem({ reply }: { reply: UserReply }) {
   const replyText = reply.content.replace(/<[^>]+>/g, "");
   const isLongReply = replyText.length > 200;
 
-  // Get parent content preview
+  // Get parent comment content preview
   const getParentPreview = () => {
-    if (reply.parentType === 'post') {
-      return reply.parent.title || 'Untitled Post';
-    } else {
-      const parentContent = reply.parent.content?.replace(/<[^>]+>/g, "") || '';
-      return parentContent.length > 100 
-        ? parentContent.substring(0, 100) + '...' 
-        : parentContent;
-    }
+    const parentContent = reply.comment.content?.replace(/<[^>]+>/g, "") || '';
+    return parentContent.length > 100 
+      ? parentContent.substring(0, 100) + '...' 
+      : parentContent;
   };
 
   // Get the post ID for navigation
   const getPostId = () => {
-    if (reply.parentType === 'post') {
-      return reply.parent.id;
-    } else {
-      return reply.parent.post?.id;
-    }
+    return reply.comment.post?.id;
   };
 
   // Get disease name for context
   const getDiseaseName = () => {
-    if (reply.parentType === 'post') {
-      // For post replies, we'd need the disease info in the parent object
-      // This would need to be included in the API response
-      return null;
-    } else {
-      return reply.parent.post?.disease?.name;
-    }
+    return reply.comment.post?.disease?.name;
   };
 
   return (
@@ -94,23 +98,35 @@ function ReplyItem({ reply }: { reply: UserReply }) {
       overflow="hidden"
     >
       <Stack spacing={4}>
-        {/* Reply metadata */}
+        {/* Reply metadata with enhanced visual language */}
         <HStack justify="space-between" align="start" wrap="wrap">
-          <HStack spacing={2}>
-            <Icon 
-              as={reply.parentType === 'post' ? BiMessageDetail : BiCommentDetail} 
-              color={reply.parentType === 'post' ? 'blue.500' : 'purple.500'}
-            />
-            <Text
-              fontSize="sm"
-              color={reply.parentType === 'post' ? 'blue.600' : 'purple.600'}
-              fontWeight="medium"
+          <HStack spacing={3}>
+            <Avatar size="sm" src={reply.user.image || undefined} />
+            <Box
+              p={2}
+              rounded="full"
+              bg="purple.50"
+              border="1px"
+              borderColor="purple.200"
             >
-              Reply to {reply.parentType}
-            </Text>
-            <Text fontSize="sm" color="gray.500">
-              {`${month + 1}/${date}/${year}`}
-            </Text>
+              <Icon 
+                as={BiCommentDetail} 
+                color="purple.500"
+                boxSize={4}
+              />
+            </Box>
+            <VStack align="start" spacing={0}>
+              <Text
+                fontSize="sm"
+                color="purple.600"
+                fontWeight="600"
+              >
+                {reply.user.name} replied to your comment
+              </Text>
+              <Text fontSize="xs" color="gray.500">
+                {`${month + 1}/${date}/${year}`}
+              </Text>
+            </VStack>
           </HStack>
           {getDiseaseName() && (
             <Badge
@@ -118,37 +134,63 @@ function ReplyItem({ reply }: { reply: UserReply }) {
               variant="subtle"
               fontSize="xs"
             >
-              {getDiseaseName()}
+              🧬 {getDiseaseName()}
             </Badge>
           )}
         </HStack>
 
-        {/* Parent context */}
+        {/* Your original content context */}
         <Box
-          bg={useColorModeValue("gray.50", "gray.800")}
+          bg={useColorModeValue("blue.25", "gray.800")}
           p={4}
           rounded="md"
           borderLeft="4px"
-          borderLeftColor={reply.parentType === 'post' ? 'blue.400' : 'purple.400'}
+          borderLeftColor="purple.400"
+          border="1px"
+          borderColor={useColorModeValue("blue.100", "gray.600")}
         >
-          <Text fontSize="xs" color="gray.600" mb={2} textTransform="uppercase">
-            Original {reply.parentType}:
-          </Text>
+          <HStack spacing={2} mb={2}>
+            <Text fontSize="xs" color="gray.600" fontWeight="600" textTransform="uppercase">
+              Your original comment:
+            </Text>
+            <Badge
+              size="sm"
+              colorScheme="purple"
+              variant="subtle"
+            >
+              YOU
+            </Badge>
+          </HStack>
           <Text
             fontSize="sm"
             color={useColorModeValue("gray.700", "gray.300")}
-            fontStyle={reply.parentType === 'comment' ? 'italic' : 'normal'}
-            fontWeight={reply.parentType === 'post' ? 'semibold' : 'normal'}
+            fontStyle="italic"
+            lineHeight="1.5"
           >
             {getParentPreview()}
           </Text>
         </Box>
 
-        {/* Reply content */}
-        <Box>
-          <Text fontSize="xs" color="gray.600" mb={2} textTransform="uppercase">
-            Your reply:
-          </Text>
+        {/* Their reply to your content */}
+        <Box
+          bg={useColorModeValue("green.25", "gray.700")}
+          p={4}
+          rounded="md"
+          border="1px"
+          borderColor={useColorModeValue("green.100", "gray.600")}
+        >
+          <HStack spacing={2} mb={3}>
+            <Text fontSize="xs" color="green.600" fontWeight="600" textTransform="uppercase">
+              Their reply:
+            </Text>
+            <Badge
+              size="sm"
+              colorScheme="green"
+              variant="subtle"
+            >
+              NEW
+            </Badge>
+          </HStack>
           {isExpanded ? (
             <RichTextEditor
               readOnly

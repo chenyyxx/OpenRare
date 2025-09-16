@@ -42,8 +42,6 @@ export function useHomePageRefresh({
         return `/api/get_user_posts?email=${email}`;
       case 'myComments':
         return `/api/get_user_comments?email=${email}`;
-      case 'favorites':
-        return `/api/get_user_favorites?email=${email}`;
       case 'replies':
         return `/api/get_user_replies?email=${email}`;
       default:

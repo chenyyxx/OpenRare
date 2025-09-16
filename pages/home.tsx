@@ -16,14 +16,20 @@ import Post, { FullPost } from "../components/post";
 import CommentList, { UserComment } from "../components/CommentList";
 import ReplyList, { UserReply } from "../components/ReplyList";
 import EmptyState from "../components/EmptyState";
-import FollowedDiseasesTags, { FollowedDisease } from "../components/FollowedDiseasesTags";
-import SearchAndFilter, { FilterState, Disease, Theme } from "../components/SearchAndFilter";
+import FollowedDiseasesTags, {
+  FollowedDisease,
+} from "../components/FollowedDiseasesTags";
+import SearchAndFilter, {
+  FilterState,
+  Disease,
+  Theme,
+} from "../components/SearchAndFilter";
 import useSWR from "swr";
 import { fetchData, fetchFlatUserSectionPost } from "../utils/utils";
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const [activeTab, setActiveTab] = useState<TabType>('following');
+  const [activeTab, setActiveTab] = useState<TabType>("following");
   const [error, setError] = useState<string | undefined>();
   const [selectedDisease, setSelectedDisease] = useState<number | null>(null);
   const [filters, setFilters] = useState<FilterState>({
@@ -35,36 +41,77 @@ export default function Home() {
   const email = session?.user?.email;
 
   // Data fetching for each tab
-  const { data: followingPosts, error: followingError, mutate: mutateFollowing } = useSWR<FullPost[]>(
+  const {
+    data: followingPosts,
+    error: followingError,
+    mutate: mutateFollowing,
+  } = useSWR<FullPost[]>(
     email ? `/api/get_user_diseases_posts?email=${email}` : null,
     fetchFlatUserSectionPost
   );
 
-  const { data: userPostsResponse, error: userPostsError, mutate: mutateUserPosts } = useSWR<{posts: FullPost[], count: number}>(
-    email && activeTab === 'myPosts' ? `/api/get_user_posts?email=${email}` : null,
-    fetchData
-  );
-
-  const { data: userCommentsResponse, error: userCommentsError, mutate: mutateUserComments } = useSWR<{comments: UserComment[], count: number}>(
-    email && activeTab === 'myComments' ? `/api/get_user_comments?email=${email}` : null,
-    fetchData
-  );
-
-  const { data: favoritePostsResponse, error: favoritePostsError, mutate: mutateFavoritePosts } = useSWR<{posts: FullPost[], count: number}>(
-    email && activeTab === 'favorites' ? `/api/get_user_favorites?email=${email}` : null,
-    fetchData
-  );
-
-  const { data: userRepliesResponse, error: userRepliesError, mutate: mutateUserReplies } = useSWR<{replies: UserReply[], count: number}>(
-    email && activeTab === 'replies' ? `/api/get_user_replies?email=${email}` : null,
+  const {
+    data: userPostsResponse,
+    error: userPostsError,
+    mutate: mutateUserPosts,
+  } = useSWR<{ posts: FullPost[]; count: number }>(
+    email ? `/api/get_user_posts?email=${email}` : null,
     fetchData
   );
 
   // Extract data from API responses
   const userPosts = userPostsResponse?.posts;
-  const userComments = userCommentsResponse?.comments;
-  const favoritePosts = favoritePostsResponse?.posts;
-  const userReplies = userRepliesResponse?.replies;
+
+  // Extract comments and replies directly from userPosts
+  // ALL comments on my posts (including my own comments) with post context
+  const userComments = !userPosts
+    ? []
+    : userPosts
+        .flatMap((post) =>
+          (post.comments || []).map((comment) => ({
+            ...comment,
+            post: {
+              id: post.id,
+              title: post.title,
+              disease: post.disease,
+              theme: post.theme,
+              user: post.user,
+            },
+          }))
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+  // ALL subcomments on my comments (including my own replies) with comment and post context
+  const userReplies = !userPosts
+    ? []
+    : userPosts
+        .flatMap(
+          (post) =>
+            post.comments
+              ?.filter((comment) => comment.user.email === email) // My comments only
+              ?.flatMap((comment) =>
+                (comment.subComments || []).map((subComment) => ({
+                  ...subComment,
+                  comment: {
+                    ...comment,
+                    post: {
+                      id: post.id,
+                      title: post.title,
+                      disease: post.disease,
+                      theme: post.theme,
+                      user: post.user,
+                    },
+                  },
+                }))
+              ) || []
+        )
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
 
   // Get user data for followed diseases
   const { data: userData } = useSWR(
@@ -75,7 +122,13 @@ export default function Home() {
   // Handle loading state during authentication
   if (status === "loading") {
     return (
-      <Box minH="100vh" bg={"gray.100"} display="flex" alignItems="center" justifyContent="center">
+      <Box
+        minH="100vh"
+        bg={"gray.100"}
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
         <Spinner size="xl" />
       </Box>
     );
@@ -90,16 +143,12 @@ export default function Home() {
   // Determine current loading state
   const getCurrentLoadingState = () => {
     switch (activeTab) {
-      case 'following':
+      case "following":
         return !followingPosts && !followingError;
-      case 'myPosts':
+      case "myPosts":
+      case "myComments":
+      case "replies":
         return !userPostsResponse && !userPostsError;
-      case 'myComments':
-        return !userCommentsResponse && !userCommentsError;
-      case 'favorites':
-        return !favoritePostsResponse && !favoritePostsError;
-      case 'replies':
-        return !userRepliesResponse && !userRepliesError;
       default:
         return false;
     }
@@ -109,16 +158,12 @@ export default function Home() {
   const getCurrentError = () => {
     if (error) return error;
     switch (activeTab) {
-      case 'following':
+      case "following":
         return followingError?.message;
-      case 'myPosts':
+      case "myPosts":
+      case "myComments":
+      case "replies":
         return userPostsError?.message;
-      case 'myComments':
-        return userCommentsError?.message;
-      case 'favorites':
-        return favoritePostsError?.message;
-      case 'replies':
-        return userRepliesError?.message;
       default:
         return undefined;
     }
@@ -142,24 +187,17 @@ export default function Home() {
     setError(undefined);
     try {
       switch (activeTab) {
-        case 'following':
+        case "following":
           await mutateFollowing();
           break;
-        case 'myPosts':
+        case "myPosts":
+        case "myComments":
+        case "replies":
           await mutateUserPosts();
-          break;
-        case 'myComments':
-          await mutateUserComments();
-          break;
-        case 'favorites':
-          await mutateFavoritePosts();
-          break;
-        case 'replies':
-          await mutateUserReplies();
           break;
       }
     } catch (err) {
-      setError('Failed to refresh content. Please try again.');
+      setError("Failed to refresh content. Please try again.");
     }
   };
 
@@ -172,25 +210,29 @@ export default function Home() {
   // Filter posts based on current filters
   const filterPosts = (posts: FullPost[] | undefined): FullPost[] => {
     if (!posts) return [];
-    
+
     let filtered = posts;
 
     // Apply disease filter (from tags or search filter)
     if (selectedDisease) {
-      filtered = filtered.filter(post => post.disease?.id === selectedDisease);
+      filtered = filtered.filter(
+        (post) => post.disease?.id === selectedDisease
+      );
     } else if (filters.diseaseId) {
-      filtered = filtered.filter(post => post.disease?.id === parseInt(filters.diseaseId!));
+      filtered = filtered.filter(
+        (post) => post.disease?.id === parseInt(filters.diseaseId!)
+      );
     }
 
     // Apply theme filter
     if (filters.themeId) {
-      filtered = filtered.filter(post => post.theme?.id === filters.themeId);
+      filtered = filtered.filter((post) => post.theme?.id === filters.themeId);
     }
 
     // Apply search filter
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
-      filtered = filtered.filter(post => 
+      filtered = filtered.filter((post) =>
         post.title.toLowerCase().includes(searchLower)
       );
     }
@@ -200,36 +242,43 @@ export default function Home() {
 
   // Get available diseases and themes for filters
   const getAvailableDiseases = (): Disease[] => {
-    const posts = activeTab === 'following' ? followingPosts : 
-                  activeTab === 'myPosts' ? userPosts : 
-                  activeTab === 'favorites' ? favoritePosts : [];
-    
+    const posts =
+      activeTab === "following"
+        ? followingPosts
+        : activeTab === "myPosts"
+        ? userPosts
+        : [];
+
     if (!posts) return [];
-    
+
     const diseases = posts
-      .filter(post => post.disease)
-      .map(post => ({ id: post.disease!.id, name: post.disease!.name }));
-    
+      .filter((post) => post.disease)
+      .map((post) => ({ id: post.disease!.id, name: post.disease!.name }));
+
     // Remove duplicates
-    return diseases.filter((disease, index, self) => 
-      index === self.findIndex(d => d.id === disease.id)
+    return diseases.filter(
+      (disease, index, self) =>
+        index === self.findIndex((d) => d.id === disease.id)
     );
   };
 
   const getAvailableThemes = (): Theme[] => {
-    const posts = activeTab === 'following' ? followingPosts : 
-                  activeTab === 'myPosts' ? userPosts : 
-                  activeTab === 'favorites' ? favoritePosts : [];
-    
+    const posts =
+      activeTab === "following"
+        ? followingPosts
+        : activeTab === "myPosts"
+        ? userPosts
+        : [];
+
     if (!posts) return [];
-    
+
     const themes = posts
-      .filter(post => post.theme)
-      .map(post => ({ id: post.theme!.id, name: post.theme!.name }));
-    
+      .filter((post) => post.theme)
+      .map((post) => ({ id: post.theme!.id, name: post.theme!.name }));
+
     // Remove duplicates
-    return themes.filter((theme, index, self) => 
-      index === self.findIndex(t => t.id === theme.id)
+    return themes.filter(
+      (theme, index, self) => index === self.findIndex((t) => t.id === theme.id)
     );
   };
 
@@ -244,16 +293,17 @@ export default function Home() {
     }
 
     switch (activeTab) {
-      case 'following': {
+      case "following": {
         const posts = filterPosts(followingPosts);
-        const followedDiseases: FollowedDisease[] = userData?.diseases?.map((disease: any) => ({
-          id: disease.id,
-          name: disease.name,
-          _count: {
-            posts: disease._count?.posts || 0,
-            users: disease._count?.users || 0,
-          }
-        })) || [];
+        const followedDiseases: FollowedDisease[] =
+          userData?.diseases?.map((disease: any) => ({
+            id: disease.id,
+            name: disease.name,
+            _count: {
+              posts: disease._count?.posts || 0,
+              users: disease._count?.users || 0,
+            },
+          })) || [];
 
         return (
           <VStack spacing={6} align="stretch">
@@ -286,7 +336,7 @@ export default function Home() {
         );
       }
 
-      case 'myPosts': {
+      case "myPosts": {
         const posts = filterPosts(userPosts);
 
         return (
@@ -313,7 +363,7 @@ export default function Home() {
         );
       }
 
-      case 'myComments': {
+      case "myComments": {
         return userComments && userComments.length > 0 ? (
           <CommentList comments={userComments} isLoading={false} />
         ) : (
@@ -321,34 +371,7 @@ export default function Home() {
         );
       }
 
-      case 'favorites': {
-        const posts = filterPosts(favoritePosts);
-
-        return (
-          <VStack spacing={6} align="stretch">
-            {/* Search and filter for posts */}
-            <SearchAndFilter
-              onFiltersChange={setFilters}
-              availableDiseases={getAvailableDiseases()}
-              availableThemes={getAvailableThemes()}
-              currentFilters={filters}
-            />
-
-            {/* Posts or empty state */}
-            {posts.length > 0 ? (
-              <Stack spacing={4}>
-                {posts.map((post) => (
-                  <Post key={post.id} post={post} />
-                ))}
-              </Stack>
-            ) : (
-              <EmptyState tabType="favorites" />
-            )}
-          </VStack>
-        );
-      }
-
-      case 'replies': {
+      case "replies": {
         return userReplies && userReplies.length > 0 ? (
           <ReplyList replies={userReplies} isLoading={false} />
         ) : (
@@ -361,18 +384,32 @@ export default function Home() {
     }
   };
 
+  console.log(
+    "post",
+    userPosts,
+    "replies",
+    userComments,
+    userReplies,
+    "comments"
+  );
+
   return (
     <Box minH="100vh" bg={"gray.50"}>
       <Sidebar>
         {status === "authenticated" && (
           <Flex justify="center" pt={"78px"}>
-            <Box w="full" p={{ base: "16px", md: "24px" }} minH="full" maxW="1200px">
+            <Box
+              w="full"
+              p={{ base: "16px", md: "24px" }}
+              minH="full"
+              maxW="1200px"
+            >
               <VStack spacing={6} align="stretch">
                 {/* Header */}
-                <Box 
-                  bg="white" 
-                  rounded={"lg"} 
-                  p={{ base: 4, md: 6 }} 
+                <Box
+                  bg="white"
+                  rounded={"lg"}
+                  p={{ base: 4, md: 6 }}
                   shadow="md"
                   border="1px"
                   borderColor="gray.200"
@@ -381,15 +418,16 @@ export default function Home() {
                     Your Personalized Feed
                   </Heading>
                   <Text color="gray.600">
-                    Stay updated with content from your interests, posts, comments, and more
+                    Stay updated with content from your interests, posts,
+                    comments, and more
                   </Text>
                 </Box>
 
                 {/* Tab Navigation */}
-                <Box 
-                  bg="white" 
-                  rounded={"lg"} 
-                  p={{ base: 4, md: 6 }} 
+                <Box
+                  bg="white"
+                  rounded={"lg"}
+                  p={{ base: 4, md: 6 }}
                   shadow="md"
                   border="1px"
                   borderColor="gray.200"
@@ -401,18 +439,17 @@ export default function Home() {
                     tabCounts={{
                       following: followingPosts?.length || 0,
                       myPosts: userPostsResponse?.count || 0,
-                      myComments: userCommentsResponse?.count || 0,
-                      favorites: favoritePostsResponse?.count || 0,
-                      replies: userRepliesResponse?.count || 0,
+                      myComments: userComments?.length || 0,
+                      replies: userReplies?.length || 0,
                     }}
                   />
                 </Box>
 
                 {/* Content Area */}
-                <Box 
-                  bg="white" 
-                  rounded={"lg"} 
-                  p={{ base: 4, md: 6 }} 
+                <Box
+                  bg="white"
+                  rounded={"lg"}
+                  p={{ base: 4, md: 6 }}
                   shadow="md"
                   border="1px"
                   borderColor="gray.200"

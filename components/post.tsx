@@ -27,8 +27,7 @@ import RichTextEditor from "./RichText";
 import { useState, useRef, useEffect } from "react";
 import { usePostDetail } from "../pages/post/[id]";
 import Comment from "./comment";
-import { useRouter } from 'next/navigation';
-import { ThemeBadge } from "./theme/ThemeBadge";
+import { useRouter } from "next/navigation";
 
 export type FullPost = Prisma.PostGetPayload<{
   include: {
@@ -36,6 +35,21 @@ export type FullPost = Prisma.PostGetPayload<{
     disease: true;
     theme: true;
     votes: { include: { user: true } };
+    comments?: {
+      include: {
+        user: true;
+        subComments: {
+          include: {
+            user: true;
+            parent: {
+              include: {
+                user: true;
+              };
+            };
+          };
+        };
+      };
+    };
   };
 }> & {
   _count?: {
@@ -44,7 +58,6 @@ export type FullPost = Prisma.PostGetPayload<{
 };
 
 function Post({ post }: { post: FullPost }) {
-  console.log("post", post)
   const createdAt = new Date(post.updatedAt);
   const date = createdAt.getDate();
   const year = createdAt.getFullYear();
@@ -55,7 +68,7 @@ function Post({ post }: { post: FullPost }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const postContent = post.content.replace(/<[^>]+>/g, "");
   const url = `/api/get_post/${post.id}`;
-  const {postDetail, isLoading, isError} = usePostDetail(url, null);
+  const { postDetail, isLoading, isError } = usePostDetail(url, null);
   const router = useRouter();
 
   useEffect(() => {
@@ -81,7 +94,7 @@ function Post({ post }: { post: FullPost }) {
   return (
     <Box
       w={"full"}
-      maxW='800px'
+      maxW="800px"
       bg={useColorModeValue("white", "gray.900")}
       borderColor="gray.200"
       borderWidth="1px"
@@ -91,39 +104,51 @@ function Post({ post }: { post: FullPost }) {
     >
       {
         <Stack>
-          <HStack justify="space-between" align="start" wrap="wrap">
-            <Heading
-              as={Link}
-              href={`/post/${post.id}`}
-              color={useColorModeValue("gray.700", "white")}
-              fontSize={["xl","2xl"]}
-              fontFamily={"body"}
-              flex={1}
-            >
-              {post.title}
-            </Heading>
+          <Heading
+            as={Link}
+            href={`/post/${post.id}`}
+            color={useColorModeValue("gray.700", "white")}
+            fontSize={["xl", "2xl"]}
+            fontFamily={"body"}
+            mb={3}
+          >
+            {post.title}
+          </Heading>
+
+          {/* Theme and Disease Badges */}
+          <HStack spacing={2} mb={3} wrap="wrap">
             {post.theme && (
-              <ThemeBadge 
-                themeName={post.theme.name} 
-                size="sm"
-              />
-            )}
-          </HStack>
-          <HStack justify={"space-between"} align="center">
-            <HStack>
-              <Avatar size="sm" src={post.user.image as string | undefined} />
-              <Text fontSize={["xs","sm"]} fontWeight={600}>
-                {post.user.name}
-              </Text>
-              <Text
-                fontSize={"xs"}
-                color={"gray.500"}
-              >{`${month}-${date}-${year}`}</Text>
-            </HStack>
-            <Box display={["none","flex"]}>
               <HStack
                 as={Link}
-                href={`/rare-diseases?disease=${post.disease?.id}`}
+                href={`/themes/${post.theme.id}`}
+                spacing={1}
+                fontSize="xs"
+                fontWeight="600"
+                color="purple.700"
+                bg="purple.50"
+                px={3}
+                py={1}
+                rounded="full"
+                border="1px"
+                borderColor="purple.200"
+                display="inline-flex"
+                _hover={{
+                  bg: "purple.100",
+                  borderColor: "purple.300",
+                  textDecoration: "none",
+                }}
+                transition="all 0.2s"
+              >
+                <Box as="span" fontSize="10px">
+                  🏷️
+                </Box>
+                <Text as="span">{post.theme.name}</Text>
+              </HStack>
+            )}
+            {post.disease && (
+              <HStack
+                as={Link}
+                href={`/rare-diseases?disease=${post.disease.id}`}
                 spacing={1}
                 fontSize="xs"
                 fontWeight="600"
@@ -136,6 +161,7 @@ function Post({ post }: { post: FullPost }) {
                 borderColor="green.200"
                 textTransform="uppercase"
                 letterSpacing="wide"
+                display="inline-flex"
                 _hover={{
                   bg: "green.100",
                   borderColor: "green.300",
@@ -146,43 +172,23 @@ function Post({ post }: { post: FullPost }) {
                 <Box as="span" fontSize="10px">
                   🧬
                 </Box>
-                <Text as="span">
-                  {post.disease?.name}
-                </Text>
+                <Text as="span">{post.disease.name}</Text>
               </HStack>
-            </Box>
+            )}
           </HStack>
-          <Box display={["flex","none"]}>
-            <HStack
-              as={Link}
-              href={`/rare-diseases?disease=${post.disease?.id}`}
-              spacing={1}
-              fontSize="xs"
-              fontWeight="600"
-              color="green.700"
-              bg="green.50"
-              px={3}
-              py={1}
-              rounded="full"
-              border="1px"
-              borderColor="green.200"
-              textTransform="uppercase"
-              letterSpacing="wide"
-              _hover={{
-                bg: "green.100",
-                borderColor: "green.300",
-                textDecoration: "none",
-              }}
-              transition="all 0.2s"
-            >
-              <Box as="span" fontSize="10px">
-                🧬
-              </Box>
-              <Text as="span">
-                {post.disease?.name}
+
+          <HStack justify={"space-between"} align="center">
+            <HStack>
+              <Avatar size="sm" src={post.user.image as string | undefined} />
+              <Text fontSize={["xs", "sm"]} fontWeight={600}>
+                {post.user.name}
               </Text>
+              <Text
+                fontSize={"xs"}
+                color={"gray.500"}
+              >{`${month}-${date}-${year}`}</Text>
             </HStack>
-          </Box>
+          </HStack>
 
           <Box as={"a"} href={`/post/${post.id}`}>
             {textOpen ? (
@@ -210,7 +216,9 @@ function Post({ post }: { post: FullPost }) {
               <Text
                 fontSize={"sm"}
                 as={Link}
-                onClick={(e: React.MouseEvent<HTMLElement>) => setTextOpen(!textOpen)}
+                onClick={(e: React.MouseEvent<HTMLElement>) =>
+                  setTextOpen(!textOpen)
+                }
               >
                 {textOpen ? "show less" : "... show more"}
               </Text>
@@ -221,11 +229,28 @@ function Post({ post }: { post: FullPost }) {
             <HStack divider={<StackDivider borderColor="gray.200" />}></HStack>
             <HStack spacing={2}>
               {/* <BiCommentDetail /> */}
-              <Button display={['none', 'flex']} fontSize={"md"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count?.comments || 0} Comments`}</Button>
-              <Button display={['flex', 'none']} fontSize={"sm"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count?.comments || 0}`}</Button>
-              <Modal isOpen={isOpen} onClose={onClose} size={"2xl"} scrollBehavior="inside">
+              <Button
+                display={["none", "flex"]}
+                fontSize={"md"}
+                variant="ghost"
+                leftIcon={<BiCommentDetail />}
+                onClick={onOpen}
+              >{`${post._count?.comments || 0} Comments`}</Button>
+              <Button
+                display={["flex", "none"]}
+                fontSize={"sm"}
+                variant="ghost"
+                leftIcon={<BiCommentDetail />}
+                onClick={onOpen}
+              >{`${post._count?.comments || 0}`}</Button>
+              <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+                size={"2xl"}
+                scrollBehavior="inside"
+              >
                 <ModalOverlay bg="blackAlpha.600" backdropFilter="blur(4px)" />
-                <ModalContent 
+                <ModalContent
                   mx={4}
                   my={8}
                   maxH="80vh"
@@ -233,7 +258,7 @@ function Post({ post }: { post: FullPost }) {
                   borderRadius="xl"
                   boxShadow="2xl"
                 >
-                  <ModalHeader 
+                  <ModalHeader
                     pb={4}
                     borderBottom="1px"
                     borderColor="gray.200"
@@ -249,7 +274,7 @@ function Post({ post }: { post: FullPost }) {
                       </Text>
                     </VStack>
                   </ModalHeader>
-                  <ModalCloseButton 
+                  <ModalCloseButton
                     top={4}
                     right={4}
                     bg="white"
@@ -263,7 +288,11 @@ function Post({ post }: { post: FullPost }) {
                         {postDetail.comments.map((comment, index) => (
                           <Box key={comment.id}>
                             <Box p={6}>
-                              <Comment comment={comment} url={url} isCompact={true} />
+                              <Comment
+                                comment={comment}
+                                url={url}
+                                isCompact={true}
+                              />
                             </Box>
                             {index < postDetail.comments.length - 1 && (
                               <Box h="1px" bg="gray.200" />
@@ -274,15 +303,15 @@ function Post({ post }: { post: FullPost }) {
                     ) : (
                       <Box p={12} textAlign="center">
                         <VStack spacing={4}>
-                          <Box
-                            p={4}
-                            rounded="full"
-                            bg="gray.100"
-                          >
+                          <Box p={4} rounded="full" bg="gray.100">
                             <BiCommentDetail size={24} color="gray.400" />
                           </Box>
                           <VStack spacing={2}>
-                            <Text fontSize="lg" fontWeight="600" color="gray.600">
+                            <Text
+                              fontSize="lg"
+                              fontWeight="600"
+                              color="gray.600"
+                            >
                               No comments yet
                             </Text>
                             <Text fontSize="sm" color="gray.500" maxW="300px">
@@ -294,26 +323,26 @@ function Post({ post }: { post: FullPost }) {
                     )}
                   </ModalBody>
 
-                  <ModalFooter 
+                  <ModalFooter
                     borderTop="1px"
                     borderColor="gray.200"
                     bg="gray.50"
                     borderBottomRadius="xl"
                     gap={3}
                   >
-                    <Button 
-                      variant="ghost" 
-                      onClick={onClose}
-                      size="md"
-                    >
+                    <Button variant="ghost" onClick={onClose} size="md">
                       Close
                     </Button>
-                    <Button 
-                      colorScheme="teal" 
-                      as={"a"} 
+                    <Button
+                      colorScheme="teal"
+                      as={"a"}
                       href={`/post/${post.id}`}
                       size="md"
-                      rightIcon={<Box as="span" fontSize="sm">→</Box>}
+                      rightIcon={
+                        <Box as="span" fontSize="sm">
+                          →
+                        </Box>
+                      }
                     >
                       View Full Post
                     </Button>
@@ -329,9 +358,7 @@ function Post({ post }: { post: FullPost }) {
 }
 
 const MobilePost = () => {
-  return (
-    <></>
-  )
-}
+  return <></>;
+};
 
 export default Post;

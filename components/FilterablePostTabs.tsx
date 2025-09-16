@@ -18,7 +18,7 @@ interface FilterablePostTabsProps {
 }
 
 // Tabs that support filtering (post-based tabs only)
-const FILTERABLE_TABS: TabType[] = ['following', 'myPosts', 'favorites'];
+const FILTERABLE_TABS: TabType[] = ['following', 'myPosts'];
 
 /**
  * Component that wraps post tabs with search and filter functionality
@@ -39,7 +39,6 @@ export default function FilterablePostTabs({
     following: { search: "", diseaseId: null, themeId: null },
     myPosts: { search: "", diseaseId: null, themeId: null },
     myComments: { search: "", diseaseId: null, themeId: null },
-    favorites: { search: "", diseaseId: null, themeId: null },
     replies: { search: "", diseaseId: null, themeId: null },
   });
 
