@@ -69,7 +69,6 @@
 
 - [x] 3. Build content display components for each tab type
 
-
   - Create CommentList component for displaying user comments
   - Create ReplyList component for displaying replies to user content
   - Implement EmptyState component with contextual messages
@@ -100,7 +99,8 @@
   - Style consistently with the overall design
   - _Requirements: 1.3, 2.3, 3.4, 4.3, 5.4_
 
-- [ ] 4. Implement search and filter functionality
+- [x] 4. Implement search and filter functionality
+
 
   - Create SearchAndFilter component with real-time search
   - Add dropdown filters for rare disease and theme
@@ -108,7 +108,7 @@
   - Add clear filters functionality
   - _Requirements: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6_
 
-- [ ] 4.1 Create SearchAndFilter component
+- [x] 4.1 Create SearchAndFilter component
 
   - Build search input with real-time filtering by post title
   - Create dropdown selectors for rare disease and theme filters
@@ -116,7 +116,7 @@
   - Add clear all filters button
   - _Requirements: 10.1, 10.2, 10.3_
 
-- [ ] 4.2 Implement filter logic
+- [x] 4.2 Implement filter logic
 
   - Create filtering functions that work with search and dropdown filters
   - Ensure multiple filters work together (AND logic)
@@ -124,7 +124,7 @@
   - Add debouncing for search input to avoid excessive filtering
   - _Requirements: 10.4, 10.5_
 
-- [ ] 4.3 Integrate filters with post tabs
+- [x] 4.3 Integrate filters with post tabs
 
   - Connect SearchAndFilter component to Following, My Posts, and Favorites tabs
   - Ensure filters reset when switching between tabs
