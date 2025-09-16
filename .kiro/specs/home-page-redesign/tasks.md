@@ -132,7 +132,6 @@
 
 - [x] 5. Create followed diseases tags component
 
-
   - Build FollowedDiseasesTags component for the Following tab
   - Display user's followed diseases as clickable tags
   - Implement tag-based filtering for posts
@@ -154,7 +153,8 @@
   - Style consistently with the overall design
   - _Requirements: 1.6_
 
-- [ ] 6. Build main page header and refresh functionality
+- [x] 6. Build main page header and refresh functionality
+
 
   - Create HomePageHeader component with page description
   - Implement refresh button that reloads current tab content
@@ -162,7 +162,7 @@
   - Style header consistently with existing design
   - _Requirements: 7.1, 7.2, 7.3, 8.1, 8.2, 8.3, 8.4_
 
-- [ ] 6.1 Create HomePageHeader component
+- [x] 6.1 Create HomePageHeader component
 
   - Build header with clear page description explaining the home page purpose
   - Add refresh button with appropriate icon and styling
@@ -170,7 +170,7 @@
   - Position elements appropriately within the header layout
   - _Requirements: 7.1, 7.3, 8.1_
 
-- [ ] 6.2 Implement refresh functionality
+- [x] 6.2 Implement refresh functionality
 
   - Add refresh logic that reloads current active tab's content
   - Show loading spinner during refresh operations
