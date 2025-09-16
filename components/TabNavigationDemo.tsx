@@ -18,7 +18,7 @@ const tabContent: Record<TabType, React.ReactNode> = {
   myPosts: (
     <VStack spacing={4} align="stretch">
       <Text fontSize="lg" fontWeight="bold">My Posts Tab</Text>
-      <Text>This shows all posts you've created.</Text>
+      <Text>This shows all posts you&apos;ve created.</Text>
       <Box p={4} bg="gray.50" borderRadius="md">
         <Text>Your post content...</Text>
       </Box>
@@ -27,7 +27,7 @@ const tabContent: Record<TabType, React.ReactNode> = {
   myComments: (
     <VStack spacing={4} align="stretch">
       <Text fontSize="lg" fontWeight="bold">My Comments Tab</Text>
-      <Text>This shows all comments you've made.</Text>
+      <Text>This shows all comments you&apos;ve made.</Text>
       <Box p={4} bg="gray.50" borderRadius="md">
         <Text>Your comment on a post...</Text>
       </Box>
@@ -36,7 +36,7 @@ const tabContent: Record<TabType, React.ReactNode> = {
   favorites: (
     <VStack spacing={4} align="stretch">
       <Text fontSize="lg" fontWeight="bold">Favorites Tab</Text>
-      <Text>This shows posts you've upvoted.</Text>
+      <Text>This shows posts you&apos;ve upvoted.</Text>
       <Box p={4} bg="gray.50" borderRadius="md">
         <Text>Favorited post...</Text>
       </Box>
