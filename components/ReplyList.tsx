@@ -91,9 +91,9 @@ function ReplyItem({ reply }: { reply: UserReply }) {
     <Box
       w="full"
       bg={useColorModeValue("white", "gray.900")}
-      borderColor="gray.200"
+      borderColor="gray.300"
       borderWidth="1px"
-      rounded="md"
+      rounded="2xl"
       p={6}
       overflow="hidden"
     >
@@ -105,20 +105,20 @@ function ReplyItem({ reply }: { reply: UserReply }) {
             <Box
               p={2}
               rounded="full"
-              bg="purple.50"
+              bg="gray.100"
               border="1px"
-              borderColor="purple.200"
+              borderColor="gray.300"
             >
               <Icon 
                 as={BiCommentDetail} 
-                color="purple.500"
+                color="teal.500"
                 boxSize={4}
               />
             </Box>
             <VStack align="start" spacing={0}>
               <Text
                 fontSize="sm"
-                color="purple.600"
+                color="teal.600"
                 fontWeight="600"
               >
                 {reply.user.name} replied to your comment
@@ -141,13 +141,13 @@ function ReplyItem({ reply }: { reply: UserReply }) {
 
         {/* Your original content context */}
         <Box
-          bg={useColorModeValue("blue.25", "gray.800")}
+          bg={useColorModeValue("gray.50", "gray.800")}
           p={4}
-          rounded="md"
+          rounded="2xl"
           borderLeft="4px"
-          borderLeftColor="purple.400"
+          borderLeftColor="teal.400"
           border="1px"
-          borderColor={useColorModeValue("blue.100", "gray.600")}
+          borderColor={useColorModeValue("gray.300", "gray.600")}
         >
           <HStack spacing={2} mb={2}>
             <Text fontSize="xs" color="gray.600" fontWeight="600" textTransform="uppercase">
@@ -155,7 +155,7 @@ function ReplyItem({ reply }: { reply: UserReply }) {
             </Text>
             <Badge
               size="sm"
-              colorScheme="purple"
+              colorScheme="teal"
               variant="subtle"
             >
               YOU
@@ -173,14 +173,14 @@ function ReplyItem({ reply }: { reply: UserReply }) {
 
         {/* Their reply to your content */}
         <Box
-          bg={useColorModeValue("green.25", "gray.700")}
+          bg={useColorModeValue("gray.50", "gray.700")}
           p={4}
-          rounded="md"
+          rounded="2xl"
           border="1px"
-          borderColor={useColorModeValue("green.100", "gray.600")}
+          borderColor={useColorModeValue("gray.300", "gray.600")}
         >
           <HStack spacing={2} mb={3}>
-            <Text fontSize="xs" color="green.600" fontWeight="600" textTransform="uppercase">
+            <Text fontSize="xs" color="gray.600" fontWeight="500" textTransform="uppercase">
               Their reply:
             </Text>
             <Badge
@@ -216,7 +216,14 @@ function ReplyItem({ reply }: { reply: UserReply }) {
             <Button
               size="sm"
               variant="ghost"
+              colorScheme="teal"
+              rounded="full"
+              fontWeight="500"
               onClick={() => setIsExpanded(!isExpanded)}
+              _hover={{
+                transform: "translateY(-1px)",
+                shadow: "sm"
+              }}
             >
               {isExpanded ? "Show less" : "Show more"}
             </Button>
@@ -230,8 +237,14 @@ function ReplyItem({ reply }: { reply: UserReply }) {
             href={`/post/${getPostId()}`}
             size="sm"
             variant="outline"
-            colorScheme="blue"
+            colorScheme="teal"
+            fontWeight="500"
+            rounded="full"
             isDisabled={!getPostId()}
+            _hover={{
+              transform: "translateY(-1px)",
+              shadow: "sm"
+            }}
           >
             View Full Context
           </Button>
@@ -252,7 +265,7 @@ export default function ReplyList({ replies, isLoading }: ReplyListProps) {
             key={i}
             w="full"
             bg={loadingBg}
-            rounded="md"
+            rounded="2xl"
             p={6}
             h="250px"
           />

@@ -72,7 +72,7 @@ export default function Explore({
   }
 
   return (
-    <Box minH="100vh" bg={"gray.50"}>
+    <Box minH="100vh" bg="gray.50" fontFamily='"Inter", "Roboto", "Segoe UI", system-ui, sans-serif'>
       <Sidebar>
         <Flex justify="center" pt={"78px"}>
           <Box w="full" p={{ base: "16px", md: "24px" }} minH="full" maxW="1200px">
@@ -80,16 +80,25 @@ export default function Explore({
               {/* Header */}
               <Box 
                 bg="white" 
-                rounded={"lg"} 
-                p={{ base: 4, md: 6 }} 
-                shadow="md"
+                rounded={"2xl"} 
+                p={{ base: 6, md: 8 }} 
+                shadow="lg"
                 border="1px"
                 borderColor="gray.200"
               >
-                <Heading size="lg" color="gray.700" mb={2}>
+                <Heading 
+                  fontSize="3xl" 
+                  color="gray.800" 
+                  mb={3}
+                  fontWeight="bold"
+                >
                   Discover Community Content
                 </Heading>
-                <Text color="gray.600">
+                <Text 
+                  fontSize="md"
+                  color="gray.600"
+                  fontWeight="400"
+                >
                   Explore different types of content organized by themes. Find personal stories, 
                   get help and support, discover events, or learn from research and information.
                 </Text>
@@ -115,18 +124,27 @@ export default function Explore({
               {/* Additional Information */}
               <Box 
                 bg="white" 
-                rounded={"lg"} 
-                p={{ base: 4, md: 6 }} 
-                shadow="md"
+                rounded={"2xl"} 
+                p={{ base: 6, md: 8 }} 
+                shadow="lg"
                 border="1px"
                 borderColor="gray.200"
                 textAlign="center"
               >
                 <VStack spacing={4}>
-                  <Heading size="md" color="gray.600">
+                  <Heading 
+                    fontSize="2xl" 
+                    color="gray.700" 
+                    fontWeight="600"
+                  >
                     New to the community?
                   </Heading>
-                  <Text color="gray.500" maxW="2xl">
+                  <Text 
+                    fontSize="md"
+                    color="gray.600" 
+                    fontWeight="400"
+                    maxW="2xl"
+                  >
                     Each theme serves a different purpose in our community. Click on any theme above 
                     to explore posts and learn more about what content belongs in each area.
                   </Text>

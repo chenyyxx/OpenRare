@@ -45,28 +45,28 @@ export default function GoogleSignInButton({
       disabled={disabled || isLoading}
       isLoading={isLoading}
       width="full"
+      size="lg"
       bg={isDark ? '#1f1f1f' : 'white'}
       color={isDark ? 'white' : '#3c4043'}
-      border="1px solid"
-      borderColor={isDark ? '#5f6368' : '#dadce0'}
-      borderRadius="4px"
-      fontFamily="'Google Sans', Roboto, Arial, sans-serif"
+      border="2px solid"
+      borderColor={isDark ? '#5f6368' : 'gray.300'}
+      rounded="full"
       fontWeight="500"
+      fontSize="md"
       _hover={{
         bg: isDark ? '#2d2d2d' : '#f8f9fa',
-        borderColor: isDark ? '#5f6368' : '#d2e3fc',
-        boxShadow: isDark 
-          ? '0 1px 3px 1px rgba(0,0,0,.15)' 
-          : '0 1px 1px 0 rgba(65,69,73,.3), 0 1px 3px 1px rgba(65,69,73,.15)',
+        borderColor: isDark ? '#5f6368' : 'gray.400',
+        transform: "translateY(-1px)",
+        shadow: "md"
       }}
       _active={{
         bg: isDark ? '#1f1f1f' : '#ecf3fe',
         borderColor: isDark ? '#5f6368' : '#4285f4',
+        transform: "translateY(0)",
       }}
       _focus={{
-        boxShadow: isDark
-          ? '0 0 0 1px #5f6368'
-          : '0 0 0 1px #4285f4',
+        borderColor: '#4285f4',
+        boxShadow: '0 0 0 1px #4285f4',
       }}
       _disabled={{
         opacity: 0.38,
@@ -76,7 +76,7 @@ export default function GoogleSignInButton({
     >
       <HStack spacing={3} justify="center" align="center">
         <GoogleIcon />
-        <Text fontSize="inherit">Sign in with Google</Text>
+        <Text fontSize="md" fontWeight="500">Sign in with Google</Text>
       </HStack>
     </Button>
   )

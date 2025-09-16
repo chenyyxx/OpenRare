@@ -33,7 +33,7 @@ import Sidebar from "../components/sidebar";
 import AuthRequiredAlert from "../components/AuthRequiredAlert";
 import { useDiseases } from "./create_post";
 import { FullDisease } from "./create_post";
-import { getThemeColor } from "../utils/theme-constants";
+import { getThemeColor, getThemeBackgrounds, MODERN_PALETTE, TYPOGRAPHY } from "../utils/theme-constants";
 
 // Theme icon mapping
 const getThemeIcon = (themeName: string) => {
@@ -125,7 +125,7 @@ export default function RareDiseasesPage() {
   if (isError) return <div>Failed to load rare diseases</div>;
 
   return (
-    <Box minH="100vh" bg={"gray.50"}>
+    <Box minH="100vh" bg={MODERN_PALETTE.neutral[100]}>
       <Sidebar>
         <Flex justify="center" pt={"78px"}>
           <Box w="full" p={{ base: "16px", md: "24px" }} minH="full" maxW="1200px">
@@ -133,29 +133,50 @@ export default function RareDiseasesPage() {
               {/* Header */}
               <Box 
                 bg="white" 
-                rounded={"lg"} 
-                p={{ base: 4, md: 6 }} 
-                shadow="md"
+                rounded={"2xl"} 
+                p={{ base: 6, md: 8 }} 
+                shadow="lg"
                 border="1px"
-                borderColor="gray.200"
+                borderColor={MODERN_PALETTE.neutral[200]}
               >
-                <Heading size="lg" color="gray.700" mb={2}>
+                <Heading 
+                  fontSize={TYPOGRAPHY.fontSize['3xl']} 
+                  color={MODERN_PALETTE.neutral[800]} 
+                  mb={3}
+                  fontWeight="bold"
+                >
                   Rare Diseases
                 </Heading>
-                <Text color="gray.600">
+                <Text 
+                  fontSize="md"
+                  color="gray.600"
+                  fontWeight="400"
+                >
                   Learn about rare diseases and manage your interests
                 </Text>
               </Box>
 
               {/* Search Section */}
-              <Card shadow="md" border="1px" borderColor="gray.200">
-                <CardHeader>
-                  <Heading size="md">Search Rare Diseases</Heading>
+              <Card shadow="lg" border="1px" borderColor={MODERN_PALETTE.neutral[200]} rounded="2xl">
+                <CardHeader bg={MODERN_PALETTE.neutral[50]} roundedTop="2xl" py={6}>
+                  <Heading 
+                    fontSize={TYPOGRAPHY.fontSize['2xl']} 
+                    color={MODERN_PALETTE.neutral[800]}
+                    fontWeight="bold"
+                  >
+                    Search Rare Diseases
+                  </Heading>
                 </CardHeader>
                 <CardBody>
                   {!isLoading && diseases ? (
                     <FormControl>
-                      <FormLabel>Find a rare disease</FormLabel>
+                      <FormLabel 
+                        fontSize={TYPOGRAPHY.fontSize.lg}
+                        fontWeight="semibold"
+                        color={MODERN_PALETTE.neutral[700]}
+                      >
+                        Find a rare disease
+                      </FormLabel>
                       <Box position="relative">
                         <AutoComplete
                           openOnFocus
@@ -169,6 +190,19 @@ export default function RareDiseasesPage() {
                             placeholder="Enter characters to start searching"
                             value={searchValue}
                             onChange={(e) => setSearchValue(e.target.value)}
+                            size="lg"
+                            fontSize={TYPOGRAPHY.fontSize.md}
+                            bg={MODERN_PALETTE.neutral[50]}
+                            border="2px"
+                            borderColor={MODERN_PALETTE.neutral[200]}
+                            rounded="xl"
+                            _hover={{
+                              borderColor: MODERN_PALETTE.primary[400]
+                            }}
+                            _focus={{
+                              borderColor: MODERN_PALETTE.primary[500],
+                              bg: "white"
+                            }}
                           />
                           <AutoCompleteList>
                             {diseases.map((disease) => (
@@ -200,15 +234,30 @@ export default function RareDiseasesPage() {
                           />
                         )}
                       </Box>
-                      <FormHelperText>
+                      <FormHelperText
+                        fontSize={TYPOGRAPHY.fontSize.md}
+                        color={MODERN_PALETTE.neutral[600]}
+                        bg={MODERN_PALETTE.neutral[50]}
+                        px={4}
+                        py={3}
+                        rounded="lg"
+                        mt={3}
+                      >
                         Search for rare diseases to learn more and add to your interests.
-                        &quot;General&quot; and &quot;Other&quot; options are always available.
+                        <Text as="span" fontWeight="semibold" color="teal.600">
+                          {' "General"'}
+                        </Text> and 
+                        <Text as="span" fontWeight="semibold" color="teal.600">
+                          {' "Other"'}
+                        </Text> options are always available.
                       </FormHelperText>
                     </FormControl>
                   ) : (
                     <HStack>
-                      <Spinner size="sm" />
-                      <Text>Loading rare diseases...</Text>
+                      <Spinner size="md" color={MODERN_PALETTE.primary[500]} />
+                      <Text fontSize={TYPOGRAPHY.fontSize.lg} color={MODERN_PALETTE.neutral[600]}>
+                        Loading rare diseases...
+                      </Text>
                     </HStack>
                   )}
                 </CardBody>
@@ -216,9 +265,9 @@ export default function RareDiseasesPage() {
 
               {/* Selected Disease Information */}
               {selectedDisease && (
-                <Card shadow="md" border="1px" borderColor="gray.200">
-                  <CardHeader>
-                    <VStack spacing={3} align="stretch">
+                <Card shadow="lg" border="1px" borderColor={MODERN_PALETTE.neutral[200]} rounded="2xl">
+                  <CardHeader bg={MODERN_PALETTE.neutral[50]} roundedTop="2xl" py={6}>
+                    <VStack spacing={4} align="stretch">
                       {/* Desktop: Title and Button in same row, Mobile: Stacked */}
                       <Flex 
                         direction={{ base: "column", md: "row" }} 
@@ -226,15 +275,38 @@ export default function RareDiseasesPage() {
                         align={{ base: "flex-start", md: "flex-start" }}
                         gap={3}
                       >
-                        <VStack align="start" spacing={1} flex={1}>
-                          <Heading size={{ base: "sm", md: "md" }} lineHeight="shorter">
+                        <VStack align="start" spacing={2} flex={1}>
+                          <Heading 
+                            fontSize={TYPOGRAPHY.fontSize['2xl']} 
+                            lineHeight="shorter"
+                            color={MODERN_PALETTE.neutral[800]}
+                            fontWeight="bold"
+                          >
                             {selectedDisease.name}
                           </Heading>
-                          <HStack wrap="wrap">
-                            <Badge colorScheme="blue">
+                          <HStack wrap="wrap" spacing={3}>
+                            <Badge 
+                              bg="blue.500"
+                              color="white"
+                              px={3}
+                              py={1}
+                              rounded="full"
+                              fontSize="sm"
+                              fontWeight="600"
+                              shadow="sm"
+                            >
                               {selectedDisease.posts.length} posts
                             </Badge>
-                            <Badge colorScheme="green">
+                            <Badge 
+                              bg="green.500"
+                              color="white"
+                              px={3}
+                              py={1}
+                              rounded="full"
+                              fontSize="sm"
+                              fontWeight="600"
+                              shadow="sm"
+                            >
                               {selectedDisease.users.length} followers
                             </Badge>
                           </HStack>
@@ -246,14 +318,20 @@ export default function RareDiseasesPage() {
                           }
                           colorScheme={
                             userInterests.includes(selectedDisease.id.toString()) ? 
-                              "red" : "blue"
+                              "red" : "teal"
                           }
                           variant={
                             userInterests.includes(selectedDisease.id.toString()) ? 
                               "outline" : "solid"
                           }
-                          size={{ base: "sm", md: "md" }}
+                          size="md"
+                          fontWeight="500"
                           flexShrink={0}
+                          rounded="full"
+                          _hover={{
+                            transform: "translateY(-1px)",
+                            shadow: "md"
+                          }}
                           onClick={() => 
                             handleToggleInterest(
                               selectedDisease.id.toString(),
@@ -268,12 +346,28 @@ export default function RareDiseasesPage() {
                       </Flex>
                     </VStack>
                   </CardHeader>
-                  <CardBody>
-                    <VStack align="start" spacing={4}>
+                  <CardBody py={6}>
+                    <VStack align="start" spacing={6}>
                       {selectedDisease.description && (
                         <Box>
-                          <Text fontWeight="semibold" mb={2}>Description</Text>
-                          <Text color="gray.600">{selectedDisease.description}</Text>
+                          <Text 
+                            fontWeight="bold" 
+                            mb={3}
+                            fontSize={TYPOGRAPHY.fontSize.xl}
+                            color={MODERN_PALETTE.neutral[800]}
+                          >
+                            Description
+                          </Text>
+                          <Text 
+                            fontSize="md"
+                            color={MODERN_PALETTE.neutral[700]}
+                            lineHeight="relaxed"
+                            bg={MODERN_PALETTE.neutral[50]}
+                            p={4}
+                            rounded="xl"
+                          >
+                            {selectedDisease.description}
+                          </Text>
                         </Box>
                       )}
 
@@ -281,40 +375,101 @@ export default function RareDiseasesPage() {
                        selectedDisease.name.toLowerCase() !== "general" && 
                        selectedDisease.name.toLowerCase() !== "other" && (
                         <Box>
-                          <Text fontWeight="semibold" mb={2}>Learn More</Text>
+                          <Text 
+                            fontWeight="bold" 
+                            mb={3}
+                            fontSize={TYPOGRAPHY.fontSize.xl}
+                            color={MODERN_PALETTE.neutral[800]}
+                          >
+                            Learn More
+                          </Text>
                           <Button
                             as="a"
                             href={selectedDisease.definition}
                             target="_blank"
                             rel="noopener noreferrer"
-                            colorScheme="blue"
+                            colorScheme="teal"
                             variant="outline"
-                            size="sm"
+                            size="md"
+                            fontWeight="500"
+                            rounded="full"
                             rightIcon={<FiExternalLink />}
+                            _hover={{
+                              transform: "translateY(-1px)",
+                              shadow: "md"
+                            }}
                           >
                             View Official Information
                           </Button>
-                          <Text fontSize="xs" color="gray.500" mt={1}>
+                          <Text 
+                            fontSize={TYPOGRAPHY.fontSize.sm} 
+                            color={MODERN_PALETTE.neutral[500]} 
+                            mt={2}
+                            bg={MODERN_PALETTE.neutral[100]}
+                            px={3}
+                            py={1}
+                            rounded="lg"
+                            display="inline-block"
+                          >
                             Opens in a new tab
                           </Text>
                         </Box>
                       )}
                       
                       <Box>
-                        <Text fontWeight="semibold" mb={2}>Community Activity</Text>
-                        <Text color="gray.600">
-                          This rare disease has {selectedDisease.posts.length} community posts 
-                          and {selectedDisease.users.length} people following it.
+                        <Text 
+                          fontWeight="bold" 
+                          mb={3}
+                          fontSize={TYPOGRAPHY.fontSize.xl}
+                          color={MODERN_PALETTE.neutral[800]}
+                        >
+                          Community Activity
+                        </Text>
+                        <Text 
+                          fontSize="md"
+                          color={MODERN_PALETTE.neutral[700]}
+                          bg={MODERN_PALETTE.neutral[50]}
+                          p={4}
+                          rounded="xl"
+                          lineHeight="relaxed"
+                        >
+                          This rare disease has{' '}
+                          <Text as="span" fontWeight="bold" color="blue.500">
+                            {selectedDisease.posts.length}
+                          </Text>{' '}
+                          community posts and{' '}
+                          <Text as="span" fontWeight="bold" color="green.500">
+                            {selectedDisease.users.length}
+                          </Text>{' '}
+                          people following it.
                         </Text>
                       </Box>
 
                       <Box>
-                        <Text fontWeight="semibold" mb={2}>Find Related Content</Text>
-                        <Text color="gray.600" mb={3}>
-                          To see posts related to {selectedDisease.name}, visit the theme pages 
-                          and use the rare disease filter to find specific content.
+                        <Text 
+                          fontWeight="bold" 
+                          mb={3}
+                          fontSize={TYPOGRAPHY.fontSize.xl}
+                          color={MODERN_PALETTE.neutral[800]}
+                        >
+                          Find Related Content
                         </Text>
-                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={3}>
+                        <Text 
+                          fontSize="md"
+                          color={MODERN_PALETTE.neutral[700]}
+                          mb={4}
+                          bg={MODERN_PALETTE.neutral[50]}
+                          p={4}
+                          rounded="xl"
+                          lineHeight="relaxed"
+                        >
+                          To see posts related to{' '}
+                          <Text as="span" fontWeight="bold" color="purple.500">
+                            {selectedDisease.name}
+                          </Text>
+                          , visit the theme pages and use the rare disease filter to find specific content.
+                        </Text>
+                        <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
                           {[
                             { name: "Personal Stories", href: "/themes/personal-stories" },
                             { name: "Help & Support", href: "/themes/help-support" },
@@ -322,38 +477,46 @@ export default function RareDiseasesPage() {
                             { name: "Research & Information", href: "/themes/research-information" }
                           ].map((theme) => {
                             const themeColor = getThemeColor(theme.name);
+                            const themeBackgrounds = getThemeBackgrounds(theme.name);
                             const IconComponent = getThemeIcon(theme.name);
                             return (
                               <Box
                                 key={theme.name}
                                 as="a"
                                 href={theme.href}
-                                p={4}
+                                p={6}
                                 border="2px"
                                 borderColor={themeColor}
-                                borderRadius="md"
+                                borderRadius="2xl"
                                 cursor="pointer"
-                                bg={`${themeColor}10`}
+                                bg={themeBackgrounds.light}
                                 _hover={{
                                   borderColor: themeColor,
-                                  bg: `${themeColor}20`,
-                                  transform: "translateY(-1px)",
-                                  shadow: "md",
+                                  bg: themeBackgrounds.medium,
+                                  transform: "translateY(-2px)",
+                                  shadow: "xl",
                                 }}
                                 textDecoration="none"
                                 _focus={{ boxShadow: "none" }}
-                                transition="all 0.2s"
+                                transition="all 0.3s ease"
                               >
-                                <HStack spacing={3} justify="center">
-                                  <Icon
-                                    as={IconComponent}
-                                    color={themeColor}
-                                    boxSize={5}
-                                  />
+                                <HStack spacing={4} justify="center">
+                                  <Box
+                                    p={3}
+                                    rounded="xl"
+                                    bg="white"
+                                    shadow="md"
+                                  >
+                                    <Icon
+                                      as={IconComponent}
+                                      color={themeColor}
+                                      boxSize={6}
+                                    />
+                                  </Box>
                                   <Text
-                                    fontWeight="semibold"
-                                    color="gray.700"
-                                    fontSize="sm"
+                                    fontWeight="bold"
+                                    color={MODERN_PALETTE.neutral[800]}
+                                    fontSize={TYPOGRAPHY.fontSize.md}
                                   >
                                     {theme.name}
                                   </Text>
@@ -370,12 +533,18 @@ export default function RareDiseasesPage() {
 
               {/* User's Interests */}
               {session && userInterests.length > 0 && (
-                <Card shadow="md" border="1px" borderColor="gray.200">
-                  <CardHeader>
-                    <Heading size="md">Your Rare Disease Interests</Heading>
+                <Card shadow="lg" border="1px" borderColor={MODERN_PALETTE.neutral[200]} rounded="2xl">
+                  <CardHeader bg={MODERN_PALETTE.neutral[50]} roundedTop="2xl" py={6}>
+                    <Heading 
+                      fontSize={TYPOGRAPHY.fontSize['2xl']} 
+                      color={MODERN_PALETTE.neutral[800]}
+                      fontWeight="bold"
+                    >
+                      Your Rare Disease Interests
+                    </Heading>
                   </CardHeader>
-                  <CardBody>
-                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={3}>
+                  <CardBody py={6}>
+                    <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
                       {userInterests.map((diseaseId) => {
                         const disease = diseases?.find(d => d.id.toString() === diseaseId);
                         if (!disease) return null;
@@ -384,30 +553,40 @@ export default function RareDiseasesPage() {
                           <Box
                             key={diseaseId}
                             position="relative"
-                            p={4}
+                            p={5}
                             bg="white"
                             border="2px"
-                            borderColor="blue.200"
-                            rounded="lg"
+                            borderColor={MODERN_PALETTE.primary[500]}
+                            rounded="2xl"
+                            shadow="md"
                             _hover={{
-                              borderColor: "blue.400",
-                              shadow: "md",
+                              borderColor: MODERN_PALETTE.primary[500],
+                              shadow: "lg",
+                              transform: "translateY(-1px)"
                             }}
+                            transition="all 0.2s ease"
                           >
-                            <Text fontWeight="medium" fontSize="sm" noOfLines={2} pr={8}>
+                            <Text 
+                              fontWeight="semibold" 
+                              fontSize="sm" 
+                              noOfLines={2} 
+                              pr={8}
+                              color={MODERN_PALETTE.neutral[800]}
+                            >
                               {disease.name}
                             </Text>
                             <IconButton
                               aria-label="Remove interest"
                               icon={<FiX />}
-                              size="xs"
+                              size="sm"
                               variant="ghost"
-                              colorScheme="red"
                               position="absolute"
-                              top="8px"
-                              right="8px"
+                              top="12px"
+                              right="12px"
+                              color={MODERN_PALETTE.neutral[500]}
                               _hover={{
-                                bg: "red.100",
+                                bg: "red.500",
+                                color: "white"
                               }}
                               onClick={() => handleToggleInterest(diseaseId, true)}
                             />

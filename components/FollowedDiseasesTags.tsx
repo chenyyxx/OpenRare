@@ -82,7 +82,13 @@ export default function FollowedDiseasesTags({
             as="a"
             size="sm"
             colorScheme="teal"
+            fontWeight="500"
+            rounded="full"
             rightIcon={<ExternalLinkIcon />}
+            _hover={{
+              transform: "translateY(-1px)",
+              shadow: "sm"
+            }}
           >
             Explore Rare Diseases
           </Button>

@@ -70,19 +70,49 @@ export default function PostDetail({ post, url }: AppProps) {
     <Stack spacing={6}>
       {/* Post Header */}
       <VStack align="stretch" spacing={4}>
-        <HStack spacing={4}>
+        <HStack spacing={3} p={3} bg="gray.50" rounded="lg" border="1px" borderColor="gray.200">
           <Avatar 
             src={post.user.image as string | undefined} 
-            size="md"
+            size="sm"
+            ring={2}
+            ringColor="teal.500"
           />
-          <VStack align="start" spacing={1}>
-            <Text fontWeight={600} fontSize="md" color="gray.700">
+          <VStack align="start" spacing={0} flex={1}>
+            <Text 
+              fontWeight={600} 
+              fontSize="sm" 
+              color="white"
+              bg="teal.500"
+              px={3}
+              py={1}
+              rounded="full"
+              display="inline-block"
+              shadow="sm"
+              _hover={{ 
+                bg: "teal.600",
+                textDecoration: 'underline', 
+                cursor: 'pointer' 
+              }}
+              transition="all 0.2s"
+            >
               {post.user.name}
             </Text>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize="xs" color="gray.500">
               Last Updated: {month}/{date}/{year}
             </Text>
           </VStack>
+          <Text
+            px={3}
+            py={1}
+            bg="teal.500"
+            color="white"
+            rounded="full"
+            fontSize="sm"
+            fontWeight="600"
+            shadow="sm"
+          >
+            Author
+          </Text>
         </HStack>
 
         {/* Post Title */}
@@ -104,22 +134,22 @@ export default function PostDetail({ post, url }: AppProps) {
               spacing={1}
               fontSize="xs"
               fontWeight="600"
-              color="purple.700"
-              bg="purple.50"
+              color="white"
+              bg="purple.500"
               px={3}
               py={1}
               rounded="full"
-              border="1px"
-              borderColor="purple.200"
+              shadow="sm"
               display="inline-flex"
               _hover={{
-                bg: "purple.100",
-                borderColor: "purple.300",
+                bg: "purple.600",
+                transform: "translateY(-1px)",
+                shadow: "md",
                 textDecoration: "none",
               }}
               transition="all 0.2s"
             >
-              <Box as="span" fontSize="10px">
+              <Box as="span" fontSize="sm">
                 🏷️
               </Box>
               <Text as="span">
@@ -134,24 +164,22 @@ export default function PostDetail({ post, url }: AppProps) {
               spacing={1}
               fontSize="xs"
               fontWeight="600"
-              color="green.700"
-              bg="green.50"
+              color="white"
+              bg="green.500"
               px={3}
               py={1}
               rounded="full"
-              border="1px"
-              borderColor="green.200"
-              textTransform="uppercase"
-              letterSpacing="wide"
+              shadow="sm"
               display="inline-flex"
               _hover={{
-                bg: "green.100",
-                borderColor: "green.300",
+                bg: "green.600",
+                transform: "translateY(-1px)",
+                shadow: "md",
                 textDecoration: "none",
               }}
               transition="all 0.2s"
             >
-              <Box as="span" fontSize="10px">
+              <Box as="span" fontSize="sm">
                 🧬
               </Box>
               <Text as="span">
@@ -179,10 +207,10 @@ export default function PostDetail({ post, url }: AppProps) {
         </Box>
 
         {/* Post Actions */}
-        <Flex justify="space-between" align="center" pt={4} borderTop="1px" borderColor="gray.200">
+        <Flex justify="space-between" align="center" pt={4} borderTop="1px" borderColor="gray.300">
           <Button
             size="sm"
-            variant="ghost"
+            variant="outline"
             onClick={() => {
               if (!session) {
                 setShowAuthAlert(true);
@@ -192,8 +220,39 @@ export default function PostDetail({ post, url }: AppProps) {
             }}
             leftIcon={<BiCommentDetail />}
             colorScheme="teal"
+            rounded="full"
+            fontWeight="500"
+            _hover={{
+              transform: "translateY(-1px)",
+              shadow: "md"
+            }}
           >
             {post.comments.length === 1 ? '1 comment' : `${post.comments.length} comments`}
+          </Button>
+          
+          <Button
+            size="sm"
+            variant="outline"
+            colorScheme="blue"
+            leftIcon={<BiShare />}
+            rounded="full"
+            fontWeight="500"
+            _hover={{
+              transform: "translateY(-1px)",
+              shadow: "md"
+            }}
+            onClick={() => {
+              if (navigator.share) {
+                navigator.share({
+                  title: post.title,
+                  url: window.location.href
+                });
+              } else {
+                navigator.clipboard.writeText(window.location.href);
+              }
+            }}
+          >
+            Share
           </Button>
         </Flex>
       </VStack>

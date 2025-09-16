@@ -5,6 +5,7 @@ import { useState, FormEvent } from 'react'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import GoogleSignInButton from '../components/GoogleSignInButton'
+import { MODERN_PALETTE, TYPOGRAPHY } from '../utils/theme-constants'
 
 interface Provider {
   id: string,
@@ -77,20 +78,45 @@ export default function SignIn({providers}:{providers: Providers} ) {
   const oauthProviders = Object.values(providers).filter(provider => provider.id !== 'credentials')
 
   return (
-    <Flex height="100vh" alignItems="center" justifyContent="center">
-      <Flex direction="column" background="gray.100" p={12} rounded={6} minWidth="400px">
-        <Heading mb={6} textAlign="center">Sign in</Heading>
+    <Flex height="100vh" alignItems="center" justifyContent="center" bg={MODERN_PALETTE.neutral[100]} px={{ base: 4, md: 0 }}>
+      <Flex 
+        direction="column" 
+        background="white" 
+        p={{ base: 6, md: 12 }} 
+        rounded="2xl" 
+        w={{ base: "full", md: "450px" }}
+        maxW="450px"
+        shadow="2xl" 
+        border="1px" 
+        borderColor={MODERN_PALETTE.neutral[200]}
+      >
+        <Heading 
+          mb={8} 
+          textAlign="center" 
+          fontSize={TYPOGRAPHY.fontSize['3xl']}
+          color={MODERN_PALETTE.neutral[800]}
+          fontWeight="bold"
+        >
+          Sign in
+        </Heading>
         
         {error && (
-          <Alert status="error" mb={4} rounded="md">
-            <AlertIcon />
-            {error}
+          <Alert status="error" mb={6} rounded="xl" bg={MODERN_PALETTE.accent.error} color="white">
+            <AlertIcon color="white" />
+            <Text fontSize={TYPOGRAPHY.fontSize.md} fontWeight="medium">{error}</Text>
           </Alert>
         )}
 
         <form onSubmit={handleEmailPasswordSignIn}>
-          <FormControl isInvalid={!!emailError} mb={3}>
-            <FormLabel htmlFor="email">Email</FormLabel>
+          <FormControl isInvalid={!!emailError} mb={5}>
+            <FormLabel 
+              htmlFor="email" 
+              fontSize={TYPOGRAPHY.fontSize.lg}
+              fontWeight="semibold"
+              color={MODERN_PALETTE.neutral[700]}
+            >
+              Email
+            </FormLabel>
             <Input 
               id="email"
               placeholder="abc@example.com" 
@@ -99,12 +125,34 @@ export default function SignIn({providers}:{providers: Providers} ) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              size="lg"
+              fontSize={TYPOGRAPHY.fontSize.md}
+              bg={MODERN_PALETTE.neutral[50]}
+              border="2px"
+              borderColor={emailError ? MODERN_PALETTE.accent.error : MODERN_PALETTE.neutral[200]}
+              rounded="xl"
+              _hover={{
+                borderColor: emailError ? MODERN_PALETTE.accent.error : MODERN_PALETTE.primary[400]
+              }}
+              _focus={{
+                borderColor: emailError ? MODERN_PALETTE.accent.error : MODERN_PALETTE.primary[500],
+                bg: "white"
+              }}
             />
-            <FormErrorMessage>{emailError}</FormErrorMessage>
+            <FormErrorMessage fontSize={TYPOGRAPHY.fontSize.sm} fontWeight="medium">
+              {emailError}
+            </FormErrorMessage>
           </FormControl>
 
-          <FormControl isInvalid={!!passwordError} mb={6}>
-            <FormLabel htmlFor="password">Password</FormLabel>
+          <FormControl isInvalid={!!passwordError} mb={8}>
+            <FormLabel 
+              htmlFor="password"
+              fontSize={TYPOGRAPHY.fontSize.lg}
+              fontWeight="semibold"
+              color={MODERN_PALETTE.neutral[700]}
+            >
+              Password
+            </FormLabel>
             <Input 
               id="password"
               placeholder="********" 
@@ -113,26 +161,57 @@ export default function SignIn({providers}:{providers: Providers} ) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
+              size="lg"
+              fontSize={TYPOGRAPHY.fontSize.md}
+              bg={MODERN_PALETTE.neutral[50]}
+              border="2px"
+              borderColor={passwordError ? MODERN_PALETTE.accent.error : MODERN_PALETTE.neutral[200]}
+              rounded="xl"
+              _hover={{
+                borderColor: passwordError ? MODERN_PALETTE.accent.error : MODERN_PALETTE.primary[400]
+              }}
+              _focus={{
+                borderColor: passwordError ? MODERN_PALETTE.accent.error : MODERN_PALETTE.primary[500],
+                bg: "white"
+              }}
             />
-            <FormErrorMessage>{passwordError}</FormErrorMessage>
+            <FormErrorMessage fontSize={TYPOGRAPHY.fontSize.sm} fontWeight="medium">
+              {passwordError}
+            </FormErrorMessage>
           </FormControl>
 
           <Button 
             type="submit"
-            colorScheme="teal" 
-            mb={3} 
+            colorScheme="teal"
+            mb={5} 
             width="full"
+            size="lg"
+            fontWeight="500"
+            rounded="full"
             isLoading={isLoading}
             loadingText="Signing in..."
+            _hover={{
+              transform: "translateY(-1px)",
+              shadow: "md"
+            }}
           >
             Sign in
           </Button>
         </form>
 
-        <Text textAlign="center" mb={3} fontSize="sm">
+        <Text textAlign="center" mb={5} fontSize={TYPOGRAPHY.fontSize.md} color={MODERN_PALETTE.neutral[600]}>
           Don&apos;t have an account?{' '}
           <NextLink href="/register">
-            <Text as="span" color="teal.500" fontWeight="medium" cursor="pointer" _hover={{ textDecoration: 'underline' }}>
+            <Text 
+              as="span" 
+              color="blue.500" 
+              fontWeight="semibold" 
+              cursor="pointer" 
+              _hover={{ 
+                textDecoration: 'underline',
+                color: MODERN_PALETTE.primary[600]
+              }}
+            >
               Create Account
             </Text>
           </NextLink>
@@ -140,8 +219,14 @@ export default function SignIn({providers}:{providers: Providers} ) {
 
         {oauthProviders.length > 0 && (
           <>
-            <Divider mb={3}/>
-            <Text textAlign="center" mb={3} fontSize="sm" color="gray.600">
+            <Divider mb={5} borderColor={MODERN_PALETTE.neutral[300]}/>
+            <Text 
+              textAlign="center" 
+              mb={5} 
+              fontSize={TYPOGRAPHY.fontSize.md} 
+              color={MODERN_PALETTE.neutral[600]}
+              fontWeight="medium"
+            >
               Or continue with
             </Text>
             {oauthProviders.map(provider => {
@@ -163,6 +248,17 @@ export default function SignIn({providers}:{providers: Providers} ) {
                   variant="outline"
                   mb={3} 
                   width="full"
+                  size="lg"
+                  rounded="full"
+                  fontWeight="500"
+                  fontSize="md"
+                  border="2px"
+                  borderColor="gray.300"
+                  _hover={{
+                    borderColor: "gray.400",
+                    transform: "translateY(-1px)",
+                    shadow: "md"
+                  }}
                   onClick={(e: React.MouseEvent<HTMLElement>) => {
                     e.preventDefault()
                     signIn(provider.id, { callbackUrl: '/' })

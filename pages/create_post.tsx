@@ -295,17 +295,26 @@ export default function CreatePost() {
           <Box w="full" p="24px" minH="full" maxW="800px">
             <VStack spacing={6} align="stretch">
               {/* Header */}
-              <Box bg="white" rounded={"lg"} p={6} shadow="sm">
-                <Heading size="lg" color="gray.700" mb={2}>
+              <Box bg="white" rounded={"2xl"} p={{ base: 6, md: 8 }} shadow="lg" border="1px" borderColor="gray.200">
+                <Heading 
+                  fontSize="3xl" 
+                  color="gray.800" 
+                  mb={3}
+                  fontWeight="bold"
+                >
                   Create Your Post
                 </Heading>
-                <Text color="gray.600">
+                <Text 
+                  fontSize="md"
+                  color="gray.600"
+                  fontWeight="400"
+                >
                   Share your story, ask for help, or contribute to the community
                 </Text>
               </Box>
 
               {/* Main Form */}
-              <Box bg="white" rounded={"lg"} shadow="sm">
+              <Box bg="white" rounded={"2xl"} shadow="lg" border="1px" borderColor="gray.200">
                 <VStack spacing={6} p={6} align="stretch">
                   {/* Theme Selection Section */}
                   <Box>
@@ -338,7 +347,7 @@ export default function CreatePost() {
                               borderColor={
                                 isSelected ? themeColor : "gray.200"
                               }
-                              borderRadius="md"
+                              borderRadius="2xl"
                               cursor="pointer"
                               bg={isSelected ? `${themeColor}10` : "white"}
                               _hover={{
@@ -385,7 +394,7 @@ export default function CreatePost() {
                     )}
                   </Box>
 
-                  <Divider />
+                  <Divider borderColor="gray.300" />
 
                   {/* Disease Selection Section */}
                   <FormControl isInvalid={!!diseaseError}>
@@ -414,8 +423,15 @@ export default function CreatePost() {
                           ...base,
                           minHeight: "44px",
                           borderColor: diseaseError ? "#E53E3E" : "#E2E8F0",
+                          borderRadius: "16px",
+                          backgroundColor: "#F7FAFC",
                           "&:hover": {
                             borderColor: diseaseError ? "#E53E3E" : "#CBD5E0",
+                          },
+                          "&:focus-within": {
+                            borderColor: diseaseError ? "#E53E3E" : "#319795",
+                            backgroundColor: "white",
+                            boxShadow: "0 0 0 1px #319795",
                           },
                         }),
                       }}
@@ -427,7 +443,7 @@ export default function CreatePost() {
                     </Text>
                   </FormControl>
 
-                  <Divider />
+                  <Divider borderColor="gray.300" />
 
                   {/* Title Section */}
                   <FormControl isInvalid={!!titleError}>
@@ -449,14 +465,16 @@ export default function CreatePost() {
                       }}
                       size="lg"
                       bg="gray.50"
-                      border="1px"
-                      borderColor={titleError ? "red.300" : "gray.200"}
+                      border="2px"
+                      borderColor={titleError ? "red.300" : "gray.300"}
+                      rounded="2xl"
                       _hover={{
-                        borderColor: titleError ? "red.400" : "gray.300",
+                        borderColor: titleError ? "red.400" : "gray.400",
                       }}
                       _focus={{
-                        borderColor: titleError ? "red.500" : "blue.500",
+                        borderColor: titleError ? "red.500" : "teal.500",
                         bg: "white",
+                        boxShadow: "0 0 0 1px #319795"
                       }}
                     />
                     <FormErrorMessage>{titleError}</FormErrorMessage>
@@ -472,9 +490,9 @@ export default function CreatePost() {
                       Post Content
                     </FormLabel>
                     <Box
-                      rounded={"md"}
-                      border="1px"
-                      borderColor={contentError ? "red.300" : "gray.200"}
+                      rounded={"2xl"}
+                      border="2px"
+                      borderColor={contentError ? "red.300" : "gray.300"}
                     >
                       <RichTextEditor
                         controls={[
@@ -485,12 +503,12 @@ export default function CreatePost() {
                         ]}
                         styles={{
                           root: {
-                            borderColor: contentError ? "#FC8181" : "#E2E8F0",
-                            borderRadius: "0.375rem",
+                            borderColor: contentError ? "#FC8181" : "#D1D5DB",
+                            borderRadius: "1rem",
                             minHeight: "300px",
                           },
                           toolbar: {
-                            borderColor: contentError ? "#FC8181" : "#E2E8F0",
+                            borderColor: contentError ? "#FC8181" : "#D1D5DB",
                             zIndex: 0,
                             backgroundColor: "#F7FAFC",
                           },
@@ -510,24 +528,33 @@ export default function CreatePost() {
                   <HStack justify={"end"} pt={4}>
                     <Button
                       variant="outline"
+                      colorScheme="gray"
                       size="lg"
+                      fontWeight="500"
+                      rounded="full"
                       onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                         e.preventDefault();
                         router.back();
                       }}
                       disabled={isSubmitting}
+                      _hover={{
+                        transform: "translateY(-1px)",
+                        shadow: "md"
+                      }}
                     >
                       Cancel
                     </Button>
                     <Button
                       onClick={handleNewPost}
                       size="lg"
-                      colorScheme={"blue"}
+                      colorScheme="teal"
+                      fontWeight="500"
+                      rounded="full"
                       isLoading={isSubmitting}
                       loadingText="Creating..."
                       _hover={{
                         transform: "translateY(-1px)",
-                        boxShadow: "lg",
+                        boxShadow: "md",
                       }}
                     >
                       Create Post

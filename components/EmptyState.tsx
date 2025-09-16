@@ -81,7 +81,7 @@ export default function EmptyState({ tabType }: EmptyStateProps) {
       maxW="600px"
       mx="auto"
       bg={bgColor}
-      rounded="lg"
+      rounded="2xl"
       p={12}
       textAlign="center"
     >
@@ -114,9 +114,15 @@ export default function EmptyState({ tabType }: EmptyStateProps) {
         {/* Action buttons */}
         <VStack spacing={3} pt={2}>
           <Button
-            colorScheme="blue"
+            colorScheme="teal"
             size="md"
+            rounded="full"
+            fontWeight="500"
             leftIcon={<Icon as={BiPlus} />}
+            _hover={{
+              transform: "translateY(-1px)",
+              shadow: "md"
+            }}
             onClick={() => {
               if (config.actionHref === '/create_post' && !session) {
                 setShowAuthAlert(true);

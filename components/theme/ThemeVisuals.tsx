@@ -43,15 +43,18 @@ export const ThemeHeader: React.FC<ThemeHeaderProps> = ({
   
   return (
     <Box
-      bg={`linear-gradient(135deg, ${themeColor}15, ${themeColor}05)`}
-      borderRadius="lg"
-      p={6}
+      bg="white"
+      borderRadius="2xl"
+      p={{ base: 6, md: 8 }}
       mb={6}
+      shadow="lg"
+      border="1px"
+      borderColor="gray.200"
     >
       <HStack spacing={4} align="start">
         <Box
           p={3}
-          borderRadius="lg"
+          borderRadius="2xl"
           bg={themeColor}
           color="white"
         >
@@ -60,7 +63,7 @@ export const ThemeHeader: React.FC<ThemeHeaderProps> = ({
         
         <VStack align="start" spacing={2} flex={1}>
           <HStack>
-            <Text fontSize="2xl" fontWeight="bold" color={themeColor}>
+            <Text fontSize="3xl" fontWeight="bold" color="gray.800">
               {themeName}
             </Text>
             {postCount !== undefined && (

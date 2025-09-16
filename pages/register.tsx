@@ -167,21 +167,39 @@ export default function Register({providers}: {providers: Providers}) {
   }
 
   return (
-    <Flex height="100vh" alignItems="center" justifyContent="center" p={4}>
-      <Flex direction="column" background="gray.100" p={8} rounded={6} minWidth="450px" maxWidth="500px">
-        <Heading mb={6} textAlign="center">Create Account</Heading>
+    <Flex height="100vh" alignItems="center" justifyContent="center" px={{ base: 4, md: 0 }} py={4}>
+      <Flex 
+        direction="column" 
+        background="white" 
+        p={{ base: 6, md: 12 }} 
+        rounded="2xl" 
+        w={{ base: "full", md: "450px" }}
+        maxW="450px"
+        shadow="2xl" 
+        border="1px" 
+        borderColor="gray.200"
+      >
+        <Heading 
+          mb={8} 
+          textAlign="center" 
+          fontSize="3xl"
+          color="gray.800"
+          fontWeight="bold"
+        >
+          Create Account
+        </Heading>
         
         {error && (
-          <Alert status="error" mb={4} rounded="md">
-            <AlertIcon />
-            {error}
+          <Alert status="error" mb={6} rounded="xl" bg="red.500" color="white">
+            <AlertIcon color="white" />
+            <Text fontSize="md" fontWeight="medium">{error}</Text>
           </Alert>
         )}
 
         {success && (
-          <Alert status="success" mb={4} rounded="md">
-            <AlertIcon />
-            {success}
+          <Alert status="success" mb={6} rounded="xl" bg="green.500" color="white">
+            <AlertIcon color="white" />
+            <Text fontSize="md" fontWeight="medium">{success}</Text>
           </Alert>
         )}
 
@@ -198,6 +216,19 @@ export default function Register({providers}: {providers: Providers}) {
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={isLoading}
+              size="lg"
+              fontSize="md"
+              bg="gray.50"
+              border="2px"
+              borderColor="gray.300"
+              rounded="xl"
+              _hover={{
+                borderColor: "teal.400"
+              }}
+              _focus={{
+                borderColor: "teal.500",
+                bg: "white"
+              }}
             />
           </FormControl>
 
@@ -211,6 +242,19 @@ export default function Register({providers}: {providers: Providers}) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={isLoading}
+              size="lg"
+              fontSize="md"
+              bg="gray.50"
+              border="2px"
+              borderColor={emailError ? "red.300" : "gray.300"}
+              rounded="xl"
+              _hover={{
+                borderColor: emailError ? "red.400" : "teal.400"
+              }}
+              _focus={{
+                borderColor: emailError ? "red.500" : "teal.500",
+                bg: "white"
+              }}
             />
             <FormErrorMessage>{emailError}</FormErrorMessage>
           </FormControl>
@@ -225,6 +269,19 @@ export default function Register({providers}: {providers: Providers}) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
+              size="lg"
+              fontSize="md"
+              bg="gray.50"
+              border="2px"
+              borderColor={passwordError ? "red.300" : "gray.300"}
+              rounded="xl"
+              _hover={{
+                borderColor: passwordError ? "red.400" : "teal.400"
+              }}
+              _focus={{
+                borderColor: passwordError ? "red.500" : "teal.500",
+                bg: "white"
+              }}
             />
             <FormErrorMessage>{passwordError}</FormErrorMessage>
             
@@ -299,6 +356,19 @@ export default function Register({providers}: {providers: Providers}) {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={isLoading}
+              size="lg"
+              fontSize="md"
+              bg="gray.50"
+              border="2px"
+              borderColor={confirmPasswordError ? "red.300" : "gray.300"}
+              rounded="xl"
+              _hover={{
+                borderColor: confirmPasswordError ? "red.400" : "teal.400"
+              }}
+              _focus={{
+                borderColor: confirmPasswordError ? "red.500" : "teal.500",
+                bg: "white"
+              }}
             />
             <FormErrorMessage>{confirmPasswordError}</FormErrorMessage>
           </FormControl>
@@ -306,8 +376,11 @@ export default function Register({providers}: {providers: Providers}) {
           <Button 
             type="submit"
             colorScheme="teal" 
-            mb={4} 
+            mb={5} 
             width="full"
+            size="lg"
+            fontWeight="500"
+            rounded="full"
             isLoading={isLoading}
             loadingText="Creating Account..."
             disabled={isLoading || (passwordValidation ? !passwordValidation.isValid : false)}

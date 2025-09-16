@@ -39,6 +39,7 @@ import { IoCreateOutline } from "react-icons/io5";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
 import AuthRequiredAlert from "./AuthRequiredAlert";
+import { MODERN_PALETTE, TYPOGRAPHY } from "../utils/theme-constants";
 
 interface LinkItemProps {
   name: string;
@@ -54,7 +55,7 @@ const LinkItems: Array<LinkItemProps> = [
 export default function Sidebar({ children }: { children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Box minH="100vh" bg="transparent">
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -75,7 +76,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 64 }} p="0px">
+      <Box ml={{ base: 0, md: 72 }} p={{ base: "2px", md: "0px" }}>
         {children}
       </Box>
     </Box>
@@ -93,13 +94,17 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   return (
     <Box
       transition="0.3s ease"
-      bg={useColorModeValue("white", "gray.900")}
-      borderRight="1px"
-      borderRightColor={useColorModeValue("gray.200", "gray.700")}
+      bg="white"
+      border="1px"
+      borderColor={MODERN_PALETTE.neutral[200]}
       w={{ base: "full", md: 64 }}
       pos="fixed"
-      h="full"
-      boxShadow={useColorModeValue("lg", "dark-lg")}
+      h={{ base: "calc(100vh - 16px)", md: "calc(100vh - 32px)" }}
+      top={{ base: 2, md: 4 }}
+      left={{ base: 2, md: 4 }}
+      right={{ base: 2, md: "auto" }}
+      rounded={{ base: "lg", md: "2xl" }}
+      boxShadow="xl"
       display="flex"
       flexDirection="column"
       {...rest}
@@ -111,7 +116,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         mx="6" 
         justifyContent="space-between"
         borderBottom="1px"
-        borderBottomColor={useColorModeValue("gray.100", "gray.700")}
+        borderBottomColor={MODERN_PALETTE.neutral[200]}
         mb="4"
       >
         <Image
@@ -125,7 +130,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           display={{ base: "flex", md: "none" }} 
           onClick={onClose}
           size="sm"
-          rounded="md"
+          rounded="full"
         />
       </Flex>
 
@@ -166,10 +171,10 @@ interface NavItemProps extends FlexProps {
 const NavItem = ({ icon, link, children, ...rest }: NavItemProps) => {
   const { data: session } = useSession();
   const [showAuthAlert, setShowAuthAlert] = React.useState(false);
-  const textColor = useColorModeValue("gray.700", "gray.200");
-  const hoverBg = useColorModeValue("teal.50", "teal.900");
-  const hoverColor = useColorModeValue("teal.700", "teal.200");
-  const iconHoverColor = useColorModeValue("teal.600", "teal.300");
+  const textColor = useColorModeValue(MODERN_PALETTE.neutral[700], "gray.200");
+  const hoverBg = useColorModeValue(MODERN_PALETTE.primary[50], "teal.900");
+  const hoverColor = useColorModeValue(MODERN_PALETTE.primary[700], "teal.200");
+  const iconHoverColor = useColorModeValue(MODERN_PALETTE.primary[600], "teal.300");
 
   const handleClick = (e: React.MouseEvent) => {
     // Check if this is the Home link and user is not authenticated
@@ -218,7 +223,7 @@ const NavItem = ({ icon, link, children, ...rest }: NavItemProps) => {
               as={icon}
             />
           )}
-          <Text fontSize="sm" fontWeight="500">
+          <Text fontSize={TYPOGRAPHY.fontSize.md} fontWeight="600">
             {children}
           </Text>
         </Flex>
@@ -257,18 +262,20 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
 
   return (
     <Flex
-      ml={{ base: 0, md: 64 }}
-      px={{ base: 4, md: 4 }}
+      ml={{ base: 2, md: 72 }}
+      mr={{ base: 2, md: 4 }}
+      px={{ base: 4, md: 6 }}
       height="20"
       alignItems="center"
       as="header"
       pos="fixed"
-      w="100%"
-      right="0"
+      w={{ base: "calc(100% - 16px)", md: "calc(100% - 288px)" }}
+      top={{ base: 2, md: 4 }}
       zIndex={200}
       bg={navBg}
-      borderBottomWidth="1px"
-      borderBottomColor={borderColor}
+      border="1px"
+      borderColor={borderColor}
+      rounded={{ base: "lg", md: "2xl" }}
       justifyContent={{ base: "space-between", md: "flex-end" }}
       boxShadow={boxShadow}
       {...rest}
@@ -296,6 +303,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           display={{ base: "none", md: "flex" }}
           colorScheme="teal"
           variant="solid"
+          rounded="full"
+          fontSize="sm"
+          fontWeight="500"
+          _hover={{
+            transform: "translateY(-1px)",
+            shadow: "md"
+          }}
           onClick={() => {
             if (!session) {
               setShowAuthAlert(true);
@@ -304,16 +318,20 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
             }
           }}
         >
-          New
+          New Post
         </Button>
         <IconButton
           icon={<IoCreateOutline />}
           display={{ base: "flex", md: "none" }}
           colorScheme="teal"
           variant="solid"
-          rounded={"3xl"}
+          rounded="full"
           aria-label="create new post"
-          size="sm"
+          size="md"
+          _hover={{
+            transform: "translateY(-1px)",
+            shadow: "lg"
+          }}
           onClick={() => {
             if (!session) {
               setShowAuthAlert(true);
@@ -348,9 +366,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   ml="2"
                 >
                   {session ? (
-                    <Text fontSize="sm">{session.user.email}</Text>
+                    <Text fontSize={TYPOGRAPHY.fontSize.sm} fontWeight="medium" color={MODERN_PALETTE.neutral[700]}>
+                      {session.user.email}
+                    </Text>
                   ) : (
-                    <Text fontSize="sm">Not Signed In</Text>
+                    <Text fontSize={TYPOGRAPHY.fontSize.sm} color={MODERN_PALETTE.neutral[500]}>
+                      Not Signed In
+                    </Text>
                   )}
                   {/* <Text fontSize="xs" color="gray.600">
                                     Admin

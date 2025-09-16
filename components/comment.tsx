@@ -99,26 +99,52 @@ export default function Comment({
   };
 
   return (
-    <Box w="full">
-      <VStack align="stretch" spacing={4}>
+    <Box 
+      w="full" 
+      bg="white" 
+      border="1px" 
+      borderColor="gray.200" 
+      rounded="2xl" 
+      p={{ base: 4, md: 6 }}
+      shadow="sm"
+      _hover={{
+        shadow: "md",
+        transform: "translateY(-1px)"
+      }}
+      transition="all 0.2s"
+    >
+      <VStack align="stretch" spacing={{ base: 3, md: 4 }}>
         {/* Comment Header */}
-        <HStack spacing={3}>
+        <HStack spacing={{ base: 2, md: 3 }}>
           <Avatar 
             src={comment.user.image as string | undefined} 
-            size="sm"
+            size={{ base: "sm", md: "md" }}
+            ring={2}
+            ringColor="#14B8A6"
           />
-          <VStack align="start" spacing={0}>
-            <Text fontWeight={600} fontSize="sm" color="gray.700">
+          <VStack align="start" spacing={0} flex={1}>
+            <Text 
+              fontWeight={700} 
+              fontSize="sm" 
+              color="#14B8A6"
+              _hover={{ textDecoration: 'underline', cursor: 'pointer' }}
+            >
               {comment.user.name}
             </Text>
-            <Text fontSize="xs" color="gray.500">
-              {month}/{date}/{year}
-            </Text>
+            <HStack spacing={2}>
+              <Text fontSize="xs" color="gray.500">
+                {month}/{date}/{year}
+              </Text>
+              <Box w={1} h={1} bg="gray.400" rounded="full" />
+              <Text fontSize="xs" color="#14B8A6" fontWeight="600" textTransform="uppercase" letterSpacing="0.5px">
+                Comment
+              </Text>
+            </HStack>
           </VStack>
         </HStack>
 
         {/* Comment Content */}
-        <Box pl={{ base: 6, md: 10 }}>
+        <Box pl={{ base: 2, md: 4 }}>
           <RichTextEditor
             readOnly
             value={comment.content}
@@ -138,7 +164,8 @@ export default function Comment({
             <Flex justify="flex-start" mt={3}>
               <Button
                 size="xs"
-                variant="ghost"
+                colorScheme="teal"
+                variant="outline"
                 leftIcon={<BiCommentDetail />}
                 onClick={() => {
                   if (!session) {
@@ -147,7 +174,12 @@ export default function Comment({
                     setShowEditor(true);
                   }
                 }}
-                colorScheme="gray"
+                rounded="full"
+                fontWeight="500"
+                _hover={{
+                  transform: "translateY(-1px)",
+                  shadow: "md"
+                }}
               >
                 {comment.subComments.length === 1 ? '1 reply' : `${comment.subComments.length} replies`}
               </Button>
@@ -166,30 +198,30 @@ export default function Comment({
           {/* Reply Editor */}
           {showEditor && (
             <Box 
-              mt={4} 
-              p={3} 
+              mt={{ base: 3, md: 4 }} 
+              p={{ base: 2, md: 3 }} 
               bg="gray.50" 
-              rounded="md" 
+              rounded="2xl" 
               border="1px" 
-              borderColor="gray.200"
+              borderColor="gray.300"
             >
-              <VStack spacing={3} align="stretch">
-                <Text fontSize="xs" fontWeight="600" color="gray.600">
+              <VStack spacing={{ base: 2, md: 3 }} align="stretch">
+                <Text fontSize="xs" fontWeight="500" color="gray.600">
                   Reply to @{comment.user.name}
                 </Text>
                 <Textarea
-                  rounded="md"
+                  rounded="2xl"
                   value={content}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
                   placeholder={`Reply to @${comment.user.name}`}
                   size="sm"
-                  minH="80px"
+                  minH={{ base: "60px", md: "80px" }}
                   bg="white"
                 />
                 <Flex 
                   direction={{ base: "column", sm: "row" }}
                   justify="flex-end" 
-                  gap={2}
+                  gap={{ base: 2, md: 3 }}
                 >
                   <Button 
                     size="xs" 
@@ -215,34 +247,22 @@ export default function Comment({
 
           {/* Sub Comments */}
           {!isCompact && subComments.length > 0 && (
-            <Box mt={4}>
-              <VStack
-                spacing={3}
-                align="stretch"
+            <Box mt={{ base: 3, md: 4 }}>
+              <Box
                 bg="gray.50"
-                p={4}
-                rounded="md"
+                p={{ base: 4, md: 6 }}
+                rounded="2xl"
                 border="1px"
-                borderColor="gray.200"
+                borderColor="gray.300"
               >
-                {subComments.map((child) =>
-                  child.parent ? (
+                {subComments.map((child) => (
                     <SubComments
                       subComment={child}
                       url={url}
-                      labelColor={"cyan.300"}
                       key={child.id}
                     />
-                  ) : (
-                    <SubComments
-                      subComment={child}
-                      url={url}
-                      labelColor={"purple.300"}
-                      key={child.id}
-                    />
-                  )
-                )}
-              </VStack>
+                ))}
+              </Box>
             </Box>
           )}
 
@@ -254,37 +274,38 @@ export default function Comment({
                 variant="ghost"
                 onClick={onOpen}
                 colorScheme="teal"
+                fontWeight="500"
+                rounded="full"
+                _hover={{
+                  transform: "translateY(-1px)",
+                  shadow: "sm"
+                }}
               >
                 View all {numSubComments} replies...
               </Button>
               <Modal isOpen={isOpen} onClose={onClose} size="xl">
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent rounded="2xl">
                   <ModalHeader>All {numSubComments} replies</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
-                    <VStack spacing={4} align="stretch">
-                      {comment.subComments.map((child) =>
-                        child.parent ? (
+                    <Box>
+                      {comment.subComments.map((child) => (
                           <SubComments
                             subComment={child}
                             url={url}
-                            labelColor="cyan.300"
                             key={child.id}
                           />
-                        ) : (
-                          <SubComments
-                            subComment={child}
-                            url={url}
-                            labelColor="purple.300"
-                            key={child.id}
-                          />
-                        )
-                      )}
-                    </VStack>
+                      ))}
+                    </Box>
                   </ModalBody>
                   <ModalFooter>
-                    <Button colorScheme="teal" onClick={onClose}>
+                    <Button 
+                      colorScheme="teal" 
+                      onClick={onClose}
+                      rounded="full"
+                      fontWeight="500"
+                    >
                       Close
                     </Button>
                   </ModalFooter>

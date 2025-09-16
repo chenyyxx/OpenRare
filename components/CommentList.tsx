@@ -68,9 +68,9 @@ function CommentItem({ comment }: { comment: UserComment }) {
     <Box
       w="full"
       bg={useColorModeValue("white", "gray.900")}
-      borderColor="gray.200"
+      borderColor="gray.300"
       borderWidth="1px"
-      rounded="md"
+      rounded="2xl"
       p={6}
       overflow="hidden"
     >
@@ -82,7 +82,7 @@ function CommentItem({ comment }: { comment: UserComment }) {
             <VStack align="start" spacing={0}>
               <Text
                 fontSize="sm"
-                fontWeight="600"
+                fontWeight="500"
                 color={useColorModeValue("gray.700", "gray.200")}
               >
                 {comment.user.name}
@@ -99,24 +99,24 @@ function CommentItem({ comment }: { comment: UserComment }) {
 
         {/* Post context */}
         <Box
-          bg={useColorModeValue("blue.25", "gray.800")}
+          bg={useColorModeValue("gray.50", "gray.800")}
           p={4}
-          rounded="md"
+          rounded="2xl"
           borderLeft="4px"
-          borderLeftColor="blue.400"
+          borderLeftColor="teal.400"
           border="1px"
-          borderColor={useColorModeValue("blue.100", "gray.600")}
+          borderColor={useColorModeValue("gray.300", "gray.600")}
         >
           <HStack spacing={2} mb={2}>
             <Text
               fontSize="xs"
               color="gray.600"
-              fontWeight="600"
+              fontWeight="500"
               textTransform="uppercase"
             >
               Comment on your post:
             </Text>
-            <Badge size="sm" colorScheme="blue" variant="subtle">
+            <Badge size="sm" colorScheme="teal" variant="subtle">
               YOUR POST
             </Badge>
           </HStack>
@@ -124,8 +124,8 @@ function CommentItem({ comment }: { comment: UserComment }) {
             as={Link}
             href={`/post/${comment.post?.id}`}
             fontSize="md"
-            fontWeight="semibold"
-            color={useColorModeValue("blue.600", "blue.300")}
+            fontWeight="500"
+            color={useColorModeValue("teal.600", "teal.300")}
             _hover={{ textDecoration: "underline" }}
             lineHeight="1.5"
           >
@@ -160,7 +160,14 @@ function CommentItem({ comment }: { comment: UserComment }) {
             <Button
               size="sm"
               variant="ghost"
+              colorScheme="teal"
+              rounded="full"
+              fontWeight="500"
               onClick={() => setIsExpanded(!isExpanded)}
+              _hover={{
+                transform: "translateY(-1px)",
+                shadow: "sm"
+              }}
             >
               {isExpanded ? "Show less" : "Show more"}
             </Button>
@@ -174,7 +181,13 @@ function CommentItem({ comment }: { comment: UserComment }) {
             href={`/post/${comment.post?.id}`}
             size="sm"
             variant="outline"
-            colorScheme="blue"
+            colorScheme="teal"
+            fontWeight="500"
+            rounded="full"
+            _hover={{
+              transform: "translateY(-1px)",
+              shadow: "sm"
+            }}
           >
             View Post
           </Button>
@@ -195,7 +208,7 @@ export default function CommentList({ comments, isLoading }: CommentListProps) {
             key={i}
             w="full"
             bg={loadingBg}
-            rounded="md"
+            rounded="2xl"
             p={6}
             h="200px"
           />

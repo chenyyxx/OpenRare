@@ -40,7 +40,7 @@ export default function SmallRareDisease({disease}: {disease: FullRareDisease}) 
                             <Stack direction={'row'} spacing={4} align={'center'}>
                                 <BiMessageAltDetail/>
                                 <Text fontWeight={600}>{disease._count.posts}</Text>
-                                <Divider orientation='vertical' borderColor='gray.200' />
+                                <Divider orientation='vertical' borderColor='gray.300' />
                                 <BiUser/>
                                 <Text fontWeight={600}>{disease._count.users}</Text>
                             </Stack>

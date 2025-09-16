@@ -100,9 +100,9 @@ function Post({ post }: { post: FullPost }) {
       w={"full"}
       maxW="800px"
       bg={useColorModeValue("white", "gray.900")}
-      borderColor="gray.200"
+      borderColor="gray.300"
       borderWidth="1px"
-      rounded={"md"}
+      rounded={"2xl"}
       p={6}
       overflow={"hidden"}
     >
@@ -128,22 +128,22 @@ function Post({ post }: { post: FullPost }) {
                 spacing={1}
                 fontSize="xs"
                 fontWeight="600"
-                color="purple.700"
-                bg="purple.50"
+                color="white"
+                bg="purple.500"
                 px={3}
                 py={1}
                 rounded="full"
-                border="1px"
-                borderColor="purple.200"
+                shadow="sm"
                 display="inline-flex"
                 _hover={{
-                  bg: "purple.100",
-                  borderColor: "purple.300",
+                  bg: "purple.600",
+                  transform: "translateY(-1px)",
+                  shadow: "md",
                   textDecoration: "none",
                 }}
                 transition="all 0.2s"
               >
-                <Box as="span" fontSize="10px">
+                <Box as="span" fontSize="sm">
                   🏷️
                 </Box>
                 <Text as="span">{post.theme.name}</Text>
@@ -156,24 +156,22 @@ function Post({ post }: { post: FullPost }) {
                 spacing={1}
                 fontSize="xs"
                 fontWeight="600"
-                color="green.700"
-                bg="green.50"
+                color="white"
+                bg="green.500"
                 px={3}
                 py={1}
                 rounded="full"
-                border="1px"
-                borderColor="green.200"
-                textTransform="uppercase"
-                letterSpacing="wide"
+                shadow="sm"
                 display="inline-flex"
                 _hover={{
-                  bg: "green.100",
-                  borderColor: "green.300",
+                  bg: "green.600",
+                  transform: "translateY(-1px)",
+                  shadow: "md",
                   textDecoration: "none",
                 }}
                 transition="all 0.2s"
               >
-                <Box as="span" fontSize="10px">
+                <Box as="span" fontSize="sm">
                   🧬
                 </Box>
                 <Text as="span">{post.disease.name}</Text>
@@ -184,7 +182,7 @@ function Post({ post }: { post: FullPost }) {
           <HStack justify={"space-between"} align="center">
             <HStack>
               <Avatar size="sm" src={post.user.image as string | undefined} />
-              <Text fontSize={["xs", "sm"]} fontWeight={600}>
+              <Text fontSize={["xs", "sm"]} fontWeight={500}>
                 {post.user.name}
               </Text>
               <Text
@@ -230,7 +228,7 @@ function Post({ post }: { post: FullPost }) {
           )}
 
           <HStack justify={"space-between"}>
-            <HStack divider={<StackDivider borderColor="gray.200" />}></HStack>
+            <HStack divider={<StackDivider borderColor="gray.300" />}></HStack>
             <HStack spacing={2}>
               {/* <BiCommentDetail /> */}
               <Button
@@ -282,7 +280,7 @@ function Post({ post }: { post: FullPost }) {
                     borderTopRadius="xl"
                   >
                     <VStack align="start" spacing={2}>
-                      <Text fontSize="lg" fontWeight="600" color="gray.800">
+                      <Text fontSize="lg" fontWeight="500" color="gray.800">
                         Comments ({post._count?.comments || 0})
                       </Text>
                       <Text fontSize="sm" color="gray.600" noOfLines={1}>
@@ -325,7 +323,7 @@ function Post({ post }: { post: FullPost }) {
                           <VStack spacing={2}>
                             <Text
                               fontSize="lg"
-                              fontWeight="600"
+                              fontWeight="500"
                               color="gray.600"
                             >
                               No comments yet
@@ -346,7 +344,17 @@ function Post({ post }: { post: FullPost }) {
                     borderBottomRadius="xl"
                     gap={3}
                   >
-                    <Button variant="ghost" onClick={onClose} size="md">
+                    <Button 
+                      variant="ghost" 
+                      onClick={onClose} 
+                      size="md"
+                      fontWeight="500"
+                      rounded="full"
+                      _hover={{
+                        transform: "translateY(-1px)",
+                        shadow: "sm"
+                      }}
+                    >
                       Close
                     </Button>
                     <Button
@@ -354,11 +362,17 @@ function Post({ post }: { post: FullPost }) {
                       as={"a"}
                       href={`/post/${post.id}`}
                       size="md"
+                      fontWeight="500"
+                      rounded="full"
                       rightIcon={
                         <Box as="span" fontSize="sm">
                           →
                         </Box>
                       }
+                      _hover={{
+                        transform: "translateY(-1px)",
+                        shadow: "md"
+                      }}
                     >
                       View Full Post
                     </Button>

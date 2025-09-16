@@ -140,16 +140,29 @@ export default function ThemePage({
               <HStack spacing={4} justify="space-between" wrap="wrap">
                 <HStack spacing={4}>
                   <Button
-                    colorScheme="blue"
+                    colorScheme="teal"
                     size="md"
+                    fontWeight="500"
+                    rounded="full"
                     onClick={handleCreatePost}
+                    _hover={{
+                      transform: "translateY(-1px)",
+                      shadow: "md"
+                    }}
                   >
-                    Create Post in {data.theme.name}
+                    Create Post
                   </Button>
                   <Button
                     variant="outline"
+                    colorScheme="gray"
                     size="md"
+                    fontWeight="500"
+                    rounded="full"
                     onClick={() => router.push("/")}
+                    _hover={{
+                      transform: "translateY(-1px)",
+                      shadow: "md"
+                    }}
                   >
                     Back to Explore
                   </Button>
@@ -159,9 +172,9 @@ export default function ThemePage({
               {/* Search and Filter */}
               <Box
                 bg="white"
-                rounded="lg"
-                p={6}
-                shadow="md"
+                rounded="2xl"
+                p={{ base: 6, md: 8 }}
+                shadow="lg"
                 border="1px"
                 borderColor="gray.200"
               >
@@ -194,7 +207,7 @@ export default function ThemePage({
                 textAlign="center"
                 py={16}
                 bg={emptyStateBg}
-                borderRadius="lg"
+                borderRadius="2xl"
                 border="1px"
                 borderColor={emptyStateBorderColor}
               >
@@ -213,17 +226,30 @@ export default function ThemePage({
                   </VStack>
                   <HStack spacing={3}>
                     <Button
-                      colorScheme="blue"
+                      colorScheme="teal"
                       size="lg"
+                      fontWeight="500"
+                      rounded="full"
                       onClick={handleCreatePost}
+                      _hover={{
+                        transform: "translateY(-1px)",
+                        shadow: "md"
+                      }}
                     >
                       Create Post
                     </Button>
                     {(filters.search || filters.selectedDiseases.length > 0) && (
                       <Button
                         variant="outline"
+                        colorScheme="gray"
                         size="lg"
+                        fontWeight="500"
+                        rounded="full"
                         onClick={() => setFilters({ search: "", selectedDiseases: [] })}
+                        _hover={{
+                          transform: "translateY(-1px)",
+                          shadow: "md"
+                        }}
                       >
                         Clear Filters
                       </Button>

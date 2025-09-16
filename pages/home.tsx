@@ -27,6 +27,7 @@ import SearchAndFilter, {
 } from "../components/SearchAndFilter";
 import useSWR from "swr";
 import { fetchData, fetchFlatUserSectionPost } from "../utils/utils";
+import { MODERN_PALETTE, TYPOGRAPHY } from "../utils/theme-constants";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -125,12 +126,12 @@ export default function Home() {
     return (
       <Box
         minH="100vh"
-        bg={"gray.100"}
+        bg={MODERN_PALETTE.neutral[100]}
         display="flex"
         alignItems="center"
         justifyContent="center"
       >
-        <Spinner size="xl" />
+        <Spinner size="xl" color={MODERN_PALETTE.primary[500]} thickness="4px" />
       </Box>
     );
   }
@@ -331,7 +332,11 @@ export default function Home() {
             {/* Posts or empty state */}
             {posts.length > 0 ? (
               <VStack spacing={6} align="stretch">
-                <Text fontSize="lg" fontWeight="medium" color="gray.700">
+                <Text 
+                  fontSize="lg" 
+                  fontWeight="500" 
+                  color="gray.700"
+                >
                   Following Posts ({posts.length})
                 </Text>
                 <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
@@ -363,7 +368,11 @@ export default function Home() {
             {/* Posts or empty state */}
             {posts.length > 0 ? (
               <VStack spacing={6} align="stretch">
-                <Text fontSize="lg" fontWeight="medium" color="gray.700">
+                <Text 
+                  fontSize="lg" 
+                  fontWeight="500" 
+                  color="gray.700"
+                >
                   My Posts ({posts.length})
                 </Text>
                 <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
@@ -401,7 +410,7 @@ export default function Home() {
   };
 
   return (
-    <Box minH="100vh" bg={"gray.50"}>
+    <Box minH="100vh" bg={MODERN_PALETTE.neutral[100]}>
       <Sidebar>
         {status === "authenticated" && (
           <Flex justify="center" pt={"78px"}>
@@ -415,29 +424,37 @@ export default function Home() {
                 {/* Header */}
                 <Box
                   bg="white"
-                  rounded={"lg"}
-                  p={{ base: 4, md: 6 }}
-                  shadow="md"
+                  rounded={"2xl"}
+                  p={{ base: 6, md: 8 }}
+                  shadow="lg"
                   border="1px"
-                  borderColor="gray.200"
+                  borderColor={MODERN_PALETTE.neutral[200]}
                 >
-                  <Heading size="lg" color="gray.700" mb={2}>
+                  <Heading 
+                    fontSize={TYPOGRAPHY.fontSize['3xl']} 
+                    color={MODERN_PALETTE.neutral[800]} 
+                    mb={3}
+                    fontWeight="bold"
+                  >
                     Your Personalized Feed
                   </Heading>
-                  <Text color="gray.600">
-                    Stay updated with content from your interests, posts,
-                    comments, and more
+                  <Text 
+                    fontSize="md"
+                    color="gray.600"
+                    fontWeight="400"
+                  >
+                    Stay updated with content from your interests, posts, comments, and more
                   </Text>
                 </Box>
 
                 {/* Tab Navigation */}
                 <Box
                   bg="white"
-                  rounded={"lg"}
-                  p={{ base: 4, md: 6 }}
-                  shadow="md"
+                  rounded={"2xl"}
+                  p={{ base: 6, md: 8 }}
+                  shadow="lg"
                   border="1px"
-                  borderColor="gray.200"
+                  borderColor={MODERN_PALETTE.neutral[200]}
                 >
                   <TabNavigation
                     activeTab={activeTab}
@@ -455,11 +472,11 @@ export default function Home() {
                 {/* Content Area */}
                 <Box
                   bg="white"
-                  rounded={"lg"}
-                  p={{ base: 4, md: 6 }}
-                  shadow="md"
+                  rounded={"2xl"}
+                  p={{ base: 6, md: 8 }}
+                  shadow="lg"
                   border="1px"
-                  borderColor="gray.200"
+                  borderColor={MODERN_PALETTE.neutral[200]}
                 >
                   <ContentArea
                     activeTab={activeTab}

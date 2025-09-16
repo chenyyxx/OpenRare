@@ -63,7 +63,7 @@ export default function RareDisease({ disease }: { disease: FullRareDisease }) {
           direction={"row"}
           justify={"center"}
           spacing={6}
-          divider={<StackDivider borderColor="gray.200" />}
+          divider={<StackDivider borderColor="gray.300" />}
         >
           <HStack spacing={2} align={"center"}>
             <Text fontSize={"sm"} color={"gray.500"}>

@@ -41,7 +41,7 @@ export default function AuthRequiredAlert({ action, isOpen, onClose }: AuthRequi
           color={alertColor}
           border="1px"
           borderColor={borderColor}
-          rounded="lg"
+          rounded="2xl"
           p={4}
           boxShadow="xl"
           position="relative"

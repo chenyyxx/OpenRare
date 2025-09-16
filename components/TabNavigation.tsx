@@ -94,7 +94,7 @@ export default function TabNavigation({
                 transform: "translateY(0px)",
               }}
               onClick={() => onTabChange(tab.key)}
-              borderRadius="md"
+              borderRadius="full"
               fontWeight={isActive ? "600" : "500"}
               fontSize={{ base: "xs", md: "sm" }}
               px={{ base: 2, md: 4 }}
@@ -123,7 +123,7 @@ export default function TabNavigation({
                   color={isActive ? "white" : "gray.600"}
                   borderRadius="full"
                   fontSize="xs"
-                  fontWeight="bold"
+                  fontWeight="500"
                   minW="18px"
                   textAlign="center"
                 >

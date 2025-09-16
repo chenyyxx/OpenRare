@@ -166,15 +166,17 @@ export default function SearchAndFilter({
           value={localFilters.search}
           onChange={handleSearchChange}
           isDisabled={isLoading}
-          bg={useColorModeValue("gray.50", "gray.700")}
-          border="1px solid"
-          borderColor={borderColor}
+          bg="gray.50"
+          border="2px"
+          borderColor="gray.300"
+          rounded="2xl"
           _focus={{
             borderColor: "teal.500",
-            boxShadow: "0 0 0 1px teal.500",
+            bg: "white",
+            boxShadow: "0 0 0 1px #319795",
           }}
           _hover={{
-            borderColor: useColorModeValue("gray.300", "gray.500"),
+            borderColor: "gray.400",
           }}
         />
       </InputGroup>
@@ -196,15 +198,17 @@ export default function SearchAndFilter({
             value={localFilters.diseaseId || ""}
             onChange={handleDiseaseChange}
             isDisabled={isLoading}
-            bg={useColorModeValue("gray.50", "gray.700")}
-            border="1px solid"
-            borderColor={borderColor}
+            bg="gray.50"
+            border="2px"
+            borderColor="gray.300"
+            rounded="2xl"
             _focus={{
               borderColor: "teal.500",
-              boxShadow: "0 0 0 1px teal.500",
+              bg: "white",
+              boxShadow: "0 0 0 1px #319795",
             }}
             _hover={{
-              borderColor: useColorModeValue("gray.300", "gray.500"),
+              borderColor: "gray.400",
             }}
           >
             {availableDiseases.map((disease) => (
@@ -225,15 +229,17 @@ export default function SearchAndFilter({
             value={localFilters.themeId || ""}
             onChange={handleThemeChange}
             isDisabled={isLoading}
-            bg={useColorModeValue("gray.50", "gray.700")}
-            border="1px solid"
-            borderColor={borderColor}
+            bg="gray.50"
+            border="2px"
+            borderColor="gray.300"
+            rounded="2xl"
             _focus={{
               borderColor: "teal.500",
-              boxShadow: "0 0 0 1px teal.500",
+              bg: "white",
+              boxShadow: "0 0 0 1px #319795",
             }}
             _hover={{
-              borderColor: useColorModeValue("gray.300", "gray.500"),
+              borderColor: "gray.400",
             }}
           >
             {availableThemes.map((theme) => (
@@ -253,17 +259,47 @@ export default function SearchAndFilter({
           </Text>
           <HStack spacing={2} wrap="wrap">
             {localFilters.search && (
-              <Badge colorScheme="blue" variant="subtle">
+              <Badge 
+                bg="teal.100" 
+                color="teal.800" 
+                px={3} 
+                py={1} 
+                rounded="full" 
+                fontSize="xs" 
+                fontWeight="500"
+                border="1px"
+                borderColor="teal.300"
+              >
                 Search: &quot;{localFilters.search}&quot;
               </Badge>
             )}
             {localFilters.diseaseId && (
-              <Badge colorScheme="green" variant="subtle">
+              <Badge 
+                bg="gray.200" 
+                color="gray.800" 
+                px={3} 
+                py={1} 
+                rounded="full" 
+                fontSize="xs" 
+                fontWeight="500"
+                border="1px"
+                borderColor="gray.400"
+              >
                 Disease: {availableDiseases.find(d => d.id.toString() === localFilters.diseaseId)?.name}
               </Badge>
             )}
             {localFilters.themeId && (
-              <Badge colorScheme="purple" variant="subtle">
+              <Badge 
+                bg="gray.200" 
+                color="gray.800" 
+                px={3} 
+                py={1} 
+                rounded="full" 
+                fontSize="xs" 
+                fontWeight="500"
+                border="1px"
+                borderColor="gray.400"
+              >
                 Theme: {availableThemes.find(t => t.id === localFilters.themeId)?.name}
               </Badge>
             )}

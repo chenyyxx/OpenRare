@@ -185,15 +185,17 @@ export default function ThemeSearchAndFilter({
           value={localFilters.search}
           onChange={handleSearchChange}
           isDisabled={isLoading}
-          bg={useColorModeValue("gray.50", "gray.700")}
-          border="1px solid"
-          borderColor={borderColor}
+          bg="gray.50"
+          border="2px"
+          borderColor="gray.300"
+          rounded="2xl"
           _focus={{
             borderColor: "teal.500",
-            boxShadow: "0 0 0 1px teal.500",
+            bg: "white",
+            boxShadow: "0 0 0 1px #319795",
           }}
           _hover={{
-            borderColor: useColorModeValue("gray.300", "gray.500"),
+            borderColor: "gray.400",
           }}
         />
       </InputGroup>
@@ -246,12 +248,17 @@ export default function ThemeSearchAndFilter({
               value={diseaseSearchValue}
               onChange={(e) => setDiseaseSearchValue(e.target.value)}
               isDisabled={isLoading}
-              bg={useColorModeValue("gray.50", "gray.700")}
-              border="1px solid"
-              borderColor={borderColor}
+              bg="gray.50"
+              border="2px"
+              borderColor="gray.300"
+              rounded="2xl"
+              _hover={{
+                borderColor: "gray.400"
+              }}
               _focus={{
                 borderColor: "teal.500",
-                boxShadow: "0 0 0 1px teal.500",
+                bg: "white",
+                boxShadow: "0 0 0 1px #319795"
               }}
             />
             <AutoCompleteList>
@@ -291,12 +298,32 @@ export default function ThemeSearchAndFilter({
           </Text>
           <HStack spacing={2} wrap="wrap">
             {localFilters.search && (
-              <Badge colorScheme="blue" variant="subtle">
+              <Badge 
+                bg="teal.100" 
+                color="teal.800" 
+                px={3} 
+                py={1} 
+                rounded="full" 
+                fontSize="xs" 
+                fontWeight="500"
+                border="1px"
+                borderColor="teal.300"
+              >
                 Search: &quot;{localFilters.search}&quot;
               </Badge>
             )}
             {localFilters.selectedDiseases.length > 0 && (
-              <Badge colorScheme="green" variant="subtle">
+              <Badge 
+                bg="gray.200" 
+                color="gray.800" 
+                px={3} 
+                py={1} 
+                rounded="full" 
+                fontSize="xs" 
+                fontWeight="500"
+                border="1px"
+                borderColor="gray.400"
+              >
                 {localFilters.selectedDiseases.length} disease{localFilters.selectedDiseases.length > 1 ? 's' : ''} selected
               </Badge>
             )}

@@ -75,14 +75,14 @@ export default function SmallProfile({ user }: { user: SmallUser }) {
                         </Heading>
                     </Stack>
 
-                    <Divider borderColor="gray.200" mb={5} />
+                    <Divider borderColor="gray.300" mb={5} />
 
                     <Stack direction={"row"} justify={"center"} spacing={6}>
                         <Stack direction={"row"} spacing={4} align={"center"}>
                             <Text fontWeight={600}>{user.diseases.length}</Text>
                             <Divider
                                 orientation="vertical"
-                                borderColor="gray.200"
+                                borderColor="gray.300"
                             />
                             <Text fontSize={"sm"} color={"gray.500"}>
                                 Followed Rare Diseases

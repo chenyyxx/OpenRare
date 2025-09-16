@@ -107,9 +107,9 @@ export default function SectionDetail({
               {/* Post Detail */}
               <Box 
                 bg="white" 
-                rounded={"lg"} 
-                p={{ base: 4, md: 6 }} 
-                shadow="md"
+                rounded="2xl" 
+                p={{ base: 6, md: 8 }} 
+                shadow="lg"
                 border="1px"
                 borderColor="gray.200"
               >
@@ -120,13 +120,13 @@ export default function SectionDetail({
               {postDetail.comments.length > 0 && (
                 <Box 
                   bg="white" 
-                  rounded={"lg"} 
-                  p={{ base: 4, md: 6 }} 
-                  shadow="md"
+                  rounded="2xl" 
+                  p={{ base: 6, md: 8 }} 
+                  shadow="lg"
                   border="1px"
                   borderColor="gray.200"
                 >
-                  <VStack spacing={4} align="stretch">
+                  <VStack spacing={8} align="stretch">
                     <Text fontSize="lg" fontWeight="600" color="gray.700" mb={2}>
                       Comments ({postDetail.comments.length})
                     </Text>
@@ -134,7 +134,7 @@ export default function SectionDetail({
                       <Box key={comment.id}>
                         <Comment comment={comment} url={url} isCompact={false} />
                         {index < postDetail.comments.length - 1 && (
-                          <Box h="1px" bg="gray.200" my={4} />
+                          <Box h="1px" bg="gray.200" my={6} />
                         )}
                       </Box>
                     ))}

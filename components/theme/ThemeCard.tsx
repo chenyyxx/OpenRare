@@ -61,7 +61,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
       bg={cardBg}
       border="1px"
       borderColor={borderColor}
-      borderRadius="lg"
+      borderRadius="2xl"
       p={6}
       cursor="pointer"
       transition="all 0.2s"
@@ -81,7 +81,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
         <HStack spacing={3} align="center">
           <Box
             p={3}
-            borderRadius="lg"
+            borderRadius="2xl"
             bg={themeColor}
             color="white"
           >
@@ -91,7 +91,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
             <Heading size="md" color={themeColor}>
               {theme.name}
             </Heading>
-            <Text fontSize="sm" color={textColor} fontWeight="medium">
+            <Text fontSize="md" color={textColor} fontWeight="medium">
               {theme.description}
             </Text>
           </VStack>
@@ -100,7 +100,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
         {/* Guidelines */}
         {theme.guidelines && (
           <Box>
-            <Text fontSize="xs" color={guidelinesColor} lineHeight="1.4">
+            <Text fontSize="sm" color={guidelinesColor} lineHeight="1.5">
               {theme.guidelines}
             </Text>
           </Box>
@@ -110,7 +110,16 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 
         {/* Post count */}
         <HStack>
-          <Badge colorScheme="gray" variant="subtle">
+          <Badge 
+            bg={themeColor} 
+            color="white" 
+            px={3} 
+            py={1} 
+            rounded="full" 
+            fontSize="xs" 
+            fontWeight="600"
+            shadow="sm"
+          >
             {theme.postCount || 0} posts
           </Badge>
           <Spacer />
@@ -133,7 +142,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
                   borderLeftColor={themeColor}
                 >
                   <Text
-                    fontSize="xs"
+                    fontSize="sm"
                     color={textColor}
                     noOfLines={2}
                     fontWeight="medium"
@@ -162,7 +171,7 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
                 bg={hoverBg}
                 textAlign="center"
               >
-                <Text fontSize="xs" color={textColor} fontStyle="italic">
+                <Text fontSize="sm" color={textColor} fontStyle="italic">
                   No posts yet - be the first to share!
                 </Text>
               </Box>
@@ -175,6 +184,8 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
           size="md"
           bg={themeColor}
           color="white"
+          rounded="full"
+          fontWeight="500"
           _hover={{
             bg: themeColor,
             opacity: 0.9,
