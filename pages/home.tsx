@@ -1,48 +1,78 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
-  useColorModeValue,
   VStack,
-  HStack,
+  Spinner,
+  Stack,
   Flex,
-  InputGroup,
-  Input,
-  InputRightElement,
-  IconButton,
   Heading,
   Text,
-  Stack,
-  StackDivider,
-  Wrap,
-  WrapItem,
-  Spinner,
 } from "@chakra-ui/react";
-import SmallProfile from "../components/small_profile";
-import Nav from "../components/nav";
-import Post from "../components/post";
-import LeftSideBar from "../components/left_side_bar";
-import { Button } from "@chakra-ui/react";
-import SmallRareDisease from "../components/small_rare_disease";
-import { GetServerSideProps } from "next";
-import { getSession, signIn, useSession } from "next-auth/react";
-import { SmallUser } from "../components/small_profile";
-import { FullPost } from "../components/post";
+import { signIn, useSession } from "next-auth/react";
+import Sidebar from "../components/sidebar";
+import TabNavigation, { TabType } from "../components/TabNavigation";
+import ContentArea from "../components/ContentArea";
+import Post, { FullPost } from "../components/post";
+import CommentList, { UserComment } from "../components/CommentList";
+import ReplyList, { UserReply } from "../components/ReplyList";
+import EmptyState from "../components/EmptyState";
+import FollowedDiseasesTags, { FollowedDisease } from "../components/FollowedDiseasesTags";
+import SearchAndFilter, { FilterState, Disease, Theme } from "../components/SearchAndFilter";
 import useSWR from "swr";
 import { fetchData, fetchFlatUserSectionPost } from "../utils/utils";
-import Sidebar from "../components/sidebar";
 
 export default function Home() {
   const { data: session, status } = useSession();
+  const [activeTab, setActiveTab] = useState<TabType>('following');
+  const [error, setError] = useState<string | undefined>();
+  const [selectedDisease, setSelectedDisease] = useState<number | null>(null);
+  const [filters, setFilters] = useState<FilterState>({
+    search: "",
+    diseaseId: null,
+    themeId: null,
+  });
 
-  const email = session?.user.email;
-  const { data: user, error: userError } = useSWR<SmallUser>(
-    `/api/get_full_user?email=${email}`,
-    fetchData
-  );
-  const { data: user_diseases_posts_flat, error } = useSWR<FullPost[]>(
-    `/api/get_user_diseases_posts?email=${email}`,
+  const email = session?.user?.email;
+
+  // Data fetching for each tab
+  const { data: followingPosts, error: followingError, mutate: mutateFollowing } = useSWR<FullPost[]>(
+    email ? `/api/get_user_diseases_posts?email=${email}` : null,
     fetchFlatUserSectionPost
   );
+
+  const { data: userPostsResponse, error: userPostsError, mutate: mutateUserPosts } = useSWR<{posts: FullPost[], count: number}>(
+    email && activeTab === 'myPosts' ? `/api/get_user_posts?email=${email}` : null,
+    fetchData
+  );
+
+  const { data: userCommentsResponse, error: userCommentsError, mutate: mutateUserComments } = useSWR<{comments: UserComment[], count: number}>(
+    email && activeTab === 'myComments' ? `/api/get_user_comments?email=${email}` : null,
+    fetchData
+  );
+
+  const { data: favoritePostsResponse, error: favoritePostsError, mutate: mutateFavoritePosts } = useSWR<{posts: FullPost[], count: number}>(
+    email && activeTab === 'favorites' ? `/api/get_user_favorites?email=${email}` : null,
+    fetchData
+  );
+
+  const { data: userRepliesResponse, error: userRepliesError, mutate: mutateUserReplies } = useSWR<{replies: UserReply[], count: number}>(
+    email && activeTab === 'replies' ? `/api/get_user_replies?email=${email}` : null,
+    fetchData
+  );
+
+  // Extract data from API responses
+  const userPosts = userPostsResponse?.posts;
+  const userComments = userCommentsResponse?.comments;
+  const favoritePosts = favoritePostsResponse?.posts;
+  const userReplies = userRepliesResponse?.replies;
+
+  // Get user data for followed diseases
+  const { data: userData } = useSWR(
+    email ? `/api/get_full_user?email=${email}` : null,
+    fetchData
+  );
+
+  // Handle loading state during authentication
   if (status === "loading") {
     return (
       <Box minH="100vh" bg={"gray.100"} display="flex" alignItems="center" justifyContent="center">
@@ -51,100 +81,353 @@ export default function Home() {
     );
   }
 
+  // Redirect to sign in if not authenticated
   if (status === "unauthenticated") {
     signIn();
     return null;
   }
+
+  // Determine current loading state
+  const getCurrentLoadingState = () => {
+    switch (activeTab) {
+      case 'following':
+        return !followingPosts && !followingError;
+      case 'myPosts':
+        return !userPostsResponse && !userPostsError;
+      case 'myComments':
+        return !userCommentsResponse && !userCommentsError;
+      case 'favorites':
+        return !favoritePostsResponse && !favoritePostsError;
+      case 'replies':
+        return !userRepliesResponse && !userRepliesError;
+      default:
+        return false;
+    }
+  };
+
+  // Determine current error state
+  const getCurrentError = () => {
+    if (error) return error;
+    switch (activeTab) {
+      case 'following':
+        return followingError?.message;
+      case 'myPosts':
+        return userPostsError?.message;
+      case 'myComments':
+        return userCommentsError?.message;
+      case 'favorites':
+        return favoritePostsError?.message;
+      case 'replies':
+        return userRepliesError?.message;
+      default:
+        return undefined;
+    }
+  };
+
+  // Handle tab change
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab);
+    setError(undefined);
+    // Reset filters when changing tabs
+    setFilters({
+      search: "",
+      diseaseId: null,
+      themeId: null,
+    });
+    setSelectedDisease(null);
+  };
+
+  // Handle refresh
+  const handleRefresh = async () => {
+    setError(undefined);
+    try {
+      switch (activeTab) {
+        case 'following':
+          await mutateFollowing();
+          break;
+        case 'myPosts':
+          await mutateUserPosts();
+          break;
+        case 'myComments':
+          await mutateUserComments();
+          break;
+        case 'favorites':
+          await mutateFavoritePosts();
+          break;
+        case 'replies':
+          await mutateUserReplies();
+          break;
+      }
+    } catch (err) {
+      setError('Failed to refresh content. Please try again.');
+    }
+  };
+
+  // Handle retry on error
+  const handleRetry = () => {
+    setError(undefined);
+    handleRefresh();
+  };
+
+  // Filter posts based on current filters
+  const filterPosts = (posts: FullPost[] | undefined): FullPost[] => {
+    if (!posts) return [];
+    
+    let filtered = posts;
+
+    // Apply disease filter (from tags or search filter)
+    if (selectedDisease) {
+      filtered = filtered.filter(post => post.disease?.id === selectedDisease);
+    } else if (filters.diseaseId) {
+      filtered = filtered.filter(post => post.disease?.id === parseInt(filters.diseaseId!));
+    }
+
+    // Apply theme filter
+    if (filters.themeId) {
+      filtered = filtered.filter(post => post.theme?.id === filters.themeId);
+    }
+
+    // Apply search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      filtered = filtered.filter(post => 
+        post.title.toLowerCase().includes(searchLower)
+      );
+    }
+
+    return filtered;
+  };
+
+  // Get available diseases and themes for filters
+  const getAvailableDiseases = (): Disease[] => {
+    const posts = activeTab === 'following' ? followingPosts : 
+                  activeTab === 'myPosts' ? userPosts : 
+                  activeTab === 'favorites' ? favoritePosts : [];
+    
+    if (!posts) return [];
+    
+    const diseases = posts
+      .filter(post => post.disease)
+      .map(post => ({ id: post.disease!.id, name: post.disease!.name }));
+    
+    // Remove duplicates
+    return diseases.filter((disease, index, self) => 
+      index === self.findIndex(d => d.id === disease.id)
+    );
+  };
+
+  const getAvailableThemes = (): Theme[] => {
+    const posts = activeTab === 'following' ? followingPosts : 
+                  activeTab === 'myPosts' ? userPosts : 
+                  activeTab === 'favorites' ? favoritePosts : [];
+    
+    if (!posts) return [];
+    
+    const themes = posts
+      .filter(post => post.theme)
+      .map(post => ({ id: post.theme!.id, name: post.theme!.name }));
+    
+    // Remove duplicates
+    return themes.filter((theme, index, self) => 
+      index === self.findIndex(t => t.id === theme.id)
+    );
+  };
+
+  // Render tab content
+  const renderTabContent = () => {
+    const isLoading = getCurrentLoadingState();
+    const currentError = getCurrentError();
+
+    // Show loading or error states
+    if (isLoading || currentError) {
+      return null; // ContentArea handles these states
+    }
+
+    switch (activeTab) {
+      case 'following': {
+        const posts = filterPosts(followingPosts);
+        const followedDiseases: FollowedDisease[] = userData?.diseases?.map((disease: any) => ({
+          id: disease.id,
+          name: disease.name,
+          _count: {
+            posts: disease._count?.posts || 0,
+            users: disease._count?.users || 0,
+          }
+        })) || [];
+
+        return (
+          <VStack spacing={6} align="stretch">
+            {/* Followed diseases tags */}
+            <FollowedDiseasesTags
+              diseases={followedDiseases}
+              onDiseaseClick={setSelectedDisease}
+              selectedDisease={selectedDisease}
+            />
+
+            {/* Search and filter for posts */}
+            <SearchAndFilter
+              onFiltersChange={setFilters}
+              availableDiseases={getAvailableDiseases()}
+              availableThemes={getAvailableThemes()}
+              currentFilters={filters}
+            />
+
+            {/* Posts or empty state */}
+            {posts.length > 0 ? (
+              <Stack spacing={4}>
+                {posts.map((post) => (
+                  <Post key={post.id} post={post} />
+                ))}
+              </Stack>
+            ) : (
+              <EmptyState tabType="following" />
+            )}
+          </VStack>
+        );
+      }
+
+      case 'myPosts': {
+        const posts = filterPosts(userPosts);
+
+        return (
+          <VStack spacing={6} align="stretch">
+            {/* Search and filter for posts */}
+            <SearchAndFilter
+              onFiltersChange={setFilters}
+              availableDiseases={getAvailableDiseases()}
+              availableThemes={getAvailableThemes()}
+              currentFilters={filters}
+            />
+
+            {/* Posts or empty state */}
+            {posts.length > 0 ? (
+              <Stack spacing={4}>
+                {posts.map((post) => (
+                  <Post key={post.id} post={post} />
+                ))}
+              </Stack>
+            ) : (
+              <EmptyState tabType="myPosts" />
+            )}
+          </VStack>
+        );
+      }
+
+      case 'myComments': {
+        return userComments && userComments.length > 0 ? (
+          <CommentList comments={userComments} isLoading={false} />
+        ) : (
+          <EmptyState tabType="myComments" />
+        );
+      }
+
+      case 'favorites': {
+        const posts = filterPosts(favoritePosts);
+
+        return (
+          <VStack spacing={6} align="stretch">
+            {/* Search and filter for posts */}
+            <SearchAndFilter
+              onFiltersChange={setFilters}
+              availableDiseases={getAvailableDiseases()}
+              availableThemes={getAvailableThemes()}
+              currentFilters={filters}
+            />
+
+            {/* Posts or empty state */}
+            {posts.length > 0 ? (
+              <Stack spacing={4}>
+                {posts.map((post) => (
+                  <Post key={post.id} post={post} />
+                ))}
+              </Stack>
+            ) : (
+              <EmptyState tabType="favorites" />
+            )}
+          </VStack>
+        );
+      }
+
+      case 'replies': {
+        return userReplies && userReplies.length > 0 ? (
+          <ReplyList replies={userReplies} isLoading={false} />
+        ) : (
+          <EmptyState tabType="replies" />
+        );
+      }
+
+      default:
+        return <EmptyState tabType={activeTab} />;
+    }
+  };
+
   return (
-    <Box minH="100vh" bg={"gray.100"}>
-      <Nav />
+    <Box minH="100vh" bg={"gray.50"}>
       <Sidebar>
         {status === "authenticated" && (
           <Flex justify="center" pt={"78px"}>
-            <Box>
-              <Wrap justify="left" pt="24px" pl="24px" pr="24px">
-                {/* <HStack> */}
-                <WrapItem>
-                  <Button colorScheme="teal" variant="solid" rounded={20}>
-                    My Posts
-                  </Button>
-                </WrapItem>
-                {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Favorites</Button></WrapItem> */}
-                {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Upvoted</Button></WrapItem> */}
-                {/* <WrapItem>
-                  <Button colorScheme="teal" variant="outline" rounded={20}>
-                    Comments
-                  </Button>
-                </WrapItem> */}
-                {/* <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Messages</Button></WrapItem>
-                  <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem> */}
-              </Wrap>
-              <VStack p="24px" minH="full" spacing={"24px"}>
-                {user_diseases_posts_flat && user_diseases_posts_flat.length !== 0 ? (
-                  user_diseases_posts_flat.map((post) => (
-                    <Post post={post} key={post.id} />
-                  ))
-                ) : (
-                  <Box
-                    w={"full"}
-                    minW="500px"
-                    maxW="800px"
-                    borderColor="gray.200"
-                    borderWidth="1px"
-                    rounded={"md"}
-                    p={6}
-                    overflow={"hidden"}
+            <Box w="full" p={{ base: "16px", md: "24px" }} minH="full" maxW="1200px">
+              <VStack spacing={6} align="stretch">
+                {/* Header */}
+                <Box 
+                  bg="white" 
+                  rounded={"lg"} 
+                  p={{ base: 4, md: 6 }} 
+                  shadow="md"
+                  border="1px"
+                  borderColor="gray.200"
+                >
+                  <Heading size="lg" color="gray.700" mb={2}>
+                    Your Personalized Feed
+                  </Heading>
+                  <Text color="gray.600">
+                    Stay updated with content from your interests, posts, comments, and more
+                  </Text>
+                </Box>
+
+                {/* Tab Navigation */}
+                <Box 
+                  bg="white" 
+                  rounded={"lg"} 
+                  p={{ base: 4, md: 6 }} 
+                  shadow="md"
+                  border="1px"
+                  borderColor="gray.200"
+                >
+                  <TabNavigation
+                    activeTab={activeTab}
+                    onTabChange={handleTabChange}
+                    isTransitioning={getCurrentLoadingState()}
+                    tabCounts={{
+                      following: followingPosts?.length || 0,
+                      myPosts: userPostsResponse?.count || 0,
+                      myComments: userCommentsResponse?.count || 0,
+                      favorites: favoritePostsResponse?.count || 0,
+                      replies: userRepliesResponse?.count || 0,
+                    }}
+                  />
+                </Box>
+
+                {/* Content Area */}
+                <Box 
+                  bg="white" 
+                  rounded={"lg"} 
+                  p={{ base: 4, md: 6 }} 
+                  shadow="md"
+                  border="1px"
+                  borderColor="gray.200"
+                >
+                  <ContentArea
+                    activeTab={activeTab}
+                    isLoading={getCurrentLoadingState()}
+                    error={getCurrentError()}
+                    onRetry={handleRetry}
                   >
-                    You have no posts
-                  </Box>
-                )}
+                    {renderTabContent()}
+                  </ContentArea>
+                </Box>
               </VStack>
             </Box>
-            <VStack
-              minH="full"
-              p={"24px"}
-              spacing={"24px"}
-              display={["none", "none", "none", "none", "flex"]}
-            >
-              {/* <LeftSideBar/> */}
-              <Stack
-                divider={<StackDivider borderColor="gray.200" />}
-                bg={"white"}
-                borderRight="1px"
-                borderRightColor={"gray.200"}
-                w={{ base: "none", md: "320px" }}
-                rounded={"md"}
-                h="max"
-                p={6}
-                spacing={"24px"}
-              >
-                <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-                  My Profile
-                </Heading>
-                {user && <SmallProfile user={user} />}
-              </Stack>
-              <Stack
-                divider={<StackDivider borderColor="gray.200" />}
-                bg={"white"}
-                borderRight="1px"
-                borderRightColor={"gray.200"}
-                w={{ base: "none", md: "320px" }}
-                rounded={"md"}
-                h="max"
-                p={6}
-                spacing={"24px"}
-              >
-                <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-                  My Rare Diseases
-                </Heading>
-                <VStack minH="full" spacing={"12px"}>
-                  {user &&
-                    user.diseases.map((disease) => (
-                      <SmallRareDisease disease={disease} key={disease.id} />
-                    ))}
-                </VStack>
-              </Stack>
-            </VStack>
           </Flex>
         )}
       </Sidebar>

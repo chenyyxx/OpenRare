@@ -2,24 +2,15 @@ import React from "react";
 import { GetServerSideProps } from "next";
 import {
   Box,
-  useColorModeValue,
   VStack,
-  HStack,
   Flex,
-  InputGroup,
-  Input,
-  InputRightElement,
-  IconButton,
-  Wrap,
-  WrapItem,
+  Text,
+  Spinner,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
 
-import Nav from "../../../components/nav";
-import Post from "../../../components/post";
-import LeftSideBar from "../../../components/left_side_bar";
 import PostDetail from "../../../components/post_detail";
-import SmallProfile from "../../../components/small_profile";
 import Comment from "../../../components/comment";
 import { Prisma } from "@prisma/client";
 import useSWR from "swr";
@@ -30,36 +21,13 @@ export type FullPostEx = Prisma.PostGetPayload<{
   include: {
     user: {
       include: {
-        sections: {
-          include: {
-            users: true;
-            posts: {
-              include: {
-                user: true;
-                section: true;
-                votes: { include: { user: true } };
-                _count: true;
-              };
-            };
-            _count: true;
-          };
-        };
-        posts: {
-          include: {
-            user: true;
-            section: true;
-            votes: { include: { user: true } };
-            _count: true;
-          };
-        };
+        diseases: true;
         followedBy: true;
         following: true;
       };
     };
-    posts: {
-      include: { user: true; section: true; votes: true; _count: true };
-    };
-    section: true;
+    disease: true;
+    theme: true;
     votes: true;
     comments: {
       include: {
@@ -101,28 +69,82 @@ export default function SectionDetail({
   id: string;
 }) {
   const url = `/api/get_post/${id}`;
-  // const { data: post, error } = useSWR<FullPostEx, Error>(url, fetchData, {
-  //   fallbackData: initialPost,
-  // });
   const {postDetail, isLoading, isError} = usePostDetail(url, initialPost);
+  
+  if (isLoading) {
+    return (
+      <Box minH="100vh" bg={"gray.50"}>
+        <Sidebar>
+          <Flex justify="center" align="center" pt="78px" minH="50vh">
+            <Spinner size="xl" />
+          </Flex>
+        </Sidebar>
+      </Box>
+    );
+  }
+
+  if (isError || !postDetail) {
+    return (
+      <Box minH="100vh" bg={"gray.50"}>
+        <Sidebar>
+          <Flex justify="center" pt="78px" p={6}>
+            <Alert status="error" maxW="md">
+              <AlertIcon />
+              Failed to load post. Please try again later.
+            </Alert>
+          </Flex>
+        </Sidebar>
+      </Box>
+    );
+  }
+
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Box minH="100vh" bg={"gray.50"}>
       <Sidebar>
         <Flex justify="center" pt={"78px"}>
-          {/* <VStack h="max" p={"24px"} spacing={"24px"} pos="sticky" top={"64px"}>
-            {postDetail && <SmallProfile user={postDetail.user} />}
-          </VStack> */}
-          {postDetail && (
-            <VStack w="full" maxW="1200px" p={"12px"}>
-              <PostDetail post={postDetail} url={url} />
-              {postDetail.comments.map((comment) => (
-                <Comment comment={comment} url={url} isCompact={false} key={comment.id} />
-              ))}
+          <Box w="full" p={{ base: "16px", md: "24px" }} minH="full" maxW="1200px">
+            <VStack spacing={6} align="stretch">
+              {/* Post Detail */}
+              <Box 
+                bg="white" 
+                rounded={"lg"} 
+                p={{ base: 4, md: 6 }} 
+                shadow="md"
+                border="1px"
+                borderColor="gray.200"
+              >
+                <PostDetail post={postDetail} url={url} />
+              </Box>
+
+              {/* Comments Section */}
+              {postDetail.comments.length > 0 && (
+                <Box 
+                  bg="white" 
+                  rounded={"lg"} 
+                  p={{ base: 4, md: 6 }} 
+                  shadow="md"
+                  border="1px"
+                  borderColor="gray.200"
+                >
+                  <VStack spacing={4} align="stretch">
+                    <Text fontSize="lg" fontWeight="600" color="gray.700" mb={2}>
+                      Comments ({postDetail.comments.length})
+                    </Text>
+                    {postDetail.comments.map((comment, index) => (
+                      <Box key={comment.id}>
+                        <Comment comment={comment} url={url} isCompact={false} />
+                        {index < postDetail.comments.length - 1 && (
+                          <Box h="1px" bg="gray.200" my={4} />
+                        )}
+                      </Box>
+                    ))}
+                  </VStack>
+                </Box>
+              )}
             </VStack>
-          )}
+          </Box>
         </Flex>
       </Sidebar>
-      
     </Box>
   );
 }

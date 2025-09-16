@@ -28,20 +28,10 @@ export default function ContentArea({
   onRetry,
   children,
 }: ContentAreaProps) {
-  const bg = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
-
   // Loading state
   if (isLoading) {
     return (
-      <Box
-        bg={bg}
-        borderWidth="1px"
-        borderColor={borderColor}
-        borderRadius="md"
-        p={8}
-        minH="400px"
-      >
+      <Box p={8} minH="400px">
         <Center h="300px">
           <Spinner
             thickness="4px"
@@ -58,14 +48,7 @@ export default function ContentArea({
   // Error state
   if (error) {
     return (
-      <Box
-        bg={bg}
-        borderWidth="1px"
-        borderColor={borderColor}
-        borderRadius="md"
-        p={8}
-        minH="400px"
-      >
+      <Box p={8} minH="400px">
         <Alert
           status="error"
           variant="subtle"
@@ -95,11 +78,6 @@ export default function ContentArea({
   // Content with smooth transition
   return (
     <Box
-      bg={bg}
-      borderWidth="1px"
-      borderColor={borderColor}
-      borderRadius="md"
-      p={6}
       minH="400px"
       position="relative"
       overflow="hidden"

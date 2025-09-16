@@ -11,6 +11,7 @@ import {
   VStack,
   Button,
   Flex,
+  Textarea,
 } from "@chakra-ui/react";
 import RichTextEditor from "./RichText";
 import SubComments from "./sub_comments";
@@ -24,7 +25,6 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-  Textarea,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -97,164 +97,186 @@ export default function Comment({
   };
 
   return (
-    <Box
-      w={"full"}
-      bg="white"
-      rounded={"md"}
-      p={6}
-      overflow={"hidden"}
-      borderColor="teal.400"
-      // borderLeftStyle="solid"
-      borderRightColor="gray.200"
-      borderRightWidth="1px"
-      borderTopColor="gray.200"
-      borderTopWidth="1px"
-      borderBottomColor="gray.200"
-      borderBottomWidth="1px"
-      borderLeftWidth="4px"
-    >
-      <Stack>
-        <HStack>
-          <Avatar src={comment.user.image as string | undefined} />
-          <Stack direction={"column"} spacing={0} fontSize={"sm"}>
-            <Text fontWeight={600}>{comment.user.name}</Text>
-            <Text
-              color={"gray.500"}
-            >{`Created At: ${month}-${date}-${year}`}</Text>
-          </Stack>
-        </HStack>
-        <RichTextEditor
-          readOnly
-          value={comment.content}
-          onChange={() => {}}
-          styles={{ root: { border: "none" } }}
-          sx={() => ({
-            "& .ql-editor": {
-              padding: "0px 0px",
-            },
-          })}
-        />
-        {!isCompact && (
-          <Flex justify="right">
-            <Button
-              size="sm"
-              variant="ghost"
-              leftIcon={<BiCommentDetail />}
-              onClick={() => {
-                setShowEditor(true);
-              }}
-            >
-              {comment.subComments.length + " comments"}
-            </Button>
-            {/* <Button size="sm" variant="ghost" leftIcon={<BiLike />}>
-            Share
-          </Button>
-          <Button size="sm" variant="ghost" leftIcon={<BiBookmark />}>
-            Save
-          </Button> */}
-          </Flex>
-        )}
-        {showEditor ? (
-          <Box mt="12px">
-            <Textarea
-              rounded={6}
-              isRequired
-              value={content}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
-              placeholder={"Reply to @" + [comment.user.name]}
-              size="sm"
-            />
-            <HStack pt="12px" justify="right" w="full">
-              <Button size="sm" onClick={() => setShowEditor(false)}>
-                Cancel
-              </Button>
-              <Button
-                size="sm"
-                colorScheme="teal"
-                onClick={(e: React.MouseEvent<HTMLElement>) => handleNewSubComment(e)}
-              >
-                Comment
-              </Button>
-            </HStack>
-          </Box>
-        ) : (
-          <></>
-        )}
-        {!isCompact && subComments.length > 0 && (
-          <VStack
-            divider={<StackDivider borderColor="gray.200" />}
-            spacing={0}
-            align="stretch"
-            borderColor="gray.200"
-            borderWidth="1px"
-            rounded={"md"}
-          >
-            {subComments.map((child) =>
-              child.parent ? (
-                <SubComments
-                  subComment={child}
-                  url={url}
-                  labelColor={"cyan.300"}
-                  key={child.id}
-                />
-              ) : (
-                <SubComments
-                  subComment={child}
-                  url={url}
-                  labelColor={"purple.300"}
-                  key={child.id}
-                />
-              )
-            )}
+    <Box w="full">
+      <VStack align="stretch" spacing={4}>
+        {/* Comment Header */}
+        <HStack spacing={3}>
+          <Avatar 
+            src={comment.user.image as string | undefined} 
+            size="sm"
+          />
+          <VStack align="start" spacing={0}>
+            <Text fontWeight={600} fontSize="sm" color="gray.700">
+              {comment.user.name}
+            </Text>
+            <Text fontSize="xs" color="gray.500">
+              {month}/{date}/{year}
+            </Text>
           </VStack>
-        )}
-        {!isCompact && numSubComments > 5 ? (
-          <Center>
-            <Button
-              size="xs"
-              variant="ghost"
-              onClick={onOpen}
-            >{`Expand all ${numSubComments} comments...`}</Button>
-            <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>{`All ${numSubComments} comments`}</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody as={Stack}>
-                  {comment.subComments.map(
-                    (child) =>
-                      child.parent ? (
-                        <SubComments
-                          subComment={child}
-                          url={url}
-                          labelColor="cyan.300"
-                          key={child.id}
-                        />
-                      ) : (
-                        <SubComments
-                          subComment={child}
-                          url={url}
-                          labelColor="purple.300"
-                          key={child.id}
-                        />
-                      )
+        </HStack>
 
-                    // <SubComments subComment={child} color={} key={child.id}/>
-                  )}
-                </ModalBody>
+        {/* Comment Content */}
+        <Box pl={{ base: 6, md: 10 }}>
+          <RichTextEditor
+            readOnly
+            value={comment.content}
+            onChange={() => {}}
+            styles={{ root: { border: "none" } }}
+            sx={() => ({
+              "& .ql-editor": {
+                padding: "0px 0px",
+                fontSize: "14px",
+                lineHeight: "1.5",
+              },
+            })}
+          />
 
-                <ModalFooter>
-                  <Button colorScheme="blue" mr={3} onClick={onClose}>
-                    Close
+          {/* Comment Actions */}
+          {!isCompact && (
+            <Flex justify="flex-start" mt={3}>
+              <Button
+                size="xs"
+                variant="ghost"
+                leftIcon={<BiCommentDetail />}
+                onClick={() => setShowEditor(true)}
+                colorScheme="gray"
+              >
+                {comment.subComments.length === 1 ? '1 reply' : `${comment.subComments.length} replies`}
+              </Button>
+            </Flex>
+          )}
+
+          {/* Reply Editor */}
+          {showEditor && (
+            <Box 
+              mt={4} 
+              p={3} 
+              bg="gray.50" 
+              rounded="md" 
+              border="1px" 
+              borderColor="gray.200"
+            >
+              <VStack spacing={3} align="stretch">
+                <Text fontSize="xs" fontWeight="600" color="gray.600">
+                  Reply to @{comment.user.name}
+                </Text>
+                <Textarea
+                  rounded="md"
+                  value={content}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value)}
+                  placeholder={`Reply to @${comment.user.name}`}
+                  size="sm"
+                  minH="80px"
+                  bg="white"
+                />
+                <Flex 
+                  direction={{ base: "column", sm: "row" }}
+                  justify="flex-end" 
+                  gap={2}
+                >
+                  <Button 
+                    size="xs" 
+                    variant="ghost"
+                    onClick={() => setShowEditor(false)}
+                    w={{ base: "full", sm: "auto" }}
+                  >
+                    Cancel
                   </Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          </Center>
-        ) : (
-          <></>
-        )}
-      </Stack>
+                  <Button
+                    size="xs"
+                    colorScheme="teal"
+                    onClick={(e: React.MouseEvent<HTMLElement>) => handleNewSubComment(e)}
+                    isDisabled={!content.trim()}
+                    w={{ base: "full", sm: "auto" }}
+                  >
+                    Reply
+                  </Button>
+                </Flex>
+              </VStack>
+            </Box>
+          )}
+
+          {/* Sub Comments */}
+          {!isCompact && subComments.length > 0 && (
+            <Box mt={4}>
+              <VStack
+                spacing={3}
+                align="stretch"
+                bg="gray.50"
+                p={4}
+                rounded="md"
+                border="1px"
+                borderColor="gray.200"
+              >
+                {subComments.map((child) =>
+                  child.parent ? (
+                    <SubComments
+                      subComment={child}
+                      url={url}
+                      labelColor={"cyan.300"}
+                      key={child.id}
+                    />
+                  ) : (
+                    <SubComments
+                      subComment={child}
+                      url={url}
+                      labelColor={"purple.300"}
+                      key={child.id}
+                    />
+                  )
+                )}
+              </VStack>
+            </Box>
+          )}
+
+          {/* Expand All Comments */}
+          {!isCompact && numSubComments > 5 && (
+            <Center mt={3}>
+              <Button
+                size="xs"
+                variant="ghost"
+                onClick={onOpen}
+                colorScheme="teal"
+              >
+                View all {numSubComments} replies...
+              </Button>
+              <Modal isOpen={isOpen} onClose={onClose} size="xl">
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>All {numSubComments} replies</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <VStack spacing={4} align="stretch">
+                      {comment.subComments.map((child) =>
+                        child.parent ? (
+                          <SubComments
+                            subComment={child}
+                            url={url}
+                            labelColor="cyan.300"
+                            key={child.id}
+                          />
+                        ) : (
+                          <SubComments
+                            subComment={child}
+                            url={url}
+                            labelColor="purple.300"
+                            key={child.id}
+                          />
+                        )
+                      )}
+                    </VStack>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button colorScheme="teal" onClick={onClose}>
+                      Close
+                    </Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
+            </Center>
+          )}
+        </Box>
+      </VStack>
     </Box>
   );
 }

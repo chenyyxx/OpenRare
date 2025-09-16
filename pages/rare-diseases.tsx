@@ -29,6 +29,7 @@ import {
   Item,
 } from "@choc-ui/chakra-autocomplete";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import Sidebar from "../components/sidebar";
 import { useDiseases } from "./create_post";
 import { FullDisease } from "./create_post";
@@ -55,6 +56,7 @@ export default function RareDiseasesPage() {
   const [userInterests, setUserInterests] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const { data: session } = useSession();
+  const router = useRouter();
   const toast = useToast();
 
   const { diseases, isLoading, isError } = useDiseases();
@@ -69,6 +71,18 @@ export default function RareDiseasesPage() {
       setUserInterests(userFollowedDiseases);
     }
   }, [session, diseases]);
+
+  // Handle URL parameters to pre-select a disease
+  useEffect(() => {
+    if (router.query.disease && diseases) {
+      const diseaseId = router.query.disease as string;
+      const disease = diseases.find(d => d.id.toString() === diseaseId);
+      if (disease) {
+        setSelectedDisease(disease);
+        setSearchValue(disease.name);
+      }
+    }
+  }, [router.query.disease, diseases]);
 
   const handleSelect = (item: Item) => {
     const disease = diseases?.find(d => d.name === item.label);

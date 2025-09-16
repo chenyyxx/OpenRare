@@ -4,6 +4,7 @@ import {
   Heading,
   Text,
   HStack,
+  VStack,
   StackDivider,
   Stack,
   Avatar,
@@ -119,33 +120,71 @@ function Post({ post }: { post: FullPost }) {
                 color={"gray.500"}
               >{`${month}-${date}-${year}`}</Text>
             </HStack>
-            <Text
-              as={Link}
-              display={["none","flex"]}
-              href={`/rare-diseases/${post.disease?.id}`}
-              color={"green.500"}
-              textTransform={"uppercase"}
-              fontWeight={800}
-              fontSize={["xs","sm"]}
-              letterSpacing={1.1}
-            >
-              {post.disease?.name}
-            </Text>
+            <Box display={["none","flex"]}>
+              <HStack
+                as={Link}
+                href={`/rare-diseases?disease=${post.disease?.id}`}
+                spacing={1}
+                fontSize="xs"
+                fontWeight="600"
+                color="green.700"
+                bg="green.50"
+                px={3}
+                py={1}
+                rounded="full"
+                border="1px"
+                borderColor="green.200"
+                textTransform="uppercase"
+                letterSpacing="wide"
+                _hover={{
+                  bg: "green.100",
+                  borderColor: "green.300",
+                  textDecoration: "none",
+                }}
+                transition="all 0.2s"
+              >
+                <Box as="span" fontSize="10px">
+                  🧬
+                </Box>
+                <Text as="span">
+                  {post.disease?.name}
+                </Text>
+              </HStack>
+            </Box>
           </HStack>
-          <Text
+          <Box display={["flex","none"]}>
+            <HStack
               as={Link}
-              display={["flex","none"]}
-              href={`/rare-diseases/${post.disease?.id}`}
-              color={"green.500"}
-              textTransform={"uppercase"}
-              fontWeight={800}
-              fontSize={["xs","sm"]}
-              letterSpacing={1.1}
+              href={`/rare-diseases?disease=${post.disease?.id}`}
+              spacing={1}
+              fontSize="xs"
+              fontWeight="600"
+              color="green.700"
+              bg="green.50"
+              px={3}
+              py={1}
+              rounded="full"
+              border="1px"
+              borderColor="green.200"
+              textTransform="uppercase"
+              letterSpacing="wide"
+              _hover={{
+                bg: "green.100",
+                borderColor: "green.300",
+                textDecoration: "none",
+              }}
+              transition="all 0.2s"
             >
-              {post.disease?.name}
-            </Text>
+              <Box as="span" fontSize="10px">
+                🧬
+              </Box>
+              <Text as="span">
+                {post.disease?.name}
+              </Text>
+            </HStack>
+          </Box>
 
-          <Box as={"a"} href={`post/${post.id}`}>
+          <Box as={"a"} href={`/post/${post.id}`}>
             {textOpen ? (
               <Box ref={textRef}>
                 <RichTextEditor
@@ -184,23 +223,99 @@ function Post({ post }: { post: FullPost }) {
               {/* <BiCommentDetail /> */}
               <Button display={['none', 'flex']} fontSize={"md"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count?.comments || 0} Comments`}</Button>
               <Button display={['flex', 'none']} fontSize={"sm"} variant='ghost' leftIcon={<BiCommentDetail/>} onClick={onOpen}>{`${post._count?.comments || 0}`}</Button>
-              <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>{`All ${post._count?.comments || 0} comments`}</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody as={Stack}>
-                    {postDetail?.comments.map((comment) => (
-                      <Comment comment={comment} url={url} isCompact={true} key={comment.id} />
-                    ))}
+              <Modal isOpen={isOpen} onClose={onClose} size={"2xl"} scrollBehavior="inside">
+                <ModalOverlay bg="blackAlpha.600" backdropFilter="blur(4px)" />
+                <ModalContent 
+                  mx={4}
+                  my={8}
+                  maxH="80vh"
+                  bg="white"
+                  borderRadius="xl"
+                  boxShadow="2xl"
+                >
+                  <ModalHeader 
+                    pb={4}
+                    borderBottom="1px"
+                    borderColor="gray.200"
+                    bg="gray.50"
+                    borderTopRadius="xl"
+                  >
+                    <VStack align="start" spacing={2}>
+                      <Text fontSize="lg" fontWeight="600" color="gray.800">
+                        Comments ({post._count?.comments || 0})
+                      </Text>
+                      <Text fontSize="sm" color="gray.600" noOfLines={1}>
+                        {post.title}
+                      </Text>
+                    </VStack>
+                  </ModalHeader>
+                  <ModalCloseButton 
+                    top={4}
+                    right={4}
+                    bg="white"
+                    rounded="full"
+                    boxShadow="md"
+                    _hover={{ bg: "gray.100" }}
+                  />
+                  <ModalBody p={0}>
+                    {postDetail?.comments && postDetail.comments.length > 0 ? (
+                      <VStack spacing={0} align="stretch">
+                        {postDetail.comments.map((comment, index) => (
+                          <Box key={comment.id}>
+                            <Box p={6}>
+                              <Comment comment={comment} url={url} isCompact={true} />
+                            </Box>
+                            {index < postDetail.comments.length - 1 && (
+                              <Box h="1px" bg="gray.200" />
+                            )}
+                          </Box>
+                        ))}
+                      </VStack>
+                    ) : (
+                      <Box p={12} textAlign="center">
+                        <VStack spacing={4}>
+                          <Box
+                            p={4}
+                            rounded="full"
+                            bg="gray.100"
+                          >
+                            <BiCommentDetail size={24} color="gray.400" />
+                          </Box>
+                          <VStack spacing={2}>
+                            <Text fontSize="lg" fontWeight="600" color="gray.600">
+                              No comments yet
+                            </Text>
+                            <Text fontSize="sm" color="gray.500" maxW="300px">
+                              Be the first to share your thoughts on this post
+                            </Text>
+                          </VStack>
+                        </VStack>
+                      </Box>
+                    )}
                   </ModalBody>
 
-                  <ModalFooter>
-                    <Button colorScheme="blue" mr={3} onClick={onClose}>
+                  <ModalFooter 
+                    borderTop="1px"
+                    borderColor="gray.200"
+                    bg="gray.50"
+                    borderBottomRadius="xl"
+                    gap={3}
+                  >
+                    <Button 
+                      variant="ghost" 
+                      onClick={onClose}
+                      size="md"
+                    >
                       Close
                     </Button>
-                    <Button colorScheme="blue" mr={3} as={"a"} href={`post/${post.id}`}>
-                      View Detail
+                    <Button 
+                      colorScheme="teal" 
+                      as={"a"} 
+                      href={`/post/${post.id}`}
+                      size="md"
+                      rightIcon={<Box as="span" fontSize="sm">→</Box>}
+                    >
+                      View Full Post
                     </Button>
                   </ModalFooter>
                 </ModalContent>

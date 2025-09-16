@@ -65,64 +65,141 @@ export default function PostDetail({ post, url }: AppProps) {
     }
   };
   return (
-    <Box
-      w={"full"}
-      bg="white"
-      // boxShadow={"2xl"}
-      borderColor="gray.200"
-      borderWidth="1px"
-      rounded={"md"}
-      p={6}
-      overflow={"hidden"}
-    >
-      <Stack>
-        <HStack>
-          <Avatar src={post.user.image as string | undefined} />
-          <Stack direction={"column"} spacing={0} fontSize={"sm"}>
-            <Text fontWeight={600}>{post.user.name}</Text>
-            <Text
-              color={"gray.500"}
-            >{`Last Updated: ${month}-${date}-${year}`}</Text>
-          </Stack>
+    <Stack spacing={6}>
+      {/* Post Header */}
+      <VStack align="stretch" spacing={4}>
+        <HStack spacing={4}>
+          <Avatar 
+            src={post.user.image as string | undefined} 
+            size="md"
+          />
+          <VStack align="start" spacing={1}>
+            <Text fontWeight={600} fontSize="md" color="gray.700">
+              {post.user.name}
+            </Text>
+            <Text fontSize="sm" color="gray.500">
+              Last Updated: {month}/{date}/{year}
+            </Text>
+          </VStack>
         </HStack>
-        <Heading
-          color={useColorModeValue("gray.700", "white")}
-          fontSize={"2xl"}
-          fontFamily={"body"}
-        >
-          {post.title}
-        </Heading>
-        <RichTextEditor
-          readOnly
-          value={post.content}
-          onChange={() => {}}
-          styles={{ root: { border: "none" } }}
-          sx={() => ({
-            "& .ql-editor": {
-              padding: "0px 0px",
-            },
-          })}
-        />
-        <Flex justify="right">
+
+        {/* Post Title and Theme */}
+        <VStack align="stretch" spacing={3}>
+          <Flex 
+            direction={{ base: "column", md: "row" }} 
+            justify={{ base: "flex-start", md: "space-between" }} 
+            align={{ base: "flex-start", md: "flex-start" }}
+            gap={3}
+          >
+            <Heading
+              color="gray.800"
+              fontSize={{ base: "lg", md: "2xl" }}
+              fontFamily="body"
+              lineHeight="shorter"
+              flex={1}
+            >
+              {post.title}
+            </Heading>
+            {post.theme && (
+              <Box flexShrink={0}>
+                <Text
+                  fontSize="xs"
+                  fontWeight="600"
+                  color="purple.600"
+                  bg="purple.50"
+                  px={3}
+                  py={1}
+                  rounded="full"
+                  border="1px"
+                  borderColor="purple.200"
+                >
+                  {post.theme.name}
+                </Text>
+              </Box>
+            )}
+          </Flex>
+        </VStack>
+
+        {/* Disease Information */}
+        {post.disease && (
+          <Box>
+            <HStack
+              as="a"
+              href={`/rare-diseases?disease=${post.disease.id}`}
+              spacing={1}
+              fontSize="xs"
+              fontWeight="600"
+              color="green.700"
+              bg="green.50"
+              px={3}
+              py={1}
+              rounded="full"
+              border="1px"
+              borderColor="green.200"
+              textTransform="uppercase"
+              letterSpacing="wide"
+              display="inline-flex"
+              _hover={{
+                bg: "green.100",
+                borderColor: "green.300",
+                textDecoration: "none",
+              }}
+              transition="all 0.2s"
+            >
+              <Box as="span" fontSize="10px">
+                🧬
+              </Box>
+              <Text as="span">
+                {post.disease.name}
+              </Text>
+            </HStack>
+          </Box>
+        )}
+
+        {/* Post Content */}
+        <Box>
+          <RichTextEditor
+            readOnly
+            value={post.content}
+            onChange={() => {}}
+            styles={{ root: { border: "none" } }}
+            sx={() => ({
+              "& .ql-editor": {
+                padding: "0px 0px",
+                fontSize: "16px",
+                lineHeight: "1.6",
+              },
+            })}
+          />
+        </Box>
+
+        {/* Post Actions */}
+        <Flex justify="space-between" align="center" pt={4} borderTop="1px" borderColor="gray.200">
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => {
-              setShowEditor(true);
-            }}
+            onClick={() => setShowEditor(true)}
             leftIcon={<BiCommentDetail />}
+            colorScheme="teal"
           >
-            {post.comments.length + ' comments'}
+            {post.comments.length === 1 ? '1 comment' : `${post.comments.length} comments`}
           </Button>
-          {/* <Button size="sm" variant="ghost" leftIcon={<BiShare />}>
-            Share
-          </Button>
-          <Button size="sm" variant="ghost" leftIcon={<BiBookmark />}>
-            Save
-          </Button> */}
         </Flex>
-        {showEditor ? (
-          <Box mt="12px">
+      </VStack>
+
+      {/* Comment Editor */}
+      {showEditor && (
+        <Box 
+          p={4} 
+          bg="gray.50" 
+          rounded="md" 
+          border="1px" 
+          borderColor="gray.200"
+        >
+          <VStack spacing={4} align="stretch">
+            <Text fontSize="sm" fontWeight="600" color="gray.700">
+              Add a comment
+            </Text>
             <RichTextEditor
               controls={[
                 ["bold", "italic", "underline", "link"],
@@ -134,30 +211,43 @@ export default function PostDetail({ post, url }: AppProps) {
                 root: {
                   borderColor: "#E2E8F0",
                   borderRadius: "0.375rem",
-                  minHeight: "200px",
+                  minHeight: "150px",
+                  backgroundColor: "white",
                 },
-                toolbar: { borderColor: "#E2E8F0" },
+                toolbar: { 
+                  borderColor: "#E2E8F0",
+                  backgroundColor: "white",
+                },
               }}
               value={content}
               onChange={setContent}
             />
-            <HStack pt="12px" justify="right" w="full">
-              <Button size="sm" onClick={() => setShowEditor(false)}>
+            <Flex 
+              direction={{ base: "column", sm: "row" }}
+              justify="flex-end" 
+              gap={3}
+            >
+              <Button 
+                size="sm" 
+                variant="ghost"
+                onClick={() => setShowEditor(false)}
+                w={{ base: "full", sm: "auto" }}
+              >
                 Cancel
               </Button>
               <Button
                 size="sm"
                 colorScheme="teal"
                 onClick={(e: React.MouseEvent<HTMLElement>) => handleNewComment(e)}
+                isDisabled={!content.trim()}
+                w={{ base: "full", sm: "auto" }}
               >
-                Comment
+                Post Comment
               </Button>
-            </HStack>
-          </Box>
-        ) : (
-          <></>
-        )}
-      </Stack>
-    </Box>
+            </Flex>
+          </VStack>
+        </Box>
+      )}
+    </Stack>
   );
 }

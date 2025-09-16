@@ -1,13 +1,11 @@
 import React from "react";
 import {
   Box,
-  useColorModeValue,
   VStack,
   Flex,
   Heading,
   Text,
   SimpleGrid,
-  Container,
   Spinner,
   Alert,
   AlertIcon,
@@ -44,12 +42,11 @@ export default function Explore({
     fallbackData: initialThemes,
   });
 
-  const bgColor = useColorModeValue("gray.50", "gray.900");
-  const headerBg = useColorModeValue("white", "gray.800");
+
 
   if (error) {
     return (
-      <Box minH="100vh" bg={bgColor}>
+      <Box minH="100vh" bg={"gray.50"}>
         <Sidebar>
           <Flex justify="center" pt="78px" p={6}>
             <Alert status="error" maxW="md">
@@ -64,7 +61,7 @@ export default function Explore({
 
   if (!themes) {
     return (
-      <Box minH="100vh" bg={bgColor}>
+      <Box minH="100vh" bg={"gray.50"}>
         <Sidebar>
           <Flex justify="center" align="center" pt="78px" minH="50vh">
             <Spinner size="xl" />
@@ -75,56 +72,69 @@ export default function Explore({
   }
 
   return (
-    <Box minH="100vh" bg={bgColor}>
+    <Box minH="100vh" bg={"gray.50"}>
       <Sidebar>
-        <Box pt="78px">
-          {/* Header Section */}
-          <Box bg={headerBg} borderBottom="1px" borderColor="gray.200" py={8}>
-            <Container maxW="6xl">
-              <VStack spacing={4} textAlign="center">
-                <Heading size="xl" color="gray.700">
+        <Flex justify="center" pt={"78px"}>
+          <Box w="full" p={{ base: "16px", md: "24px" }} minH="full" maxW="1200px">
+            <VStack spacing={6} align="stretch">
+              {/* Header */}
+              <Box 
+                bg="white" 
+                rounded={"lg"} 
+                p={{ base: 4, md: 6 }} 
+                shadow="md"
+                border="1px"
+                borderColor="gray.200"
+              >
+                <Heading size="lg" color="gray.700" mb={2}>
                   Discover Community Content
                 </Heading>
-                <Text fontSize="lg" color="gray.600" maxW="2xl">
+                <Text color="gray.600">
                   Explore different types of content organized by themes. Find personal stories, 
                   get help and support, discover events, or learn from research and information.
                 </Text>
-              </VStack>
-            </Container>
+              </Box>
+
+              {/* Theme Cards Section */}
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} spacing={8}>
+                {themes.map((theme) => (
+                  <ThemeCard
+                    key={theme.id}
+                    theme={{
+                      id: theme.id,
+                      name: theme.name,
+                      description: theme.description,
+                      guidelines: theme.guidelines,
+                      postCount: theme.postCount,
+                    }}
+                    recentPosts={theme.recentPosts}
+                  />
+                ))}
+              </SimpleGrid>
+
+              {/* Additional Information */}
+              <Box 
+                bg="white" 
+                rounded={"lg"} 
+                p={{ base: 4, md: 6 }} 
+                shadow="md"
+                border="1px"
+                borderColor="gray.200"
+                textAlign="center"
+              >
+                <VStack spacing={4}>
+                  <Heading size="md" color="gray.600">
+                    New to the community?
+                  </Heading>
+                  <Text color="gray.500" maxW="2xl">
+                    Each theme serves a different purpose in our community. Click on any theme above 
+                    to explore posts and learn more about what content belongs in each area.
+                  </Text>
+                </VStack>
+              </Box>
+            </VStack>
           </Box>
-
-          {/* Theme Cards Section */}
-          <Container maxW="6xl" py={12}>
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} spacing={8}>
-              {themes.map((theme) => (
-                <ThemeCard
-                  key={theme.id}
-                  theme={{
-                    id: theme.id,
-                    name: theme.name,
-                    description: theme.description,
-                    guidelines: theme.guidelines,
-                    postCount: theme.postCount,
-                  }}
-                  recentPosts={theme.recentPosts}
-                />
-              ))}
-            </SimpleGrid>
-
-            {/* Additional Information */}
-            <Box mt={16} textAlign="center">
-              <VStack spacing={4}>
-                <Heading size="md" color="gray.600">
-                  New to the community?
-                </Heading>
-                <Text color="gray.500" maxW="2xl">
-                  Each theme serves a different purpose in our community. Click on any theme above 
-                  to explore posts and learn more about what content belongs in each area.
-                </Text>
-              </VStack>
-            </Box>
-          </Container>
-        </Box>
+        </Flex>
       </Sidebar>
     </Box>
   );

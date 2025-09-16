@@ -218,7 +218,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           rounded={"3xl"}
           aria-label="create new post"
           as={"a"}
-          size='sm'
+          size="sm"
           href={`/create_post`}
         />
         <Flex alignItems={"center"}>
@@ -264,8 +264,12 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               bg={useColorModeValue("white", "gray.900")}
               borderColor={useColorModeValue("gray.200", "gray.700")}
             >
-              <MenuItem as="a" href="/profile">Profile</MenuItem>
-              <MenuItem as="a" href="/edit_profile">Edit Profile</MenuItem>
+              <MenuItem as="a" href="/profile">
+                Profile
+              </MenuItem>
+              <MenuItem as="a" href="/edit_profile">
+                Edit Profile
+              </MenuItem>
               <MenuDivider />
               {session ? (
                 <MenuItem onClick={() => signOut()}>Sign Out</MenuItem>

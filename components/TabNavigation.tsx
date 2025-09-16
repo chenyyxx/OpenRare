@@ -49,12 +49,6 @@ export default function TabNavigation({
 
   return (
     <Box
-      bg={bg}
-      borderWidth="1px"
-      borderColor={borderColor}
-      borderRadius="md"
-      p={{ base: 1, md: 2 }}
-      mb={6}
       overflowX="auto"
       overflowY="hidden"
       // Smooth scrolling behavior
