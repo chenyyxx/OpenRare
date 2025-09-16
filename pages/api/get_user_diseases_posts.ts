@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from "next-auth/react"
 import prisma from "../../db"
 
-const get_full_user = async (req: NextApiRequest, res: NextApiResponse) => {
+const get_user_diseases_posts = async (req: NextApiRequest, res: NextApiResponse) => {
     const {email} = req.query
     const full_user = await prisma.user.findFirst({
         where : { email : String(email)},
@@ -27,4 +27,4 @@ const get_full_user = async (req: NextApiRequest, res: NextApiResponse) => {
     res.status(200).json(full_user)
 }
 
-export default get_full_user
+export default get_user_diseases_posts

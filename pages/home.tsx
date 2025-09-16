@@ -22,7 +22,7 @@ import Nav from "../components/nav";
 import Post from "../components/post";
 import LeftSideBar from "../components/left_side_bar";
 import { Button } from "@chakra-ui/react";
-import SmallSection from "../components/small_section";
+import SmallRareDisease from "../components/small_rare_disease";
 import { GetServerSideProps } from "next";
 import { getSession, signIn, useSession } from "next-auth/react";
 import { SmallUser } from "../components/small_profile";
@@ -39,8 +39,8 @@ export default function Home() {
     `/api/get_full_user?email=${email}`,
     fetchData
   );
-  const { data: user_sections_posts_flat, error } = useSWR<FullPost[]>(
-    `/api/get_user_sections_posts?email=${email}`,
+  const { data: user_diseases_posts_flat, error } = useSWR<FullPost[]>(
+    `/api/get_user_diseases_posts?email=${email}`,
     fetchFlatUserSectionPost
   );
   if (status === "loading") {
@@ -80,8 +80,8 @@ export default function Home() {
                   <WrapItem><Button colorScheme='teal' variant='outline' rounded={20}>Notifications</Button></WrapItem> */}
               </Wrap>
               <VStack p="24px" minH="full" spacing={"24px"}>
-                {user_sections_posts_flat && user_sections_posts_flat.length !== 0 ? (
-                  user_sections_posts_flat.map((post) => (
+                {user_diseases_posts_flat && user_diseases_posts_flat.length !== 0 ? (
+                  user_diseases_posts_flat.map((post) => (
                     <Post post={post} key={post.id} />
                   ))
                 ) : (
@@ -140,7 +140,7 @@ export default function Home() {
                 <VStack minH="full" spacing={"12px"}>
                   {user &&
                     user.diseases.map((disease) => (
-                      <SmallSection section={disease} key={disease.id} />
+                      <SmallRareDisease disease={disease} key={disease.id} />
                     ))}
                 </VStack>
               </Stack>

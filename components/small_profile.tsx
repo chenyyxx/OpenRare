@@ -17,13 +17,13 @@ import { Prisma } from "@prisma/client";
 
 export type SmallUser = Prisma.UserGetPayload<{
     include: {
-        sections: {
+        diseases: {
             include: {
                 users: true;
                 posts: {
                     include: {
                         user: true;
-                        section: true;
+                        disease: true;
                         votes: { include: { user: true } };
                         _count: true;
                     };
@@ -34,7 +34,8 @@ export type SmallUser = Prisma.UserGetPayload<{
         posts: {
             include: {
                 user: true;
-                section: true;
+                disease: true;
+                theme: true;
                 votes: { include: { user: true } };
                 _count: true;
             };
@@ -78,13 +79,13 @@ export default function SmallProfile({ user }: { user: SmallUser }) {
 
                     <Stack direction={"row"} justify={"center"} spacing={6}>
                         <Stack direction={"row"} spacing={4} align={"center"}>
-                            <Text fontWeight={600}>{user.sections.length}</Text>
+                            <Text fontWeight={600}>{user.diseases.length}</Text>
                             <Divider
                                 orientation="vertical"
                                 borderColor="gray.200"
                             />
                             <Text fontSize={"sm"} color={"gray.500"}>
-                                Followed Sections
+                                Followed Rare Diseases
                             </Text>
                         </Stack>
                         <Button

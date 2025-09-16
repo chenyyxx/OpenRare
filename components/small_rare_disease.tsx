@@ -1,24 +1,19 @@
 import {
     Heading,
-    Spacer,
     Box,
     Center,
-    Image,
-    Flex,
     Text,
     Stack,
-    Button,
     useColorModeValue,
-    HStack,
     Divider,
     Avatar,
   } from '@chakra-ui/react';
   
-import {BiMessageAltDetail, BiUser, BiShare ,BiBookmark} from "react-icons/bi";
+import {BiMessageAltDetail, BiUser} from "react-icons/bi";
 
-import {FullSection} from './section';
+import {FullRareDisease} from './rare_disease';
 
-export default function SmallSection({section}: {section: FullSection}) {
+export default function SmallRareDisease({disease}: {disease: FullRareDisease}) {
     return (
         <Center>
             <Box
@@ -29,35 +24,26 @@ export default function SmallSection({section}: {section: FullSection}) {
                 borderColor={useColorModeValue('gray.200', 'gray.700')}
             >
                 <Box p={4}>
-                    <Stack direction={"row"}spacing={6} justify={'start'} align="center" p={2}>
+                    <Stack direction={"row"} spacing={6} justify={'start'} align="center" p={2}>
                         <Avatar
                             size={'md'}
-                            name={
-                                section.name
-                            }
+                            name={disease.name}
                             objectFit={'cover'}
                         />
                         <Heading fontSize={'sm'} fontWeight={500} fontFamily={'body'}>
-                            {section.name}
+                            {disease.name}
                         </Heading>
-                        {/* <Text color={'gray.500'}>Frontend Developer</Text> */}
                     </Stack>
 
                     <Box p={2}>  
                         <Stack direction={'row'} justify={'center'} spacing={6}>
                             <Stack direction={'row'} spacing={4} align={'center'}>
                                 <BiMessageAltDetail/>
-                                <Text fontWeight={600}>{section._count.posts}</Text>
+                                <Text fontWeight={600}>{disease._count.posts}</Text>
                                 <Divider orientation='vertical' borderColor='gray.200' />
                                 <BiUser/>
-                                <Text fontWeight={600}>{section._count.users}</Text>
+                                <Text fontWeight={600}>{disease._count.users}</Text>
                             </Stack>
-                            <Button
-                                mt={8}
-                                rounded={'md'}
-                                colorScheme={'teal'}>
-                                Enter
-                            </Button>
                         </Stack>
                     </Box>
                 </Box>

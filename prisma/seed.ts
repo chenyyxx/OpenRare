@@ -5,7 +5,10 @@ import * as path from "path";
 const prisma = new PrismaClient();
 
 // Load NORD disease list
-const nordDiseasesPath = path.join(__dirname, "../NORD_LIST/rare_disease_list.json");
+const nordDiseasesPath = path.join(
+  __dirname,
+  "../NORD_LIST/rare_disease_list.json"
+);
 const nordDiseases = JSON.parse(fs.readFileSync(nordDiseasesPath, "utf8"));
 
 async function main() {
@@ -73,15 +76,13 @@ async function main() {
   const defaultDiseases = [
     {
       name: "Other",
-      definition: "For rare diseases not listed in our database",
-      description:
-        "Select this option if your rare disease is not available in the list",
+      definition: "",
+      description: "For rare diseases not listed in our databas",
       picture: "",
     },
     {
       name: "General",
-      definition:
-        "General discussions not specific to a particular rare disease",
+      definition: "",
       description:
         "For general discussions about rare diseases or community topics",
       picture: "",
@@ -105,38 +106,40 @@ async function main() {
     }
   }
 
-  // // Seed NORD rare disease list
-  // console.log("Seeding NORD rare disease list...");
-  
-  // let createdCount = 0;
-  // let existingCount = 0;
-  
-  // for (const nordDisease of nordDiseases) {
-  //   const existingDisease = await prisma.disease.findUnique({
-  //     where: { name: nordDisease.name },
-  //   });
+  // Seed NORD rare disease list
+  console.log("Seeding NORD rare disease list...");
 
-  //   if (!existingDisease) {
-  //     await prisma.disease.create({
-  //       data: {
-  //         name: nordDisease.name,
-  //         definition: nordDisease.definition,
-  //         description: nordDisease.definition, // Using definition as description since that's what we have
-  //         picture: "", // No picture data in NORD list
-  //       },
-  //     });
-  //     createdCount++;
-      
-  //     // Log progress every 100 diseases
-  //     if (createdCount % 100 === 0) {
-  //       console.log(`Created ${createdCount} diseases so far...`);
-  //     }
-  //   } else {
-  //     existingCount++;
-  //   }
-  // }
-  
-  // console.log(`NORD disease seeding completed: ${createdCount} created, ${existingCount} already existed`);
+  let createdCount = 0;
+  let existingCount = 0;
+
+  for (const nordDisease of nordDiseases) {
+    const existingDisease = await prisma.disease.findUnique({
+      where: { name: nordDisease.name },
+    });
+
+    if (!existingDisease) {
+      await prisma.disease.create({
+        data: {
+          name: nordDisease.name,
+          definition: nordDisease.link, // Map link to definition (external URL)
+          description: nordDisease.definition, // Map definition to description (aliases/description)
+          picture: "", // No picture data in NORD list
+        },
+      });
+      createdCount++;
+
+      // Log progress every 100 diseases
+      if (createdCount % 100 === 0) {
+        console.log(`Created ${createdCount} diseases so far...`);
+      }
+    } else {
+      existingCount++;
+    }
+  }
+
+  console.log(
+    `NORD disease seeding completed: ${createdCount} created, ${existingCount} already existed`
+  );
   console.log("Seeding completed!");
 }
 

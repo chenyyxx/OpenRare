@@ -55,7 +55,13 @@
   - Ensure posts show both theme and disease information
   - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [ ] 6. Repurpose rare diseases page and update platform terminology
+- [x] 6. Repurpose rare diseases page and update platform terminology
+
+
+
+
+
+
 
   - Remove old section detail page functionality and routes
   - Create new rare diseases page with disease information display

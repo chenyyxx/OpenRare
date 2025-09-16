@@ -32,7 +32,7 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: 'All Posts', icon: FiHome, link: '#' },
-  { name: 'My Sections', icon: FiCompass, link: '#' },
+  { name: 'My Rare Diseases', icon: FiCompass, link: '#' },
   { name: 'Favorite', icon: FiTrendingUp, link: '#' },
   { name: 'Upvoted', icon: FiTrendingUp, link: '#' },
   { name: 'Comments', icon: FiSettings, link: '#' },

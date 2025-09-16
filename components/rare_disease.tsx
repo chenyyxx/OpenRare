@@ -1,29 +1,23 @@
 import {
   Heading,
-  Spacer,
-  Box,
-  Center,
   Avatar,
-  Flex,
+  Box,
   Text,
   Stack,
   Button,
-  useColorModeValue,
   HStack,
   StackDivider,
-  Link,
-  VStack,
 } from "@chakra-ui/react";
 import { Prisma } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
-export type FullSection = Prisma.SectionGetPayload<{
+export type FullRareDisease = Prisma.DiseaseGetPayload<{
   include: {
     users: true;
     posts: {
       include: {
         user: true;
-        section: true;
+        disease: true;
         votes: { include: { user: true } };
         _count: true;
       };
@@ -32,16 +26,16 @@ export type FullSection = Prisma.SectionGetPayload<{
   };
 }>;
 
-export default function Section({ section }: { section: FullSection }) {
+export default function RareDisease({ disease }: { disease: FullRareDisease }) {
   const { data: session } = useSession();
   const onFollowClick = async () => {
     //TODO: refactor this to the top level
     if (session) {
       const data = {
         email: session?.user.email,
-        sectionId: section.id,
+        diseaseId: disease.id,
       };
-      await fetch(`/api/follow_section`, {
+      await fetch(`/api/follow_disease`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,9 +53,9 @@ export default function Section({ section }: { section: FullSection }) {
       justify="space-between"
     >
       <HStack align={"center"} mb={1} spacing={8}>
-        <Avatar size={"md"} name={section.name} objectFit={"cover"} />
+        <Avatar size={"md"} name={disease.name} objectFit={"cover"} />
         <Heading fontSize={"2xl"} fontWeight={500} fontFamily={"body"}>
-          {section.name}
+          {disease.name}
         </Heading>
       </HStack>
       <HStack spacing={8} justify="space-between">
@@ -75,13 +69,13 @@ export default function Section({ section }: { section: FullSection }) {
             <Text fontSize={"sm"} color={"gray.500"}>
               Posts
             </Text>
-            <Text fontWeight={600}>{section.posts.length}</Text>
+            <Text fontWeight={600}>{disease.posts.length}</Text>
           </HStack>
           <HStack spacing={2} align={"center"}>
             <Text fontSize={"sm"} color={"gray.500"}>
               Followers
             </Text>
-            <Text fontWeight={600}>{section.users.length}</Text>
+            <Text fontWeight={600}>{disease.users.length}</Text>
           </HStack>
         </Stack>
         <HStack justify={"center"}>
@@ -95,27 +89,9 @@ export default function Section({ section }: { section: FullSection }) {
                 transform: "translateY(-2px)",
                 boxShadow: "lg",
               }}
-              as={Link}
-              href={"/sections/" + section.id.toString()}
-              style={{ textDecoration: "none" }}
-              _focus={{ boxShadow: "none" }}
-            >
-              Enter
-            </Button>
-          </Box>
-          <Box>
-            <Button
-              w={"full"}
-              color={"white"}
-              rounded={"md"}
-              colorScheme={"teal"}
-              _hover={{
-                transform: "translateY(-2px)",
-                boxShadow: "lg",
-              }}
               onClick={onFollowClick}
             >
-              Follow
+              Follow Rare Disease
             </Button>
           </Box>
         </HStack>

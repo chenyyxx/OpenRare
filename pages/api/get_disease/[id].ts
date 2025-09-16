@@ -4,9 +4,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 
 const prisma = new PrismaClient()
 
-const get_section = async (req: NextApiRequest, res: NextApiResponse) => {
+const get_disease = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.id
-    const sections = await prisma.section.findMany({
+    const disease = await prisma.disease.findMany({
         where : {
             id: Number(id)
         },
@@ -15,7 +15,7 @@ const get_section = async (req: NextApiRequest, res: NextApiResponse) => {
             posts: {
                 include: {
                     user: true,
-                    section: true,
+                    disease: true,
                     votes: true,
                     _count: {
                         select: {comments:true}
@@ -24,7 +24,7 @@ const get_section = async (req: NextApiRequest, res: NextApiResponse) => {
             },
         }
     })
-    res.status(200).json(sections)
+    res.status(200).json(disease)
 }
 
-export default get_section
+export default get_disease
