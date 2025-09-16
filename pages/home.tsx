@@ -7,6 +7,7 @@ import {
   Flex,
   Heading,
   Text,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { signIn, useSession } from "next-auth/react";
 import Sidebar from "../components/sidebar";
@@ -67,8 +68,8 @@ export default function Home() {
   const userComments = !userPosts
     ? []
     : userPosts
-        .flatMap((post) =>
-          (post.comments || []).map((comment) => ({
+        .flatMap((post: any) =>
+          (post.comments || []).map((comment: any) => ({
             ...comment,
             post: {
               id: post.id,
@@ -89,11 +90,11 @@ export default function Home() {
     ? []
     : userPosts
         .flatMap(
-          (post) =>
+          (post: any) =>
             post.comments
-              ?.filter((comment) => comment.user.email === email) // My comments only
-              ?.flatMap((comment) =>
-                (comment.subComments || []).map((subComment) => ({
+              ?.filter((comment: any) => comment.user.email === email) // My comments only
+              ?.flatMap((comment: any) =>
+                (comment.subComments || []).map((subComment: any) => ({
                   ...subComment,
                   comment: {
                     ...comment,
@@ -114,7 +115,7 @@ export default function Home() {
         );
 
   // Get user data for followed diseases
-  const { data: userData } = useSWR(
+  const { data: userData, error: userDataError, isLoading: userDataLoading } = useSWR(
     email ? `/api/get_full_user?email=${email}` : null,
     fetchData
   );
@@ -295,6 +296,10 @@ export default function Home() {
     switch (activeTab) {
       case "following": {
         const posts = filterPosts(followingPosts);
+        // Debug: Log userData to check structure
+        console.log("userData:", userData);
+        console.log("userData.diseases:", userData?.diseases);
+        
         const followedDiseases: FollowedDisease[] =
           userData?.diseases?.map((disease: any) => ({
             id: disease.id,
@@ -312,6 +317,7 @@ export default function Home() {
               diseases={followedDiseases}
               onDiseaseClick={setSelectedDisease}
               selectedDisease={selectedDisease}
+              isLoading={userDataLoading}
             />
 
             {/* Search and filter for posts */}
@@ -324,11 +330,16 @@ export default function Home() {
 
             {/* Posts or empty state */}
             {posts.length > 0 ? (
-              <Stack spacing={4}>
-                {posts.map((post) => (
-                  <Post key={post.id} post={post} />
-                ))}
-              </Stack>
+              <VStack spacing={6} align="stretch">
+                <Text fontSize="lg" fontWeight="medium" color="gray.700">
+                  Following Posts ({posts.length})
+                </Text>
+                <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
+                  {posts.map((post) => (
+                    <Post key={post.id} post={post} />
+                  ))}
+                </SimpleGrid>
+              </VStack>
             ) : (
               <EmptyState tabType="following" />
             )}
@@ -351,11 +362,16 @@ export default function Home() {
 
             {/* Posts or empty state */}
             {posts.length > 0 ? (
-              <Stack spacing={4}>
-                {posts.map((post) => (
-                  <Post key={post.id} post={post} />
-                ))}
-              </Stack>
+              <VStack spacing={6} align="stretch">
+                <Text fontSize="lg" fontWeight="medium" color="gray.700">
+                  My Posts ({posts.length})
+                </Text>
+                <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
+                  {posts.map((post) => (
+                    <Post key={post.id} post={post} />
+                  ))}
+                </SimpleGrid>
+              </VStack>
             ) : (
               <EmptyState tabType="myPosts" />
             )}

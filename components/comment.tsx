@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import RichTextEditor from "./RichText";
 import SubComments from "./sub_comments";
-import { BiCommentDetail, BiLike, BiBookmark } from "react-icons/bi";
+import { BiCommentDetail } from "react-icons/bi";
 import {
   Modal,
   ModalOverlay,
@@ -30,6 +30,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { Prisma } from "@prisma/client";
 import { useSWRConfig } from "swr";
+import AuthRequiredAlert from "./AuthRequiredAlert";
 
 type Comment = Prisma.CommentGetPayload<{
   include: {
@@ -63,6 +64,7 @@ export default function Comment({
   const subComments = comment.subComments.slice(0, 5);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [showEditor, setShowEditor] = useState(false);
+  const [showAuthAlert, setShowAuthAlert] = useState(false);
   const [content, setContent] = useState("");
   const { data: session, status } = useSession();
   const createdAt = new Date(comment.createdAt);
@@ -138,12 +140,27 @@ export default function Comment({
                 size="xs"
                 variant="ghost"
                 leftIcon={<BiCommentDetail />}
-                onClick={() => setShowEditor(true)}
+                onClick={() => {
+                  if (!session) {
+                    setShowAuthAlert(true);
+                  } else {
+                    setShowEditor(true);
+                  }
+                }}
                 colorScheme="gray"
               >
                 {comment.subComments.length === 1 ? '1 reply' : `${comment.subComments.length} replies`}
               </Button>
             </Flex>
+          )}
+
+          {/* Authentication Alert */}
+          {showAuthAlert && (
+            <AuthRequiredAlert 
+              action="reply to comments" 
+              isOpen={showAuthAlert}
+              onClose={() => setShowAuthAlert(false)}
+            />
           )}
 
           {/* Reply Editor */}

@@ -11,10 +11,11 @@ import {
   HStack,
   useToast,
   Textarea,
+  Spinner,
 } from "@chakra-ui/react";
 import Nav from "../components/nav";
 import Sidebar from "../components/sidebar";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 
 export default function EditProfile() {
@@ -23,6 +24,9 @@ export default function EditProfile() {
   const toast = useToast();
   const { data: session, status } = useSession();
   const router = useRouter();
+  
+  // Move useColorModeValue to top level
+  const bgColor = useColorModeValue("gray.100", "gray.900");
 
   const handleEditProfile = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
@@ -51,8 +55,23 @@ export default function EditProfile() {
     }
   };
 
+  // Handle loading state during authentication
+  if (status === "loading") {
+    return (
+      <Box minH="100vh" bg={bgColor} display="flex" alignItems="center" justifyContent="center">
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
+
+  // Redirect to sign in if not authenticated
+  if (status === "unauthenticated") {
+    signIn();
+    return null;
+  }
+
   return (
-    <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+    <Box minH="100vh" bg={bgColor}>
       <Sidebar>
         <Flex justify="center" pt={"78px"}>
           <Box w="full" p="24px" minH="full" maxW="1200px">

@@ -179,7 +179,6 @@
 
 - [x] 7. Integrate all components into redesigned home page
 
-
   - Modify existing home.tsx to use new tab-based layout
   - Remove old sidebar components (My Profile, My Rare Diseases)
   - Implement responsive layout without right sidebar

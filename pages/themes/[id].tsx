@@ -10,15 +10,17 @@ import {
   Alert,
   AlertIcon,
   Button,
-  Select,
   Text,
   SimpleGrid,
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { fetchData } from "../../utils/utils";
 import Sidebar from "../../components/sidebar";
+import AuthRequiredAlert from "../../components/AuthRequiredAlert";
+import ThemeSearchAndFilter, { ThemeFilterState, Disease } from "../../components/ThemeSearchAndFilter";
 import { ThemeHeader } from "../../components/theme/ThemeVisuals";
 import Post from "../../components/post";
 import { FullPost } from "../../components/post";
@@ -46,11 +48,24 @@ export default function ThemePage({
 }) {
   const router = useRouter();
   const { id } = router.query;
-  const [selectedDisease, setSelectedDisease] = useState<string>("all");
+  const [showAuthAlert, setShowAuthAlert] = useState(false);
+  const [filters, setFilters] = useState<ThemeFilterState>({
+    search: "",
+    selectedDiseases: [],
+  });
+  const { data: session } = useSession();
+
+  // Handle create post with authentication check
+  const handleCreatePost = () => {
+    if (!session?.user?.email) {
+      setShowAuthAlert(true);
+      return;
+    }
+    router.push(`/create_post?theme=${data?.theme.id}`);
+  };
 
   // Move all hooks to the top level
   const bgColor = useColorModeValue("gray.50", "gray.900");
-  const selectBg = useColorModeValue("white", "gray.700");
   const emptyStateBg = useColorModeValue("white", "gray.800");
   const emptyStateBorderColor = useColorModeValue("gray.200", "gray.600");
 
@@ -87,16 +102,25 @@ export default function ThemePage({
     );
   }
 
-  // Filter posts by selected disease
-  const filteredPosts =
-    selectedDisease === "all"
-      ? data.posts
-      : data.posts.filter(
-          (post) => post.disease.id.toString() === selectedDisease
-        );
+  // Filter posts based on search and selected diseases
+  const filteredPosts = data ? data.posts.filter((post) => {
+    // Apply search filter
+    if (filters.search) {
+      const searchLower = filters.search.toLowerCase();
+      if (!post.title.toLowerCase().includes(searchLower)) {
+        return false;
+      }
+    }
 
-  console.log("initialData", initialData);
-  console.log("filteredPosts", filteredPosts);
+    // Apply disease filter
+    if (filters.selectedDiseases.length > 0) {
+      if (!filters.selectedDiseases.includes(post.disease.id)) {
+        return false;
+      }
+    }
+
+    return true;
+  }) : [];
 
   return (
     <Box minH="100vh" bg={bgColor}>
@@ -118,9 +142,7 @@ export default function ThemePage({
                   <Button
                     colorScheme="blue"
                     size="md"
-                    onClick={() =>
-                      router.push(`/create_post?theme=${data.theme.id}`)
-                    }
+                    onClick={handleCreatePost}
                   >
                     Create Post in {data.theme.name}
                   </Button>
@@ -132,62 +154,23 @@ export default function ThemePage({
                     Back to Explore
                   </Button>
                 </HStack>
-
-                {/* Disease Filter */}
-                {data.diseases.length > 0 && (
-                  <HStack spacing={2} minW="250px">
-                    <Text fontSize="sm" color="gray.600" whiteSpace="nowrap">
-                      Filter by rare disease:
-                    </Text>
-                    <Select
-                      value={selectedDisease}
-                      onChange={(e) => setSelectedDisease(e.target.value)}
-                      size="sm"
-                      bg={selectBg}
-                    >
-                      <option value="all">
-                        All diseases ({data.posts.length})
-                      </option>
-                      {data.diseases.map((disease) => {
-                        const count = data.posts.filter(
-                          (post) => post.disease.id === disease.id
-                        ).length;
-                        return (
-                          <option
-                            key={disease.id}
-                            value={disease.id.toString()}
-                          >
-                            {disease.name} ({count})
-                          </option>
-                        );
-                      })}
-                    </Select>
-                  </HStack>
-                )}
               </HStack>
 
-              {/* Filter summary */}
-              {selectedDisease !== "all" && (
-                <HStack spacing={2}>
-                  <Text fontSize="sm" color="gray.600">
-                    Showing {filteredPosts.length} posts for:
-                  </Text>
-                  <Text fontSize="sm" fontWeight="medium" color="blue.600">
-                    {
-                      data.diseases.find(
-                        (d) => d.id.toString() === selectedDisease
-                      )?.name
-                    }
-                  </Text>
-                  <Button
-                    size="xs"
-                    variant="ghost"
-                    onClick={() => setSelectedDisease("all")}
-                  >
-                    Clear filter
-                  </Button>
-                </HStack>
-              )}
+              {/* Search and Filter */}
+              <Box
+                bg="white"
+                rounded="lg"
+                p={6}
+                shadow="md"
+                border="1px"
+                borderColor="gray.200"
+              >
+                <ThemeSearchAndFilter
+                  onFiltersChange={setFilters}
+                  availableDiseases={data.diseases}
+                  currentFilters={filters}
+                />
+              </Box>
             </VStack>
 
             {/* Posts */}
@@ -195,9 +178,9 @@ export default function ThemePage({
               <VStack spacing={6} align="stretch">
                 <HStack justify="space-between" align="center">
                   <Text fontSize="lg" fontWeight="medium" color="gray.700">
-                    {selectedDisease === "all"
-                      ? `All Posts (${filteredPosts.length})`
-                      : `Filtered Posts (${filteredPosts.length})`}
+                    {filters.search || filters.selectedDiseases.length > 0
+                      ? `Filtered Posts (${filteredPosts.length})`
+                      : `All Posts (${filteredPosts.length})`}
                   </Text>
                 </HStack>
                 <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
@@ -218,37 +201,31 @@ export default function ThemePage({
                 <VStack spacing={6}>
                   <VStack spacing={2}>
                     <Text fontSize="xl" fontWeight="medium" color="gray.600">
-                      {selectedDisease === "all"
-                        ? `No posts in ${data.theme.name} yet`
-                        : `No posts for ${
-                            data.diseases.find(
-                              (d) => d.id.toString() === selectedDisease
-                            )?.name
-                          } in ${data.theme.name}`}
+                      {filters.search || filters.selectedDiseases.length > 0
+                        ? `No posts match your current filters`
+                        : `No posts in ${data.theme.name} yet`}
                     </Text>
                     <Text fontSize="md" color="gray.500">
-                      {selectedDisease === "all"
-                        ? `Be the first to share content in ${data.theme.name}!`
-                        : "Try selecting a different rare disease or create a new post."}
+                      {filters.search || filters.selectedDiseases.length > 0
+                        ? "Try adjusting your search terms or selected diseases, or create a new post."
+                        : `Be the first to share content in ${data.theme.name}!`}
                     </Text>
                   </VStack>
                   <HStack spacing={3}>
                     <Button
                       colorScheme="blue"
                       size="lg"
-                      onClick={() =>
-                        router.push(`/create_post?theme=${data.theme.id}`)
-                      }
+                      onClick={handleCreatePost}
                     >
                       Create Post
                     </Button>
-                    {selectedDisease !== "all" && (
+                    {(filters.search || filters.selectedDiseases.length > 0) && (
                       <Button
                         variant="outline"
                         size="lg"
-                        onClick={() => setSelectedDisease("all")}
+                        onClick={() => setFilters({ search: "", selectedDiseases: [] })}
                       >
-                        View All Posts
+                        Clear Filters
                       </Button>
                     )}
                   </HStack>
@@ -258,6 +235,15 @@ export default function ThemePage({
           </Container>
         </Box>
       </Sidebar>
+      
+      {/* Authentication Alert */}
+      {showAuthAlert && (
+        <AuthRequiredAlert 
+          action="create a post" 
+          isOpen={showAuthAlert}
+          onClose={() => setShowAuthAlert(false)}
+        />
+      )}
     </Box>
   );
 }

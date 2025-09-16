@@ -27,12 +27,9 @@ import {
 } from "@chakra-ui/react";
 import {
   FiHome,
-  FiList,
   FiCompass,
-  FiUser,
   FiMenu,
   FiChevronDown,
-  FiPlusSquare,
   FiSettings,
   FiLogOut,
   FiLogIn,
@@ -41,6 +38,7 @@ import { TbDna2 } from "react-icons/tb";
 import { IoCreateOutline } from "react-icons/io5";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
+import AuthRequiredAlert from "./AuthRequiredAlert";
 
 interface LinkItemProps {
   name: string;
@@ -89,6 +87,9 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const { data: session } = useSession();
+  const settingsBorderColor = useColorModeValue("gray.200", "gray.700");
+  
   return (
     <Box
       transition="0.3s ease"
@@ -139,17 +140,19 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         {/* Spacer to push settings to bottom */}
         <Box flex="1" />
         
-        {/* Settings at bottom */}
-        <Box 
-          borderTop="1px" 
-          borderTopColor={useColorModeValue("gray.200", "gray.700")}
-          pt="4"
-          mt="4"
-        >
-          <NavItem link="/edit_profile" icon={FiSettings}>
-            Settings
-          </NavItem>
-        </Box>
+        {/* Settings at bottom - only show when logged in */}
+        {session?.user?.email && (
+          <Box 
+            borderTop="1px" 
+            borderTopColor={settingsBorderColor}
+            pt="4"
+            mt="4"
+          >
+            <NavItem link="/edit_profile" icon={FiSettings}>
+              Settings
+            </NavItem>
+          </Box>
+        )}
       </VStack>
     </Box>
   );
@@ -161,46 +164,75 @@ interface NavItemProps extends FlexProps {
   children: ReactText;
 }
 const NavItem = ({ icon, link, children, ...rest }: NavItemProps) => {
+  const { data: session } = useSession();
+  const [showAuthAlert, setShowAuthAlert] = React.useState(false);
+  const textColor = useColorModeValue("gray.700", "gray.200");
+  const hoverBg = useColorModeValue("teal.50", "teal.900");
+  const hoverColor = useColorModeValue("teal.700", "teal.200");
+  const iconHoverColor = useColorModeValue("teal.600", "teal.300");
+
+  const handleClick = (e: React.MouseEvent) => {
+    // Check if this is the Home link and user is not authenticated
+    if (link === "/home" && !session?.user?.email) {
+      e.preventDefault();
+      setShowAuthAlert(true);
+      return;
+    }
+    // For other links, allow normal navigation
+  };
+
   return (
-    <Link
-      href={link}
-      style={{ textDecoration: "none" }}
-      _focus={{ boxShadow: "none" }}
-    >
-      <Flex
-        align="center"
-        p="3"
-        borderRadius="xl"
-        role="group"
-        cursor="pointer"
-        transition="all 0.2s"
-        color={useColorModeValue("gray.700", "gray.200")}
-        _hover={{
-          bg: useColorModeValue("teal.50", "teal.900"),
-          color: useColorModeValue("teal.700", "teal.200"),
-          transform: "translateX(2px)",
-          shadow: "sm",
-        }}
-        _active={{
-          transform: "translateX(0px)",
-        }}
-        {...rest}
+    <>
+      <Link
+        href={link}
+        style={{ textDecoration: "none" }}
+        _focus={{ boxShadow: "none" }}
+        onClick={handleClick}
       >
-        {icon && (
-          <Icon
-            mr="3"
-            fontSize="18"
-            _groupHover={{
-              color: useColorModeValue("teal.600", "teal.300"),
-            }}
-            as={icon}
-          />
-        )}
-        <Text fontSize="sm" fontWeight="500">
-          {children}
-        </Text>
-      </Flex>
-    </Link>
+        <Flex
+          align="center"
+          p="3"
+          borderRadius="xl"
+          role="group"
+          cursor="pointer"
+          transition="all 0.2s"
+          color={textColor}
+          _hover={{
+            bg: hoverBg,
+            color: hoverColor,
+            transform: "translateX(2px)",
+            shadow: "sm",
+          }}
+          _active={{
+            transform: "translateX(0px)",
+          }}
+          {...rest}
+        >
+          {icon && (
+            <Icon
+              mr="3"
+              fontSize="18"
+              _groupHover={{
+                color: iconHoverColor,
+              }}
+              as={icon}
+            />
+          )}
+          <Text fontSize="sm" fontWeight="500">
+            {children}
+          </Text>
+        </Flex>
+      </Link>
+      
+      {/* Authentication Alert for Home link */}
+      {showAuthAlert && (
+        <AuthRequiredAlert 
+          action="access your personalized home page" 
+          isOpen={showAuthAlert}
+          onClose={() => setShowAuthAlert(false)}
+        />
+      )}
+    </>
   );
 };
 
@@ -209,6 +241,20 @@ interface MobileProps extends FlexProps {
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   const { data: session } = useSession();
+  const [showAuthAlert, setShowAuthAlert] = React.useState(false);
+  
+  // Move all useColorModeValue calls to top level
+  const navBg = useColorModeValue("white", "gray.900");
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const boxShadow = useColorModeValue("sm", "dark-lg");
+  const menuBg = useColorModeValue("white", "gray.900");
+  const menuBorderColor = useColorModeValue("gray.200", "gray.700");
+  const settingsHoverBg = useColorModeValue("gray.50", "gray.700");
+  const signOutHoverBg = useColorModeValue("red.50", "red.900");
+  const signOutHoverColor = useColorModeValue("red.600", "red.200");
+  const signInHoverBg = useColorModeValue("teal.50", "teal.900");
+  const signInHoverColor = useColorModeValue("teal.600", "teal.200");
+
   return (
     <Flex
       ml={{ base: 0, md: 64 }}
@@ -220,11 +266,11 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       w="100%"
       right="0"
       zIndex={200}
-      bg={useColorModeValue("white", "gray.900")}
+      bg={navBg}
       borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue("gray.200", "gray.700")}
+      borderBottomColor={borderColor}
       justifyContent={{ base: "space-between", md: "flex-end" }}
-      boxShadow={useColorModeValue("sm", "dark-lg")}
+      boxShadow={boxShadow}
       {...rest}
     >
       <IconButton
@@ -250,8 +296,13 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           display={{ base: "none", md: "flex" }}
           colorScheme="teal"
           variant="solid"
-          as={"a"}
-          href={`/create_post`}
+          onClick={() => {
+            if (!session) {
+              setShowAuthAlert(true);
+            } else {
+              window.location.href = '/create_post';
+            }
+          }}
         >
           New
         </Button>
@@ -262,9 +313,14 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           variant="solid"
           rounded={"3xl"}
           aria-label="create new post"
-          as={"a"}
           size="sm"
-          href={`/create_post`}
+          onClick={() => {
+            if (!session) {
+              setShowAuthAlert(true);
+            } else {
+              window.location.href = '/create_post';
+            }
+          }}
         />
         <Flex alignItems={"center"}>
           <Menu>
@@ -306,35 +362,40 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               </HStack>
             </MenuButton>
             <MenuList
-              bg={useColorModeValue("white", "gray.900")}
-              borderColor={useColorModeValue("gray.200", "gray.700")}
+              bg={menuBg}
+              borderColor={menuBorderColor}
               boxShadow="lg"
               rounded="xl"
               py="2"
             >
-              <MenuItem 
-                as="a" 
-                href="/edit_profile"
-                rounded="lg"
-                mx="2"
-                _hover={{
-                  bg: useColorModeValue("gray.50", "gray.700"),
-                }}
-              >
-                <HStack spacing="3">
-                  <Icon as={FiSettings} />
-                  <Text>Settings</Text>
-                </HStack>
-              </MenuItem>
-              <MenuDivider />
+              {/* Only show Settings when logged in */}
+              {session?.user?.email && (
+                <>
+                  <MenuItem 
+                    as="a" 
+                    href="/edit_profile"
+                    rounded="lg"
+                    mx="2"
+                    _hover={{
+                      bg: settingsHoverBg,
+                    }}
+                  >
+                    <HStack spacing="3">
+                      <Icon as={FiSettings} />
+                      <Text>Settings</Text>
+                    </HStack>
+                  </MenuItem>
+                  <MenuDivider />
+                </>
+              )}
               {session ? (
                 <MenuItem 
                   onClick={() => signOut()}
                   rounded="lg"
                   mx="2"
                   _hover={{
-                    bg: useColorModeValue("red.50", "red.900"),
-                    color: useColorModeValue("red.600", "red.200"),
+                    bg: signOutHoverBg,
+                    color: signOutHoverColor,
                   }}
                 >
                   <HStack spacing="3">
@@ -348,8 +409,8 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                   rounded="lg"
                   mx="2"
                   _hover={{
-                    bg: useColorModeValue("teal.50", "teal.900"),
-                    color: useColorModeValue("teal.600", "teal.200"),
+                    bg: signInHoverBg,
+                    color: signInHoverColor,
                   }}
                 >
                   <HStack spacing="3">
@@ -362,6 +423,15 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
           </Menu>
         </Flex>
       </HStack>
+      
+      {/* Authentication Alert */}
+      {showAuthAlert && (
+        <AuthRequiredAlert 
+          action="create a post" 
+          isOpen={showAuthAlert}
+          onClose={() => setShowAuthAlert(false)}
+        />
+      )}
     </Flex>
   );
 };

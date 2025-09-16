@@ -7,6 +7,9 @@ import {
   Icon,
   Heading,
 } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import AuthRequiredAlert from "./AuthRequiredAlert";
 import {
   BiBookmark,
   BiCommentDetail,
@@ -66,6 +69,8 @@ const emptyStateConfig = {
 
 export default function EmptyState({ tabType }: EmptyStateProps) {
   const config = emptyStateConfig[tabType];
+  const { data: session } = useSession();
+  const [showAuthAlert, setShowAuthAlert] = useState(false);
   const bgColor = useColorModeValue("gray.50", "gray.800");
   const textColor = useColorModeValue("gray.600", "gray.400");
   const titleColor = useColorModeValue("gray.700", "gray.300");
@@ -109,25 +114,44 @@ export default function EmptyState({ tabType }: EmptyStateProps) {
         {/* Action buttons */}
         <VStack spacing={3} pt={2}>
           <Button
-            as="a"
-            href={config.actionHref}
             colorScheme="blue"
             size="md"
             leftIcon={<Icon as={BiPlus} />}
+            onClick={() => {
+              if (config.actionHref === '/create_post' && !session) {
+                setShowAuthAlert(true);
+              } else {
+                window.location.href = config.actionHref;
+              }
+            }}
           >
             {config.actionText}
           </Button>
 
           {config.secondaryActionText && (
             <Button
-              as="a"
-              href={config.secondaryActionHref}
               variant="ghost"
               size="sm"
               color={textColor}
+              onClick={() => {
+                if (config.secondaryActionHref === '/create_post' && !session) {
+                  setShowAuthAlert(true);
+                } else {
+                  window.location.href = config.secondaryActionHref!;
+                }
+              }}
             >
               {config.secondaryActionText}
             </Button>
+          )}
+          
+          {/* Authentication Alert */}
+          {showAuthAlert && (
+            <AuthRequiredAlert 
+              action="create a post" 
+              isOpen={showAuthAlert}
+              onClose={() => setShowAuthAlert(false)}
+            />
           )}
         </VStack>
       </VStack>

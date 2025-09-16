@@ -7,8 +7,7 @@ import prisma from "../../db";
 const edit_profile = async (req: NextApiRequest, res: NextApiResponse) => {
   const { profileEdits } = req.body;
   const session = await getServerSession(req, res, authOptions);
-  console.log("session", session)
-  console.log("profile", profileEdits)
+
   if (!session) {
     return res.status(500).json({ error: "You have to be logged in." });
   }

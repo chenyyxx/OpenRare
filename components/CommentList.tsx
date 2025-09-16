@@ -10,10 +10,12 @@ import {
   Button,
   Flex,
   Badge,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import RichTextEditor from "./RichText";
 import { Prisma } from "@prisma/client";
+import EmptyState from "./EmptyState";
 
 // Type for comments extracted from user's posts
 export type UserComment = Prisma.CommentGetPayload<{
@@ -65,7 +67,6 @@ function CommentItem({ comment }: { comment: UserComment }) {
   return (
     <Box
       w="full"
-      maxW="800px"
       bg={useColorModeValue("white", "gray.900")}
       borderColor="gray.200"
       borderWidth="1px"
@@ -188,19 +189,18 @@ export default function CommentList({ comments, isLoading }: CommentListProps) {
 
   if (isLoading) {
     return (
-      <Stack spacing={4}>
-        {[1, 2, 3].map((i) => (
+      <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
+        {[1, 2, 3, 4].map((i) => (
           <Box
             key={i}
             w="full"
-            maxW="800px"
             bg={loadingBg}
             rounded="md"
             p={6}
             h="200px"
           />
         ))}
-      </Stack>
+      </SimpleGrid>
     );
   }
 
@@ -209,10 +209,15 @@ export default function CommentList({ comments, isLoading }: CommentListProps) {
   }
 
   return (
-    <Stack spacing={4}>
-      {comments.map((comment) => (
-        <CommentItem key={comment.id} comment={comment} />
-      ))}
-    </Stack>
+    <VStack spacing={6} align="stretch">
+      <Text fontSize="lg" fontWeight="medium" color="gray.700">
+        Comments on My Posts ({comments.length})
+      </Text>
+      <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
+        {comments.map((comment) => (
+          <CommentItem key={comment.id} comment={comment} />
+        ))}
+      </SimpleGrid>
+    </VStack>
   );
 }

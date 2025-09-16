@@ -23,6 +23,7 @@ import {
   FormHelperText,
 } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
+import AuthRequiredAlert from "./AuthRequiredAlert";
 // import { FullPost } from "./post";
 import { FullPostEx } from "../pages/post/[id]";
 import { useSWRConfig } from "swr";
@@ -35,6 +36,7 @@ type AppProps = {
 export default function PostDetail({ post, url }: AppProps) {
   // console.log(post)
   const [showEditor, setShowEditor] = useState(false);
+  const [showAuthAlert, setShowAuthAlert] = useState(false);
   const [content, setContent] = useState("");
   const { data: session, status } = useSession();
   const createdAt = new Date(post.updatedAt);
@@ -181,7 +183,13 @@ export default function PostDetail({ post, url }: AppProps) {
           <Button
             size="sm"
             variant="ghost"
-            onClick={() => setShowEditor(true)}
+            onClick={() => {
+              if (!session) {
+                setShowAuthAlert(true);
+              } else {
+                setShowEditor(true);
+              }
+            }}
             leftIcon={<BiCommentDetail />}
             colorScheme="teal"
           >
@@ -189,6 +197,15 @@ export default function PostDetail({ post, url }: AppProps) {
           </Button>
         </Flex>
       </VStack>
+
+      {/* Authentication Alert */}
+      {showAuthAlert && (
+        <AuthRequiredAlert 
+          action="comment on posts" 
+          isOpen={showAuthAlert}
+          onClose={() => setShowAuthAlert(false)}
+        />
+      )}
 
       {/* Comment Editor */}
       {showEditor && (

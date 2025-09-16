@@ -9,7 +9,6 @@ import prisma from "../../db";
 const get_all_posts = async (req: NextApiRequest, res: NextApiResponse) => {
     
     const subComment = req.body;
-    console.log(subComment)
     const session = await getServerSession(req, res, authOptions)
     
     if (!session) {

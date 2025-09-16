@@ -26,7 +26,7 @@ const vote = async (req: NextApiRequest, res: NextApiResponse) => {
       });
       // check if the user has voted on this post
       const hasVoted = votes.find((vote) => vote.postId === user_vote.postId);
-      console.log("has the user voted: ", hasVoted);
+      // console.log("has the user voted: ", hasVoted);
       // console.log(user_vote.user.id)
       if (hasVoted) {
         if (hasVoted.voteType != user_vote.voteType) {
@@ -38,7 +38,7 @@ const vote = async (req: NextApiRequest, res: NextApiResponse) => {
               voteType: user_vote.voteType,
             },
           });
-          console.log("updated vote", updateVote);
+          // console.log("updated vote", updateVote);
           res.status(200).json(updateVote);
         } else {
           const deleteVote = await prisma.vote.delete({
@@ -46,7 +46,7 @@ const vote = async (req: NextApiRequest, res: NextApiResponse) => {
               id: Number(hasVoted.id),
             },
           });
-          console.log("deleted vote", deleteVote);
+          // console.log("deleted vote", deleteVote);
           res.status(200).json(deleteVote);
         }
       } else {
@@ -65,7 +65,7 @@ const vote = async (req: NextApiRequest, res: NextApiResponse) => {
             },
           },
         });
-        console.log("created vote", createVote);
+        // console.log("created vote", createVote);
         res.status(200).json(createVote);
       }
     } catch (e) {
@@ -73,7 +73,7 @@ const vote = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   } else {
     const { postId } = req.query;
-    console.log(postId);
+    // console.log(postId);
     const votes = await prisma.vote.findMany({
       where: { postId: Number(postId) },
       include: {

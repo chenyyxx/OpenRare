@@ -28,6 +28,8 @@ import { useState, useRef, useEffect } from "react";
 import { usePostDetail } from "../pages/post/[id]";
 import Comment from "./comment";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import AuthRequiredAlert from "./AuthRequiredAlert";
 
 export type FullPost = Prisma.PostGetPayload<{
   include: {
@@ -65,7 +67,9 @@ function Post({ post }: { post: FullPost }) {
   const textRef = useRef<HTMLParagraphElement | null>(null);
   const [textOpen, setTextOpen] = useState(false);
   const [overflowActive, setOverflowActive] = useState(false);
+  const [showAuthAlert, setShowAuthAlert] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: session } = useSession();
   const postContent = post.content.replace(/<[^>]+>/g, "");
   const url = `/api/get_post/${post.id}`;
   const { postDetail, isLoading, isError } = usePostDetail(url, null);
@@ -234,14 +238,26 @@ function Post({ post }: { post: FullPost }) {
                 fontSize={"md"}
                 variant="ghost"
                 leftIcon={<BiCommentDetail />}
-                onClick={onOpen}
+                onClick={() => {
+                  if (!session) {
+                    setShowAuthAlert(true);
+                  } else {
+                    onOpen();
+                  }
+                }}
               >{`${post._count?.comments || 0} Comments`}</Button>
               <Button
                 display={["flex", "none"]}
                 fontSize={"sm"}
                 variant="ghost"
                 leftIcon={<BiCommentDetail />}
-                onClick={onOpen}
+                onClick={() => {
+                  if (!session) {
+                    setShowAuthAlert(true);
+                  } else {
+                    onOpen();
+                  }
+                }}
               >{`${post._count?.comments || 0}`}</Button>
               <Modal
                 isOpen={isOpen}
@@ -353,6 +369,15 @@ function Post({ post }: { post: FullPost }) {
           </HStack>
         </Stack>
       }
+      
+      {/* Authentication Alert */}
+      {showAuthAlert && (
+        <AuthRequiredAlert 
+          action="view and write comments" 
+          isOpen={showAuthAlert}
+          onClose={() => setShowAuthAlert(false)}
+        />
+      )}
     </Box>
   );
 }

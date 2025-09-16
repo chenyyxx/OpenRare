@@ -15,7 +15,6 @@ import {
   Card,
   CardBody,
   CardHeader,
-  useToast,
   SimpleGrid,
   IconButton,
   Icon,
@@ -31,6 +30,7 @@ import {
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import Sidebar from "../components/sidebar";
+import AuthRequiredAlert from "../components/AuthRequiredAlert";
 import { useDiseases } from "./create_post";
 import { FullDisease } from "./create_post";
 import { getThemeColor } from "../utils/theme-constants";
@@ -55,9 +55,9 @@ export default function RareDiseasesPage() {
   const [selectedDisease, setSelectedDisease] = useState<FullDisease | null>(null);
   const [userInterests, setUserInterests] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState("");
+  const [showAuthAlert, setShowAuthAlert] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
-  const toast = useToast();
 
   const { diseases, isLoading, isError } = useDiseases();
 
@@ -93,13 +93,7 @@ export default function RareDiseasesPage() {
 
   const handleToggleInterest = async (diseaseId: string, isCurrentlyInterested: boolean) => {
     if (!session?.user?.email) {
-      toast({
-        title: "Please sign in",
-        description: "You need to be signed in to manage your interests",
-        status: "warning",
-        duration: 3000,
-        isClosable: true,
-      });
+      setShowAuthAlert(true);
       return;
     }
 
@@ -119,34 +113,12 @@ export default function RareDiseasesPage() {
       if (response.ok) {
         if (isCurrentlyInterested) {
           setUserInterests(prev => prev.filter(id => id !== diseaseId));
-          toast({
-            title: "Interest removed",
-            description: "Removed from your rare disease interests",
-            status: "success",
-            duration: 2000,
-            isClosable: true,
-          });
         } else {
           setUserInterests(prev => [...prev, diseaseId]);
-          toast({
-            title: "Interest added",
-            description: "Added to your rare disease interests",
-            status: "success",
-            duration: 2000,
-            isClosable: true,
-          });
         }
-      } else {
-        throw new Error('Failed to update interest');
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to update your interest. Please try again.",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      console.error("Error updating interest:", error);
     }
   };
 
@@ -450,6 +422,15 @@ export default function RareDiseasesPage() {
           </Box>
         </Flex>
       </Sidebar>
+      
+      {/* Authentication Alert */}
+      {showAuthAlert && (
+        <AuthRequiredAlert 
+          action="follow rare diseases" 
+          isOpen={showAuthAlert}
+          onClose={() => setShowAuthAlert(false)}
+        />
+      )}
     </Box>
   );
 }

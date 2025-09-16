@@ -15,6 +15,7 @@ import {
   FormErrorMessage,
   Divider,
   Heading,
+  Spinner,
 } from "@chakra-ui/react";
 import RichTextEditor from "../components/RichText";
 import { useRouter } from "next/router";
@@ -22,7 +23,7 @@ import { useEffect, useState } from "react";
 import useSWR from "swr";
 import Select from "react-select";
 import { fetchData } from "../utils/utils";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import Sidebar from "../components/sidebar";
 import { Prisma } from "@prisma/client";
 import { FiUser, FiHeart, FiCalendar, FiBook } from "react-icons/fi";
@@ -269,6 +270,21 @@ export default function CreatePost() {
       setIsSubmitting(false);
     }
   };
+
+  // Handle loading state during authentication
+  if (status === "loading") {
+    return (
+      <Box minH="100vh" bg={"gray.50"} display="flex" alignItems="center" justifyContent="center">
+        <Spinner size="xl" />
+      </Box>
+    );
+  }
+
+  // Redirect to sign in if not authenticated
+  if (status === "unauthenticated") {
+    signIn();
+    return null;
+  }
 
   if (themesError || diseasesError) return <div>Failed to load</div>;
 

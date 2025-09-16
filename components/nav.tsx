@@ -1,5 +1,6 @@
 import { useSession, signIn, signOut } from "next-auth/react";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
+import AuthRequiredAlert from "./AuthRequiredAlert";
 import {
   Text,
   Box,
@@ -42,6 +43,7 @@ const NavLink = ({ children }: { children: ReactNode }) => (
 export default function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: session } = useSession();
+  const [showAuthAlert, setShowAuthAlert] = useState(false);
   return (
     <Box bg="white" px={4} pos="fixed" w="100%" zIndex={200}>
       <Grid h={16} templateColumns="repeat(3, 1fr)" gap={6}>
@@ -86,8 +88,13 @@ export default function Nav() {
             <Button
               colorScheme="teal"
               variant="solid"
-              as={"a"}
-              href={`/create_post`}
+              onClick={() => {
+                if (!session) {
+                  setShowAuthAlert(true);
+                } else {
+                  window.location.href = '/create_post';
+                }
+              }}
             >
               Create Post
             </Button>
@@ -160,6 +167,15 @@ export default function Nav() {
           </Stack>
         </Box>
       ) : null}
+      
+      {/* Authentication Alert */}
+      {showAuthAlert && (
+        <AuthRequiredAlert 
+          action="create a post" 
+          isOpen={showAuthAlert}
+          onClose={() => setShowAuthAlert(false)}
+        />
+      )}
     </Box>
   );
 }

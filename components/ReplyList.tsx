@@ -11,6 +11,7 @@ import {
   Flex,
   Badge,
   Icon,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { BiCommentDetail } from "react-icons/bi";
@@ -89,7 +90,6 @@ function ReplyItem({ reply }: { reply: UserReply }) {
   return (
     <Box
       w="full"
-      maxW="800px"
       bg={useColorModeValue("white", "gray.900")}
       borderColor="gray.200"
       borderWidth="1px"
@@ -246,19 +246,18 @@ export default function ReplyList({ replies, isLoading }: ReplyListProps) {
 
   if (isLoading) {
     return (
-      <Stack spacing={4}>
-        {[1, 2, 3].map((i) => (
+      <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
+        {[1, 2, 3, 4].map((i) => (
           <Box
             key={i}
             w="full"
-            maxW="800px"
             bg={loadingBg}
             rounded="md"
             p={6}
             h="250px"
           />
         ))}
-      </Stack>
+      </SimpleGrid>
     );
   }
 
@@ -267,10 +266,15 @@ export default function ReplyList({ replies, isLoading }: ReplyListProps) {
   }
 
   return (
-    <Stack spacing={4}>
-      {replies.map((reply) => (
-        <ReplyItem key={reply.id} reply={reply} />
-      ))}
-    </Stack>
+    <VStack spacing={6} align="stretch">
+      <Text fontSize="lg" fontWeight="medium" color="gray.700">
+        Replies to My Comments ({replies.length})
+      </Text>
+      <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
+        {replies.map((reply) => (
+          <ReplyItem key={reply.id} reply={reply} />
+        ))}
+      </SimpleGrid>
+    </VStack>
   );
 }

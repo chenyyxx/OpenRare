@@ -16,11 +16,12 @@ import {
     Textarea
   } from '@chakra-ui/react';
 import RichTextEditor from './RichText'
-import {BiCommentDetail, BiLike, BiDislike} from "react-icons/bi";
+import {BiCommentDetail} from "react-icons/bi";
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { Prisma } from "@prisma/client";
 import { useSWRConfig } from "swr";
+import AuthRequiredAlert from "./AuthRequiredAlert";
 
 export type SubComment = Prisma.SubCommentGetPayload<{
     include: { user: true; parent: {include: {user:true;}}; children: true ;votes: true; comment: true; };
@@ -41,6 +42,7 @@ export default function SubComments({subComment, url, labelColor}:AppProps){
     // console.log(parent)
     const { data: session, status } = useSession()
     const [showEditor, setShowEditor] = useState(false)
+    const [showAuthAlert, setShowAuthAlert] = useState(false)
     const [content, setContent] = useState('')
     const createdAt = new Date(subComment.createdAt)
     const date = createdAt.getDate()
@@ -59,7 +61,7 @@ export default function SubComments({subComment, url, labelColor}:AppProps){
             user: session?.user,
             parentId: subComment.id
         }
-        // console.log(newSubComment)
+
         if(content==""){
             alert("comment content cannot be empty")
         } else {
@@ -120,14 +122,33 @@ export default function SubComments({subComment, url, labelColor}:AppProps){
                     <Flex align='center' justify='space-between'>
                         <Text  fontSize='xs' color={'gray.500'}>{`${month}-${date}-${year}`}</Text> 
                         <HStack>
-                            <IconButton aria-label='reply' variant='ghost' size='sm' onClick={()=>{setShowEditor(true)}} icon={<BiCommentDetail/>}/>
-                            <IconButton aria-label='like' variant='ghost' size='sm' icon={<BiLike/>}/>
-                            <IconButton aria-label='dislike' variant='ghost' size='sm' icon={<BiDislike/>}/>
+                            <IconButton 
+                                aria-label='reply' 
+                                variant='ghost' 
+                                size='sm' 
+                                onClick={() => {
+                                    if (!session) {
+                                        setShowAuthAlert(true);
+                                    } else {
+                                        setShowEditor(true);
+                                    }
+                                }} 
+                                icon={<BiCommentDetail/>}
+                            />
                         </HStack>
                     </Flex>
                 </Stack>
                 
             </HStack>
+            
+            {/* Authentication Alert */}
+            {showAuthAlert && (
+                <AuthRequiredAlert 
+                    action="reply to comments" 
+                    isOpen={showAuthAlert}
+                    onClose={() => setShowAuthAlert(false)}
+                />
+            )}
             
             {
                 showEditor ?

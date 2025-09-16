@@ -38,8 +38,8 @@ export default function HomePageWithFilters() {
   // Extract comments and replies directly from myPosts
   // ALL comments on my posts (including my own comments) with post context
   const myComments = myPosts
-    .flatMap(post => 
-      (post.comments || []).map(comment => ({
+    .flatMap((post: any) => 
+      (post.comments || []).map((comment: any) => ({
         ...comment,
         post: {
           id: post.id,
@@ -50,15 +50,15 @@ export default function HomePageWithFilters() {
         }
       }))
     )
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   // ALL subcomments on my comments (including my own replies) with comment and post context
   const replies = myPosts
-    .flatMap(post => 
+    .flatMap((post: any) => 
       post.comments
-        ?.filter(comment => comment.user.email === email) // My comments only
-        ?.flatMap(comment => 
-          (comment.subComments || []).map(subComment => ({
+        ?.filter((comment: any) => comment.user.email === email) // My comments only
+        ?.flatMap((comment: any) => 
+          (comment.subComments || []).map((subComment: any) => ({
             ...subComment,
             comment: {
               ...comment,
@@ -73,7 +73,7 @@ export default function HomePageWithFilters() {
           }))
         ) || []
     )
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
   // Determine loading state for current tab
   const getCurrentTabLoading = () => {
